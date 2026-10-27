@@ -237,6 +237,23 @@ button{cursor:pointer;-webkit-appearance:none;appearance:none}
 @media (prefers-reduced-motion:reduce){.scroll.play>*,.scroll.play .row{animation:none!important}}
 html.reduce .scroll.play>*,html.reduce .scroll.play .row{animation:none!important}
 html.reduce *{animation-duration:.01s!important}
+/* Apple-like bubble feedback across controls; preserve the search-adjacent more button */
+button:not(#moreBtn){-webkit-tap-highlight-color:transparent;transform-origin:center;transition:transform .42s var(--spring2),background-color .24s ease,opacity .24s ease}
+button:not(#moreBtn):active{transform:scale(.91)}
+button:not(#moreBtn).circle:active,button:not(#moreBtn).btn:active{transform:scale(.88)}
+button:not(#moreBtn) .ic{transition:transform .42s var(--spring2)}
+button:not(#moreBtn):active .ic{transform:scale(.92)}
+/* menu/scrim fade like iOS */
+.scrim{opacity:0;transition:opacity .24s ease}
+.scrim.open{opacity:1}
+.menu{transition:transform .48s var(--sp),opacity .24s ease;will-change:transform,opacity}
+.menu.open{opacity:1}
+/* notes menu morphs hamburger into close and back */
+#nMore .menu-glyph{width:22px;height:22px;overflow:visible}
+#nMore .menu-glyph line{stroke:currentColor;stroke-width:1.9;stroke-linecap:round;transform-box:fill-box;transform-origin:center;transition:transform .38s var(--spring2),opacity .2s ease}
+#nMore.menu-active .menu-glyph .mid{opacity:0;transform:scaleX(.2)}
+#nMore.menu-active .menu-glyph .top{transform:translateY(5px) rotate(45deg)}
+#nMore.menu-active .menu-glyph .bottom{transform:translateY(-5px) rotate(-45deg)}
 /* press feedback & springs */
 .tab.on .ic{animation:icPop .55s var(--spring2)}
 #nPin.on .ic{animation:icPop .55s var(--spring2)}
@@ -387,6 +404,8 @@ html.reduce .scroll.play .wc,html.reduce .scroll.play .stat{animation:none!impor
 .n-body .att-blk:active{transform:scale(.965);transition-duration:.12s}
 .n-body .att-blk img{display:block;width:100%;height:auto;max-height:64vh;min-height:90px;object-fit:cover;opacity:0;transition:opacity .5s ease}
 .n-body .att-blk img.ok{opacity:1}
+.n-body .att-blk img[data-load-error="1"]{opacity:1;min-height:90px;background:var(--surface2,rgba(128,128,128,.18));object-fit:contain}
+.n-body .att-blk.att-load-error{outline:1px dashed var(--fg2,rgba(128,128,128,.45))}
 .n-body .att-blk.file{display:flex;align-items:center;gap:12px;padding:14px 22px}
 .n-body .att-blk.file .ic{color:var(--accent);width:28px;height:28px;stroke-width:1.6}
 .n-body .att-blk .an{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:15px;color:var(--fg)}
@@ -458,7 +477,7 @@ button:focus-visible,[role="button"]:focus-visible{outline:2px solid color-mix(i
 .page.recede,.page.under{transition:transform .56s var(--ios-ease),border-radius .56s var(--ios-ease),filter .56s ease}
 .scroll{overscroll-behavior:contain;scrollbar-width:none}
 .scroll::-webkit-scrollbar{display:none}
-.topbar{padding-top:calc(env(safe-area-inset-top,0px) + 18px)}
+.topbar{padding-top:calc(env(safe-area-inset-top,0px) + 12px)}
 .nbar{padding-top:max(env(safe-area-inset-top,0px),0px)}
 /* passcode: composed, quiet, system-like feedback instead of playful bouncing */
 .pw{transition:opacity .28s ease}
@@ -591,7 +610,7 @@ html.reduce .pw *,html.reduce .pw{animation:none!important;transition-duration:.
     <div class="topbar">
       <button class="glass btn circle" id="nBack" aria-label="رجوع"><svg class="ic" style="stroke-width:2.4"><use href="#i-back"/></svg></button>
       <span class="grow"></span>
-      <button class="glass btn circle" id="nMore" aria-label="المزيد"><svg class="ic"><use href="#i-more"/></svg></button>
+      <button class="glass btn circle" id="nMore" aria-label="القائمة"><svg class="menu-glyph" viewBox="0 0 24 24" aria-hidden="true"><line class="top" x1="4" y1="7" x2="20" y2="7"/><line class="mid" x1="4" y1="12" x2="20" y2="12"/><line class="bottom" x1="4" y1="17" x2="20" y2="17"/></svg></button>
     </div>
     <div class="nbar">
       <div class="glass format-ribbon is-hidden" id="formatRibbon" role="toolbar" aria-label="شريط تنسيق النص" dir="rtl" aria-hidden="true"></div>
@@ -680,11 +699,31 @@ function inF(n,id){return id==='all'||(id==='pinned'?n.pinned:id==='tasks'?taskI
 function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;$('app').appendChild(t);setTimeout(function(){t.classList.add('in')},12);setTimeout(function(){t.classList.remove('in');setTimeout(function(){t.remove()},500)},1900)}
 
 /* ---------- files (IndexedDB, any size/type) ---------- */
-var DB=null,urls={};
-function idb(){return new Promise(function(res){if(DB)return res(DB);try{var r=indexedDB.open('inote-files',1);r.onupgradeneeded=function(){r.result.createObjectStore('f')};r.onsuccess=function(){DB=r.result;res(DB)};r.onerror=function(){res(null)}}catch(e){res(null)}})}
-function tx(mode,fn){return idb().then(function(d){return new Promise(function(res){if(!d)return res(null);try{var t=d.transaction('f',mode),r=fn(t.objectStore('f'));t.oncomplete=function(){res(r.result===undefined?true:r.result)};t.onerror=t.onabort=function(){res(null)}}catch(e){res(null)}})})}
+var DB=null,urls={},FILE_ERROR='';
+/* Open the attachment database without changing or deleting existing user files. */
+function idb(){return new Promise(function(res){if(DB)return res(DB);try{if(!window.indexedDB){FILE_ERROR='المتصفح لا يتيح IndexedDB';return res(null)}var r=indexedDB.open('inote-files',2);r.onupgradeneeded=function(){try{if(!r.result.objectStoreNames.contains('f'))r.result.createObjectStore('f')}catch(e){FILE_ERROR=e&&e.message||'تعذّر تجهيز قاعدة الملفات'}};r.onsuccess=function(){DB=r.result;DB.onversionchange=function(){try{DB.close()}catch(e){}DB=null};res(DB)};r.onerror=function(){FILE_ERROR=r.error&&r.error.name==='QuotaExceededError'?'مساحة تخزين الموقع ممتلئة':(r.error&&r.error.message)||'تعذّر فتح قاعدة الملفات';console.error('IndexedDB open failed:',r.error);res(null)};r.onblocked=function(){FILE_ERROR='قاعدة الملفات مشغولة في تبويب آخر؛ أغلق تبويبات الموقع وافتحه مجددًا';console.error('IndexedDB upgrade blocked')}}catch(e){FILE_ERROR=(e&&e.message)||'تعذّر الوصول إلى تخزين المتصفح';console.error('IndexedDB unavailable:',e);res(null)}})}
+function tx(mode,fn){return idb().then(function(d){return new Promise(function(res){if(!d)return res(null);var t,req,result,settled=false;function done(v){if(!settled){settled=true;res(v)}}try{t=d.transaction(['f'],mode);req=fn(t.objectStore('f'));if(req&&typeof req==='object'&&('onsuccess' in req)){req.onsuccess=function(){result=req.result};req.onerror=function(){FILE_ERROR=(req.error&&req.error.name==='QuotaExceededError')?'مساحة تخزين الموقع ممتلئة':(req.error&&req.error.message)||'رفضت قاعدة البيانات حفظ الملف';console.error('IndexedDB request failed:',req.error)}}t.oncomplete=function(){done(result===undefined?true:result)};t.onerror=function(){FILE_ERROR=(t.error&&t.error.name==='QuotaExceededError')?'مساحة تخزين الموقع ممتلئة':(t.error&&t.error.message)||'فشلت معاملة تخزين الملف';console.error('IndexedDB transaction failed:',t.error);done(null)};t.onabort=function(){if(!FILE_ERROR)FILE_ERROR=(t.error&&t.error.message)||'أُلغيت عملية تخزين الملف';console.error('IndexedDB transaction aborted:',t.error);done(null)}}catch(e){FILE_ERROR=(e&&e.name==='QuotaExceededError')?'مساحة تخزين الموقع ممتلئة':(e&&e.message)||'تعذّر بدء عملية التخزين';console.error('IndexedDB transaction setup failed:',e);done(null)}})})}
 function fput(id,b){return tx('readwrite',function(s){return s.put(b,id)})}
-function fget(id){return tx('readonly',function(s){return s.get(id)})}
+function fget(id){
+  /* Read the stored Blob directly from the IDB request. Do not route Blob
+     reads through the generic transaction helper: some Android WebViews can
+     complete the transaction without the helper preserving the request value. */
+  return idb().then(function(db){
+    if(!db)throw new Error(FILE_ERROR||'تعذّر فتح قاعدة تخزين الصور');
+    return new Promise(function(resolve,reject){
+      var t,req,finished=false;
+      function fail(err){if(finished)return;finished=true;FILE_ERROR=(err&&err.message)||'تعذّر استرجاع الصورة من التخزين';reject(new Error(FILE_ERROR))}
+      try{
+        if(!db.objectStoreNames.contains('f'))throw new Error('قاعدة تخزين الصور غير موجودة');
+        t=db.transaction(['f'],'readonly');req=t.objectStore('f').get(id);
+        req.onsuccess=function(){if(finished)return;finished=true;resolve(req.result===undefined?null:req.result)};
+        req.onerror=function(){fail(req.error||new Error('فشل قراءة ملف الصورة'))};
+        t.onerror=function(){fail(t.error||new Error('فشلت قراءة الصورة'))};
+        t.onabort=function(){fail(t.error||new Error('أُلغيت قراءة الصورة'))};
+      }catch(e){fail(e)}
+    });
+  });
+}
 function fdel(id){return tx('readwrite',function(s){return s.delete(id)})}
 function purge(n){if(n)(n.atts||[]).forEach(function(a){fdel(a.id)})}
 function fsize(b){return b<1024?b+' B':b<1048576?Math.round(b/1024)+' KB':b<1073741824?(b/1048576).toFixed(1)+' MB':(b/1073741824).toFixed(2)+' GB'}
@@ -699,56 +738,196 @@ function attEl(a){
 /* the saved HTML never carries blob: URLs or layout leftovers */
 function serialize(){
   var c=ED().cloneNode(true);
-  qa('.att-blk',c).forEach(function(b){b.classList.remove('sq');b.removeAttribute('style');var im=b.querySelector('img');if(im){im.removeAttribute('src');im.removeAttribute('style');im.removeAttribute('class')}});
+  qa('.att-blk',c).forEach(function(b){
+    b.classList.remove('sq','att-load-error');
+    b.removeAttribute('style');b.removeAttribute('title');
+    var im=b.querySelector('img');
+    if(im){
+      /* data-fid is the permanent identity; blob URLs and load-state classes
+         are temporary and must never be serialized into the note. */
+      if(!im.getAttribute('data-fid')&&b.getAttribute('data-fid'))im.setAttribute('data-fid',b.getAttribute('data-fid'));
+      im.removeAttribute('src');im.removeAttribute('style');im.removeAttribute('class');im.removeAttribute('data-load-error');
+    }
+  });
   return c.innerHTML;
 }
 function hydrate(){
   qa('.att-blk img[data-fid]',ED()).forEach(function(im){
     var id=im.getAttribute('data-fid');
-    var put=function(u){im.onload=function(){im.classList.add('ok');sqSoon()};im.src=u};
+    /* A stale/revoked object URL must never leave the image hidden as a skeleton. */
+    var put=function(u){
+      im.onload=function(){im.classList.add('ok');im.removeAttribute('data-load-error');sqSoon()};
+      im.onerror=function(){
+        im.classList.add('ok');im.setAttribute('data-load-error','1');
+        var blk=im.closest('.att-blk');if(blk){blk.classList.add('att-load-error');blk.setAttribute('title','تعذّر عرض الصورة؛ أعد إرفاقها إذا كان ملفها غير موجود في التخزين')}
+        sqSoon();
+      };
+      if(im.getAttribute('src')!==u)im.src=u;
+      else if(im.complete&&im.naturalWidth>0){im.classList.add('ok');sqSoon()}
+    };
     if(urls[id])put(urls[id]);
-    else fget(id).then(function(b){if(b&&b!==true){urls[id]=URL.createObjectURL(b);put(urls[id])}});
+    else fget(id).then(function(b){
+      if(b&&b!==true&&typeof b.size==='number'&&b.size>0){try{urls[id]=URL.createObjectURL(b);put(urls[id])}catch(err){console.error('iNote image restore failed:',err);im.classList.add('ok');im.setAttribute('data-load-error','1')}}
+      else {im.classList.add('ok');im.setAttribute('data-load-error','1');var blk=im.closest('.att-blk');if(blk){blk.classList.add('att-load-error');blk.setAttribute('title','ملف الصورة غير موجود في التخزين المحلي؛ لم يُحذف المرفق')} }
+    }).catch(function(err){console.error('iNote image restore failed:',err);im.classList.add('ok');im.setAttribute('data-load-error','1')});
   });
 }
 /* old notes kept attachments in a separate grid: fold them into the body once */
 function renderAtts(){
   var n=byId(S.open);if(!n)return;
-  var miss=(n.atts||[]).filter(function(a){return String(n.body||'').indexOf('data-fid="'+a.id+'"')<0});
-  if(miss.length){
-    var ed=ED();miss.forEach(function(a){ed.appendChild(attEl(a))});
-    var tail=document.createElement('div');tail.innerHTML='<br>';ed.appendChild(tail);
-    n.body=serialize();save();
-  }
-  hydrate();
+  /* A damaged attachment record must never prevent the note page from opening. */
+  if(!Array.isArray(n.atts))n.atts=[];
+  try{
+    var body=String(n.body||''),miss=n.atts.filter(function(a){return a&&a.id&&body.indexOf('data-fid="'+a.id+'"')<0});
+    if(miss.length){
+      var ed=ED();miss.forEach(function(a){try{ed.appendChild(attEl(a))}catch(err){console.error('iNote attachment render failed:',err)}});
+      var tail=document.createElement('div');tail.innerHTML='<br>';ed.appendChild(tail);
+      n.body=serialize();save();
+    }
+  }catch(err){console.error('iNote attachment reconciliation failed:',err)}
+  try{hydrate()}catch(err){console.error('iNote attachment hydration failed:',err)}
 }
 function insertAtt(a){
-  var frag=document.createDocumentFragment(),after=document.createElement('div');after.innerHTML='<br>';
-  frag.appendChild(attEl(a));frag.appendChild(after);insertNodeAtLine(frag);setCaret(after,0);
+  var ed=ED(),r=curRange();
+  if(!r||!ed.contains(r.startContainer)){
+    if(savedRange&&ed.contains(savedRange.startContainer)&&ed.contains(savedRange.endContainer)){
+      try{var sel=window.getSelection();sel.removeAllRanges();sel.addRange(savedRange);r=curRange()}catch(_){r=null}
+    }
+  }
+  var block=document.createElement('div');block.className='att-line';
+  block.appendChild(attEl(a));
+  var after=document.createElement('div');after.setAttribute('data-after-attachment','1');after.appendChild(document.createElement('br'));
+  var frag=document.createDocumentFragment();frag.appendChild(block);frag.appendChild(after);
+  if(r&&ed.contains(r.startContainer)){
+    try{
+      var node=r.startContainer,offset=r.startOffset;
+      if(node.nodeType===3){
+        var parent=node.parentNode;
+        if(parent&&parent!==ed&&parent.childNodes.length===1&&/^(P|DIV)$/.test(parent.tagName)){
+          var tail=node.splitText(offset);var tailBlock=document.createElement(parent.tagName.toLowerCase());
+          while(tail.nextSibling)tailBlock.appendChild(tail.nextSibling);
+          if(tail.parentNode)tail.parentNode.removeChild(tail);
+          if(tail.length)tailBlock.insertBefore(tail,tailBlock.firstChild);
+          parent.parentNode.insertBefore(frag,parent.nextSibling);
+          if(tailBlock.textContent||tailBlock.querySelector('br,img,input'))parent.parentNode.insertBefore(tailBlock,after.nextSibling);
+        }else{
+          r.collapse(false);r.insertNode(frag);
+        }
+      }else{r.collapse(false);r.insertNode(frag)}
+    }catch(err){console.error('Image insertion at caret failed:',err);ed.appendChild(frag)}
+  }else ed.appendChild(frag);
+  try{setCaret(after,0);saveRange()}catch(_){ }
 }
+
+function prepareAttachment(f){
+  return new Promise(function(resolve){
+    var original={blob:f,name:f.name||'ملف',type:f.type||'',size:f.size};
+    /* Compress large photos before IndexedDB storage to avoid Android browser quota failures. */
+    if(!/^image\//.test(f.type||'')||f.size<500*1024||!/^image\/(jpeg|png|webp|gif|bmp)$/i.test(f.type||'')){resolve(original);return}
+    var finish=function(bitmap){
+      try{
+        var w=bitmap.width||bitmap.naturalWidth,h=bitmap.height||bitmap.naturalHeight;
+        if(!w||!h){if(bitmap.close)bitmap.close();resolve(original);return}
+        var scale=Math.min(1,1920/Math.max(w,h)),cw=Math.max(1,Math.round(w*scale)),ch=Math.max(1,Math.round(h*scale));
+        var canvas=document.createElement('canvas');canvas.width=cw;canvas.height=ch;
+        var ctx=canvas.getContext('2d');if(!ctx){if(bitmap.close)bitmap.close();resolve(original);return}
+        ctx.drawImage(bitmap,0,0,cw,ch);if(bitmap.close)bitmap.close();
+        canvas.toBlob(function(blob){
+          if(blob&&blob.size>0&&blob.size<f.size){resolve({blob:blob,name:(f.name||'صورة').replace(/\.[^.]+$/,'')+'.jpg',type:'image/jpeg',size:blob.size})}
+          else resolve(original);
+        },'image/jpeg',0.82);
+      }catch(e){resolve(original)}
+    };
+    if(window.createImageBitmap){createImageBitmap(f).then(finish).catch(function(){resolve(original)})}
+    else{
+      try{var u=URL.createObjectURL(f),im=new Image();im.onload=function(){URL.revokeObjectURL(u);finish(im)};im.onerror=function(){URL.revokeObjectURL(u);resolve(original)};im.src=u}
+      catch(e){resolve(original)}
+    }
+  });
+}
+/* ---------- rebuilt image-only attachment pipeline ---------- */
+function putImageBlob(id,blob){
+  return idb().then(function(db){
+    if(!db)throw new Error(FILE_ERROR||'تعذّر فتح قاعدة تخزين الصور');
+    return new Promise(function(resolve,reject){
+      var t,req,finished=false;
+      function fail(err){if(finished)return;finished=true;FILE_ERROR=(err&&err.name==='QuotaExceededError')?'مساحة تخزين الموقع ممتلئة':(err&&err.message)||'فشل حفظ الصورة في قاعدة البيانات';reject(new Error(FILE_ERROR))}
+      try{
+        if(!db.objectStoreNames.contains('f'))throw new Error('قاعدة تخزين الصور لا تحتوي على مخزن الملفات');
+        t=db.transaction(['f'],'readwrite');
+        req=t.objectStore('f').put(blob,id);
+        req.onerror=function(){fail(req.error||new Error('رفضت قاعدة البيانات حفظ الصورة'))};
+        t.oncomplete=function(){if(finished)return;finished=true;resolve(true)};
+        t.onerror=function(){fail(t.error||new Error('فشلت معاملة حفظ الصورة'))};
+        t.onabort=function(){fail(t.error||new Error('أُلغيت معاملة حفظ الصورة'))};
+      }catch(e){fail(e)}
+    });
+  });
+}
+function addImages(files){
+  var n=byId(S.open),list=Array.prototype.slice.call(files||[]).filter(function(f){return f&&(/^image\//i.test(f.type||'')||/\.(avif|bmp|gif|heic|heif|jpe?g|png|svg|webp)$/i.test(f.name||''))});
+  if(!n){toast('افتح الملاحظة أولًا ثم اختر إرفاق صورة');return}
+  if(!list.length){toast('لم يتم اختيار صورة مدعومة؛ اختر صورة من المعرض');return}
+  n.atts=n.atts||[];
+  var added=[],failed=[];
+  var chain=Promise.resolve();
+  list.forEach(function(file,index){chain=chain.then(function(){
+    return prepareAttachment(file).then(function(prepared){
+      var id='img_'+Date.now().toString(36)+'_'+index+'_'+Math.random().toString(36).slice(2,10);
+      return putImageBlob(id,prepared.blob).then(function(){
+        var inferred=(/\.png$/i.test(file.name||'')?'image/png':/\.webp$/i.test(file.name||'')?'image/webp':/\.gif$/i.test(file.name||'')?'image/gif':/\.svg$/i.test(file.name||'')?'image/svg+xml':'image/jpeg');var a={id:id,name:prepared.name||file.name||'صورة',type:prepared.type||file.type||inferred,size:prepared.size||file.size||0};
+        added.push(a);try{urls[id]=URL.createObjectURL(prepared.blob)}catch(e){}
+      });
+    }).catch(function(err){failed.push({name:file.name||'صورة',message:(err&&err.message)||FILE_ERROR||'فشل حفظ الصورة'});console.error('iNote image save failed:',err)});
+  })});
+  chain.then(function(){
+    if(!added.length){toast('ما انحفظت الصورة: '+(failed[0]&&failed[0].message||FILE_ERROR||'تعذّر حفظها'));return}
+    added.forEach(function(a){n.atts.push(a)});
+    try{
+      if(S.open===n.id){restoreRange();added.forEach(function(a){insertAtt(a)});afterFmt();hydrate()}
+      else{n.body=String(n.body||'');added.forEach(function(a){var d=attEl(a);var tmp=document.createElement('div');tmp.appendChild(d);n.body+=tmp.innerHTML+'<div><br></div>'})}
+    }catch(e){
+      console.error('iNote image insertion failed:',e);
+      if(S.open===n.id){added.forEach(function(a){if(!ED().querySelector('[data-fid="'+a.id+'"]'))ED().appendChild(attEl(a))});touchNote();hydrate()}
+    }
+    /* Persist the live editor HTML before leaving or reconciling attachment IDs. */
+    if(added.length&&S.open===n.id){try{touchNote()}catch(e){console.error('iNote image body sync failed:',e);n.body=serialize();save()}}
+    n.ts=Date.now();save();flushNow();stats();
+    if(failed.length)toast('تعذّر حفظ بعض الصور: '+failed.length+'؛ السبب: '+failed[0].message);
+  }).catch(function(err){FILE_ERROR=(err&&err.message)||FILE_ERROR||'خطأ غير معروف';console.error('iNote image pipeline failed:',err);toast('فشل حفظ الصورة: '+FILE_ERROR)});
+}
+
 function addFiles(files){
   var n=byId(S.open);if(!n||!files||!files.length)return;n.atts=n.atts||[];
-  var list=Array.prototype.slice.call(files),res=[],bad=0,done=0;
-  if(!window.indexedDB){toast('التخزين المحلي غير متاح في هذا المتصفح');return}
-  toast('جارٍ حفظ '+list.length+' مرفق…');
+  var list=Array.prototype.slice.call(files),res=[],bad=0;
+  if(!window.indexedDB){toast('تعذّر استخدام تخزين الملفات في هذا السياق؛ جرّب تحديث الصفحة.');return}
+  toast('جارٍ تجهيز '+list.length+' مرفق…');
   var persist=Promise.resolve();
   try{if(navigator.storage&&navigator.storage.persist)persist=navigator.storage.persist().catch(function(){return false})}catch(_){}
   persist.then(function(){
     return list.reduce(function(chain,f,i){return chain.then(function(){
-      var id='f'+Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,8);
-      return fput(id,f).then(function(ok){done++;if(ok){res[i]={id:id,name:f.name||'ملف',type:f.type||'',size:f.size};try{urls[id]=URL.createObjectURL(f)}catch(_){} }else bad++},function(){done++;bad++});
+      return prepareAttachment(f).then(function(prepared){
+        var id='f'+Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,8);
+        return fput(id,prepared.blob).then(function(ok){
+          if(ok){res[i]={id:id,name:prepared.name,type:prepared.type||'',size:prepared.size};try{urls[id]=URL.createObjectURL(prepared.blob)}catch(_){}}
+          else bad++;
+        },function(){bad++});
+      }).catch(function(){bad++});
     })},Promise.resolve());
   }).then(function(){
     var got=res.filter(Boolean);got.forEach(function(a){n.atts.push(a)});
     if(got.length&&S.open===n.id){
       try{restoreRange();got.forEach(function(a){insertAtt(a)});afterFmt();hydrate()}
       catch(err){console.error('Attachment insert error:',err);
-        /* Never silently lose a saved file if the saved caret became stale. */
-        got.forEach(function(a){if(!ED().querySelector('[data-fid=+a.id+]'))ED().appendChild(attEl(a))});
-        touchNote();hydrate();toast('حُفظت المرفقات وأُضيفت إلى نهاية الملاحظة')}
+        got.forEach(function(a){if(!ED().querySelector('[data-fid="'+a.id+'"]'))ED().appendChild(attEl(a))});
+        touchNote();hydrate();toast('تم حفظ المرفق وإضافته لنهاية الملاحظة')}
     }
-    n.ts=Date.now();save();stats();
-    toast(bad?'حُفظ '+got.length+' وتعذّر حفظ '+bad+' بسبب حدود التخزين المتاحة في الجهاز':'تمت إضافة '+got.length+(got.length===1?' مرفق':' مرفقات'));
-  }).catch(function(err){console.error('Attachment save error:',err);toast('تعذّر الحفظ؛ قد تكون مساحة المتصفح ممتلئة أو التخزين محظورًا')});
+    /* Keep file blocks in n.body before leaveNote reconciles n.atts. */
+    if(got.length&&S.open===n.id){try{touchNote()}catch(e){console.error('iNote file body sync failed:',e);n.body=serialize();save()}}
+    n.ts=Date.now();save();flushNow();stats();
+    if(bad)toast(got.length?'أُضيف '+got.length+' وتعذّر حفظ '+bad+' ملف':'فشل حفظ الملف: '+(FILE_ERROR||'سبب غير معروف؛ أعد تحميل الصفحة وجرب مرة أخرى'));
+    else toast('تمت إضافة '+got.length+(got.length===1?' مرفق':' مرفقات'));
+  }).catch(function(err){FILE_ERROR=(err&&err.message)||FILE_ERROR||'خطأ غير معروف';console.error('Attachment save error:',err);toast('فشل حفظ الصورة: '+FILE_ERROR)});
 }
 function attMenu(el){
   var id=el.getAttribute('data-fid');if(!id)return;
@@ -759,11 +938,13 @@ function attMenu(el){
   ]);
 }
 function reconcileAtts(n){
-  var b=String(n.body||'');
-  n.atts=(n.atts||[]).filter(function(a){
-    if(b.indexOf('data-fid="'+a.id+'"')>-1)return true;
-    fdel(a.id);if(urls[a.id]){URL.revokeObjectURL(urls[a.id]);delete urls[a.id]}return false;
-  });
+  /* Images are durable note data, not disposable UI nodes. Never delete their
+     IndexedDB blobs merely because an editor snapshot temporarily omits a node. */
+  if(!n)return;
+  if(!Array.isArray(n.atts))n.atts=[];
+  n.atts=n.atts.filter(function(a){return !!(a&&a.id)});
+  /* Keep the serialized HTML as the source of truth for each image's exact
+     position. Missing nodes are restored by renderAtts without deleting blobs. */
 }
 function openAtt(id){
   var n=byId(S.open),a=n&&(n.atts||[]).filter(function(x){return x.id===id})[0];if(!a)return;
@@ -1181,7 +1362,8 @@ var menu=$('menu'),scrim=$('scrim'),menuG=null,menuActs=[];
 function openMenu(anchor,items){
   menuActs=items.map(function(i){return i.act});
   menu.innerHTML=items.map(function(i,k){return '<button class="mi" data-m="'+k+'" style="--k:'+k+'">'+(i.dot?'<span class="dot" style="background:'+i.dot+'"></span>':ic(i.icon))+'<span>'+i.label+'</span>'+(i.on?ic('check','ck'):'')+'</button>'}).join('');
-  menu.style.display='block';scrim.style.display='block';
+  menu.style.display='block';scrim.style.display='block';scrim.classList.add('open');
+  if(anchor&&anchor.id==='nMore'){anchor.classList.add('menu-active');anchor.innerHTML='<svg class="menu-glyph" viewBox="0 0 24 24" aria-hidden="true"><line class="top" x1="4" y1="7" x2="20" y2="7"/><line class="mid" x1="4" y1="12" x2="20" y2="12"/><line class="bottom" x1="4" y1="17" x2="20" y2="17"/></svg>'}
   var r=anchor.getBoundingClientRect(),w=menu.offsetWidth,h=menu.offsetHeight;
   var left=Math.max(12,Math.min(window.innerWidth-w-12,r.left));
   var roomBelow=window.innerHeight-r.bottom-12,roomAbove=r.top-12;
@@ -1196,7 +1378,7 @@ function openMenu(anchor,items){
   if(!menuG)menuG=glass(menu,{r:26,disp:.26,bz:.34,blur:1.7}); else {menuG.w=0;menuG.build()}
   void menu.offsetWidth;menu.classList.add('open');
 }
-function closeMenu(){menu.classList.remove('open');scrim.style.display='none';setTimeout(function(){if(!menu.classList.contains('open'))menu.style.display='none'},320)}
+function closeMenu(){menu.classList.remove('open');scrim.classList.remove('open');var nb=$('nMore');if(nb&&nb.classList.contains('menu-active')){nb.classList.remove('menu-active');nb.innerHTML='<svg class="menu-glyph" viewBox="0 0 24 24" aria-hidden="true"><line class="top" x1="4" y1="7" x2="20" y2="7"/><line class="mid" x1="4" y1="12" x2="20" y2="12"/><line class="bottom" x1="4" y1="17" x2="20" y2="17"/></svg>'}setTimeout(function(){if(!menu.classList.contains('open')){menu.style.display='none';scrim.style.display='none'}},320)}
 scrim.addEventListener('click',closeMenu);
 menu.addEventListener('click',function(e){var b=e.target.closest('.mi');if(!b)return;var a=menuActs[+b.dataset.m];closeMenu();if(a)a()});
 
@@ -1229,11 +1411,20 @@ function stats(){
 function grow(){var b=$('nBody');b.style.minHeight=Math.round(window.innerHeight*.46)+'px'}
 function pinState(){var n=byId(S.open);$('nPin').classList.toggle('on',!!(n&&n.pinned))}
 function openNote(id,focusNew,rect){
-  var n=byId(id);if(!n)return;S.open=id;savedRange=null;Object.keys(urls).forEach(function(k){URL.revokeObjectURL(urls[k])});urls={};
-  $('nTitle').value=n.title;$('nBody').innerHTML=bodyHTML(n.body);$('nDate').textContent=whenFull(n.ts);stats();renderAtts();
-  pinState();push($('pNote'),rect);grow();
+  var n=byId(id);if(!n)return false;
+  /* Open the page first; attachment work is secondary and cannot block navigation. */
+  S.open=n.id;savedRange=null;
+  Object.keys(urls).forEach(function(k){try{URL.revokeObjectURL(urls[k])}catch(_){}});urls={};
+  try{$('nTitle').value=String(n.title||'')}catch(err){console.error('iNote title restore failed:',err)}
+  try{$('nBody').innerHTML=bodyHTML(n.body)}catch(err){console.error('iNote body restore failed:',err);$('nBody').textContent=String(n.body||'')}
+  try{$('nDate').textContent=whenFull(n.ts||Date.now())}catch(_){$('nDate').textContent=''}
+  push($('pNote'),rect);grow();
   if(!rect){var sc=$('pNote').querySelector('.scroll');if(sc)sc.scrollTop=0}
+  try{stats()}catch(err){console.error('iNote note stats failed:',err)}
+  try{renderAtts()}catch(err){console.error('iNote attachment setup failed:',err)}
+  try{pinState()}catch(err){console.error('iNote pin state failed:',err)}
   if(focusNew)setTimeout(function(){$('nTitle').focus()},rect&&!reducedMotion()?460:380);
+  return true;
 }
 function newNote(folder,rect){
   var n={id:'n'+Date.now(),title:'',body:'',folder:folder||'personal',pinned:false,ts:Date.now(),created:Date.now()};
@@ -1245,25 +1436,51 @@ function touchNote(){
   $('nDate').textContent=whenFull(n.ts);stats();save();
 }
 function leaveNote(viaGesture){
-  var id=S.open,n=byId(id);
-  if(n)reconcileAtts(n);
-  if(n&&!n.title.trim()&&!plainBody(n.body)&&!(n.atts&&n.atts.length)){notes=notes.filter(function(x){return x.id!==n.id});save()}
-  S.open=null;renderAll();if(stack.indexOf($('pFolder'))>-1)renderFolderList();
-  var rect=null;
-  if(viaGesture!==true&&byId(id)){
-    var below=stack[stack.length-2];
-    if(below&&(below.id==='pFolder'||S.tab==='notes')){
-      var host=below.id==='pFolder'?$('fList'):$('sNotes');
-      var el=host.querySelector('[data-open="'+id+'"]');
-      if(el){var rr=el.getBoundingClientRect();if(rr.width>0&&rr.bottom>0&&rr.top<window.innerHeight)rect=rr}
-    }
+  var id=S.open,n=byId(id),rect=null;
+  /* Closing must never depend on editor serialization or attachment cleanup succeeding. */
+  if(n){
+    try{
+      n.title=String($('nTitle').value||'');
+      try{n.body=serialize()}catch(err){console.error('iNote note body save failed:',err)}
+      n.ts=Date.now();
+      try{$('nDate').textContent=whenFull(n.ts)}catch(_){}
+      try{save();flushNow()}catch(err){console.error('iNote note save failed:',err)}
+    }catch(err){console.error('iNote note sync failed:',err)}
+    try{reconcileAtts(n)}catch(err){console.error('iNote attachment cleanup failed:',err)}
   }
-  pop(rect);
+  /* Empty-note cleanup is best-effort; it must not trap the user on the editor. */
+  try{
+    if(n&&!String(n.title||'').trim()&&!plainBody(n.body)&&!(n.atts&&n.atts.length)){
+      notes=notes.filter(function(x){return x.id!==n.id});save();
+    }
+  }catch(err){console.error('iNote empty-note cleanup failed:',err)}
+  S.open=null;
+  try{renderAll()}catch(err){console.error('iNote list refresh failed:',err)}
+  try{if(stack.indexOf($('pFolder'))>-1)renderFolderList()}catch(err){console.error('iNote folder refresh failed:',err)}
+  try{
+    if(viaGesture!==true&&byId(id)){
+      var below=stack[stack.length-2];
+      if(below&&(below.id==='pFolder'||S.tab==='notes')){
+        var host=below.id==='pFolder'?$('fList'):$('sNotes');
+        var el=host&&host.querySelector('[data-open="'+id+'"]');
+        if(el){var rr=el.getBoundingClientRect();if(rr.width>0&&rr.bottom>0&&rr.top<window.innerHeight)rect=rr}
+      }
+    }
+  }catch(err){console.error('iNote close transition setup failed:',err)}
+  /* Keep the existing pop/animation path, but guarantee it is reached. */
+  try{pop(rect)}catch(err){
+    console.error('iNote page close failed:',err);
+    var page=$('pNote'),below=stack.length>1?stack[stack.length-2]:null;
+    if(stack.length>1)stack.pop();
+    if(page){if(page._finish)try{page._finish()}catch(_){}page.classList.remove('show');page.style.display='none';page.style.transform='';page.style.transition=''}
+    if(below){below.classList.remove('under','recede');below.style.transform='';below.style.transition=''}
+  }
 }
 $('nTitle').addEventListener('input',touchNote);
 $('nTitle').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();$('nBody').focus()}});
 $('nBody').addEventListener('input',function(){touchNote();grow()});
 $('nBody').addEventListener('change',touchNote);
+$('nBody').addEventListener('blur',function(){try{touchNote();flushNow()}catch(e){console.error('iNote editor blur save failed:',e)}},true);
 $('nBack').addEventListener('click',function(){leaveNote()});
 $('nDone').addEventListener('click',function(){if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();leaveNote()});
 $('nPin').addEventListener('click',function(){var n=byId(S.open);if(!n)return;n.pinned=!n.pinned;save();pinState()});
@@ -1455,7 +1672,7 @@ document.addEventListener('selectionchange',function(){
 });
 function qst(cmd){try{return document.queryCommandState(cmd)}catch(_){return false}}
 function formatItems(){return [
- {label:'إرفاق صورة',svg:'<rect x="3.5" y="4.5" width="17" height="15" rx="3.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/>',act:function(){saveRange();var p=$('fImg');try{if(p.showPicker)p.showPicker();else p.click()}catch(e){try{p.click()}catch(_){toast('تعذّر فتح اختيار الصور؛ حدّث الصفحة وجرب مرة أخرى')}}}},
+ {label:'إرفاق صورة',svg:'<rect x="3.5" y="4.5" width="17" height="15" rx="3.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/>',act:function(){saveRange();var p=$('fImg');try{p.click()}catch(e){try{if(p.showPicker)p.showPicker()}catch(_){toast('تعذّر فتح اختيار الصور؛ اضغط إرفاق صورة مرة أخرى')}}}},
  {label:'إرفاق ملف',svg:'<path d="m19 11.5-7 7a4.5 4.5 0 0 1-6.4-6.4l7.6-7.6a3 3 0 0 1 4.2 4.2l-7.5 7.5a1.5 1.5 0 0 1-2.1-2.1l6.8-6.8"/>',act:function(){saveRange();var p=$('fAny');try{if(p.showPicker)p.showPicker();else p.click()}catch(e){try{p.click()}catch(_){toast('تعذّر فتح اختيار الملفات؛ حدّث الصفحة وجرب مرة أخرى')}}}},
  {label:'عريض',svg:'<path d="M7 5h6a3.5 3.5 0 0 1 0 7H7z"/><path d="M7 12h7a3.5 3.5 0 0 1 0 7H7z"/>',act:function(){richCmd('bold')},chk:function(){return qst('bold')}},
  {label:'مائل',svg:'<path d="M14 4h6M4 20h6M15 4 9 20"/>',act:function(){richCmd('italic')},chk:function(){return qst('italic')}},
@@ -1706,11 +1923,18 @@ function removeLock(n){
 
 /* ---------- delegated clicks ---------- */
 $('app').addEventListener('click',function(e){
-  var t=e.target.closest('[data-open],[data-trash],[data-folder],[data-sw],[data-seg] button,[data-acc],[data-act],.att-blk');if(!t)return;
-  if(t.classList.contains('att-blk')){attMenu(t)}
-  else if(t.dataset.open){tryOpen(t.dataset.open,t.getBoundingClientRect())}
-  else if(t.dataset.trash){trashMenu(t)}
-  else if(t.dataset.act){doAct(t.dataset.act)}
+  /* A note card must take priority over any nested attachment preview. Only
+     attachment blocks inside the open editor should open the attachment menu. */
+  var card=e.target.closest('[data-open],[data-trash]');
+  var att=e.target.closest('.att-blk');
+  if(att && att.closest('#nBody')){attMenu(att);return}
+  if(card){
+    if(card.dataset.open){try{tryOpen(card.dataset.open,card.getBoundingClientRect())}catch(err){console.error('iNote open note failed:',err);toast('تعذّر فتح الملاحظة. جرّب مرة أخرى.')} }
+    else if(card.dataset.trash){trashMenu(card)}
+    return;
+  }
+  var t=e.target.closest('[data-folder],[data-sw],[data-seg] button,[data-acc],[data-act]');if(!t)return;
+  if(t.dataset.act){doAct(t.dataset.act)}
   else if(t.dataset.folder){openFolder(t.dataset.folder)}
   else if(t.dataset.acc){setAccent(t.dataset.acc)}
   else if(t.dataset.sw){var k=t.dataset.sw;cfg[k]=!cfg[k];saveCfg();applyCfg();syncSettings(true)}
@@ -1747,7 +1971,7 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){var
     this.value='';
     if(!f.length)return;
     if(!S.open){toast('افتح ملاحظة أولاً، ثم أرفق الصور والملفات');return}
-    try{addFiles(f)}catch(err){console.error('Attachment error:',err);toast('تعذّرت إضافة المرفق. تحقق من صلاحية التخزين ثم أعد المحاولة')}
+    try{if(id==='fImg')addImages(f);else addFiles(f)}catch(err){console.error('Attachment error:',err);toast('تعذّرت إضافة المرفق: '+((err&&err.message)||'خطأ غير معروف'))}
   });
   picker.addEventListener('cancel',function(){this.value=''});
 });
@@ -1770,7 +1994,16 @@ try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}
 new MutationObserver(sqSoon).observe($('app'),{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
 window.addEventListener('resize',sqSoon);document.addEventListener('load',sqSoon,true);sqSoon();
 /* ---------- offline: flush data, service worker ---------- */
-function flushNow(){clearTimeout(saveT);try{store.set('lg-notes-v1',notes);store.set('lg-trash-v1',trash)}catch(e){}}
+function flushNow(){
+  clearTimeout(saveT);
+  /* Capture the live editor before persisting, so inline image placeholders and
+     their surrounding text remain in the same order when the note is reopened. */
+  try{
+    var n=byId(S.open);
+    if(n&&$('nBody')){n.title=String($('nTitle').value||'');n.body=serialize();}
+  }catch(e){console.error('iNote live note flush failed:',e)}
+  try{store.set('lg-notes-v1',notes);store.set('lg-trash-v1',trash)}catch(e){console.error('iNote storage flush failed:',e)}
+}
 document.addEventListener('visibilitychange',function(){if(document.hidden)flushNow()});
 window.addEventListener('pagehide',flushNow);
 window.addEventListener('resize',function(){layoutSegs(false)});

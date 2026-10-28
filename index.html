@@ -2694,9 +2694,12 @@ window.glAccount=function(){
 
 /* ---------- firebase ---------- */
 try{
-  const A=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js');
-  const AU=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
-  F=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
+  let A=null,AU=null;
+  for(const v of ['11.0.2','10.14.1','11.1.0']){
+    try{const b='https://www.gstatic.com/firebasejs/'+v+'/';A=await import(b+'firebase-app.js');AU=await import(b+'firebase-auth.js');F=await import(b+'firebase-firestore.js');break}
+    catch(e){console.warn('firebase load failed',v,e);A=null}
+  }
+  if(!A)throw new Error('firebase-load');
   const fb=A.initializeApp({apiKey:"AIzaSyCPVfIPsn_9Suy_y2vEAwav80UiBc3c8w4",authDomain:"my-site-1f332.firebaseapp.com",projectId:"my-site-1f332",appId:"1:86359061419:web:9ab96f3c0eaa220e20d8ee"});
   const auth=AU.getAuth(fb);fs=F.getFirestore(fb);
   authApi={signOut:()=>AU.signOut(auth)};
@@ -2714,7 +2717,7 @@ try{
     if(u){try{LS.removeItem(SKIP)}catch(e){}closeLogin();sync()}
     else if(!skipped())openLogin();
   });
-}catch(e){console.warn('firebase unavailable',e)}
+}catch(e){console.warn('firebase unavailable',e);if(navigator.onLine)toast('تعذّر تحميل خدمة تسجيل الدخول، حدّث الصفحة.')}
 </script>
 </body></html>
 ف

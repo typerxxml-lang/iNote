@@ -2703,11 +2703,14 @@ try{
   if(!A)throw new Error('firebase-load');
   const fb=A.initializeApp({apiKey:"AIzaSyCPVfIPsn_9Suy_y2vEAwav80UiBc3c8w4",authDomain:"my-site-1f332.firebaseapp.com",projectId:"my-site-1f332",appId:"1:86359061419:web:9ab96f3c0eaa220e20d8ee"});
   const auth=AU.getAuth(fb);fs=F.getFirestore(fb);
+  // Keep the Firebase session in persistent browser storage (including WebViews that support it).
+  await AU.setPersistence(auth,AU.browserLocalPersistence);
   authApi={signOut:()=>AU.signOut(auth)};
   window.glAuth={auth};
   btn.addEventListener('click',async()=>{
     err.textContent='';btn.classList.add('busy');
     try{
+      await AU.setPersistence(auth,AU.browserLocalPersistence);
       await AU.signInWithRedirect(auth,new AU.GoogleAuthProvider());
     }catch(e){
       console.error('Google sign-in redirect failed:',e);

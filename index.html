@@ -2496,6 +2496,7 @@ button,.row,.tab,.mi{touch-action:manipulation;-webkit-tap-highlight-color:trans
 .gl.on .gl-in{transform:none}
 .gl.out .gl-in{transform:scale(1.14);opacity:0;transition:transform .55s var(--ease),opacity .34s ease}
 .gl-top{display:flex;flex-direction:column;align-items:center;text-align:center}
+.gl-brand{margin:0 0 22px!important;font-size:54px!important;line-height:1.05!important}.gl-brand .bi{color:#FFD60A}
 .gl-ic{width:92px;height:92px;border-radius:30px;background:var(--acc);color:var(--on-accent);display:grid;place-items:center;box-shadow:0 14px 40px rgba(var(--acc-rgb),.35);opacity:0;transform:scale(.6) translateY(14px);transition:transform .9s var(--sp),opacity .4s ease .1s}
 .gl-ic .ic{width:46px;height:46px}
 .gl.on .gl-ic{opacity:1;transform:none}
@@ -2513,7 +2514,7 @@ button,.row,.tab,.mi{touch-action:manipulation;-webkit-tap-highlight-color:trans
 .wl-btn.sec{background:rgba(127,127,127,.16);color:var(--fg)}.wl-st{font-size:14px!important;min-height:20px;margin-bottom:6px!important}.gl-err{min-height:20px;margin:0;font-size:14px;color:#FF3B30;text-align:center}
 </style>
 <div class="gl" id="gl" role="dialog" aria-modal="true" aria-hidden="true"><div class="gl-in">
-<div class="gl-top"><div class="gl-ic"><svg class="ic" aria-hidden="true"><use href="#i-note"/></svg></div><h1 class="gl-t">أهلاً بك في iNote</h1><p class="gl-s">سجّل دخولك بحساب قوقل عشان تبدأ تكتب ملاحظاتك.</p></div>
+<div class="gl-top"><h1 class="big brand gl-brand"><span class="bi">i</span>Note</h1><h2 class="gl-t">أهلاً بك</h2><p class="gl-s">سجّل دخولك بحساب قوقل عشان تبدأ تكتب ملاحظاتك.</p></div>
 <div class="gl-bot"><p class="gl-err" id="glErr"></p>
 <button class="gl-btn" id="glBtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3.1-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.3 0 11.8-2.1 15.7-5.7l-7.6-5.9c-2.1 1.4-4.8 2.3-8.1 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg><span>المتابعة بحساب قوقل</span></button>
 <button class="gl-skip" id="glSkip" type="button">المتابعة بدون حساب</button></div>
@@ -2706,10 +2707,17 @@ try{
   window.glAuth={auth};
   btn.addEventListener('click',async()=>{
     err.textContent='';btn.classList.add('busy');
-    try{await AU.signInWithPopup(auth,new AU.GoogleAuthProvider())}
-    catch(e){
+    try{
+      await AU.signInWithRedirect(auth,new AU.GoogleAuthProvider());
+    }catch(e){
+      console.error('Google sign-in redirect failed:',e);
       err.textContent=MSG[e&&e.code]||'صار خطأ، حاول مرة ثانية.';
+      btn.classList.remove('busy');
     }
+  });
+  AU.getRedirectResult(auth).catch(e=>{
+    console.error('Google redirect result failed:',e);
+    err.textContent=MSG[e&&e.code]||'تعذّر إكمال تسجيل الدخول، حاول مرة ثانية.';
     btn.classList.remove('busy');
   });
   AU.onAuthStateChanged(auth,u=>{

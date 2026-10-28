@@ -541,6 +541,7 @@ html.reduce .pw *,html.reduce .pw{animation:none!important;transition-duration:.
 <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 11 12 15.5 16.5 11M5 19.5h14"/></symbol>
 <symbol id="i-az" viewBox="0 0 24 24"><path d="M7 5v14M7 19l-3-3M7 19l3-3M17 19V5M17 5l-3 3M17 5l3 3"/></symbol>
 <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="3"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+<symbol id="i-speaker" viewBox="0 0 24 24"><path d="M4 9.5h3l4.5-3.5v12L7 14.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/></symbol>
 <symbol id="i-backspace" viewBox="0 0 24 24"><path d="M9.5 5H18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9.5L3.5 12z"/><path d="m12.5 9.5 5 5M17.5 9.5l-5 5"/></symbol>
 </svg>
 
@@ -1042,7 +1043,7 @@ function renderNotes(){
     var res=sorted(notes).filter(function(n){return ((n.title||'')+' '+(n.lock?'':plainBody(n.body))+' '+fname(n.folder)).toLowerCase().indexOf(q)>-1});
     h='<h1 class="big">نتائج البحث</h1>'+(res.length?'<div class="sec" style="margin-top:14px">'+cnt(res.length)+'</div>'+listHTML(res,true):'<div class="empty">'+ic('search')+'<p>لا توجد نتائج لـ «'+esc(S.q.trim())+'»</p></div>');
   }else{
-    h='<h1 class="big brand"><span class="bi">i</span>Note</h1>'+statsHTML();
+    h='<h1 class="big brand"><span class="bi">i</span>Note</h1>'+greetHTML()+statsHTML();
     if(!notes.length)h+='<div class="empty">'+ic('note')+'<p>ابدأ بأول ملاحظة<br>اضغط زر الكتابة بالأسفل</p></div>';
     else if(!cfg.groups){
       var all=sorted(notes).sort(function(a,b){return (b.pinned?1:0)-(a.pinned?1:0)});
@@ -1106,11 +1107,11 @@ function renderSettings(){
     '<div class="row st"><span>الحركة والتأثيرات</span>'+sw('motion')+'</div>'+
   '</div><div class="sec">إحصائياتك</div><div class="card">'+
     srow('الملاحظات',notes.length)+srow('المجلدات',FOLDERS.length)+srow('إجمالي الكلمات',w.toLocaleString('en'))+srow('إجمالي الأحرف',ch.toLocaleString('en'))+
-    srow('متوسط الكلمات للملاحظة',avg)+srow('المهام المنجزة',tt?td+' من '+tt:'0')+srow('المحذوفة مؤخرًا',trash.length)+
+    srow('متوسط الكلمات للملاحظة',avg)+srow('المهام المنجزة',tt?td+' من '+tt:'0')+srow('المحذوفة مؤخرًا',trash.length)+srow('أيام متتالية من الكتابة',streakDays())+
     srow('أقدم ملاحظة',notes.length?fmt({day:'numeric',month:'short',year:'numeric'},old):'—')+
   '</div><div class="sec">البيانات</div><div class="card">'+
     (dip?arow('install','download','تثبيت التطبيق على الشاشة الرئيسية'):'')+arow('export','download','تصدير نسخة احتياطية (JSON)')+arow('import','plus','استيراد نسخة احتياطية')+arow('emptytrash','trash','إفراغ المحذوفة مؤخرًا','dng')+
-  '</div><div class="sec">حول التطبيق</div><div class="card">'+arow('doc-privacy','shield','سياسة الخصوصية')+arow('doc-terms','note','بنود الاستخدام')+'</div><div class="foot">iNote · نسخة 4.1 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد '+(cfg.trashDays||30)+' يومًا</div>';
+  '</div><div class="sec">حول التطبيق</div><div class="card">'+arow('doc-privacy','shield','سياسة الخصوصية')+arow('doc-terms','note','بنود الاستخدام')+arow('welcome','shield','عن هذا التطبيق')+'</div><div class="foot">iNote · نسخة 4.1 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد '+(cfg.trashDays||30)+' يومًا</div>';
   syncSettings(false);
 }
 function exportData(){
@@ -1399,7 +1400,7 @@ menu.addEventListener('click',function(e){var b=e.target.closest('.mi');if(!b)re
 $('moreBtn').addEventListener('click',function(){
   var so=function(k,l,i){return {icon:i,label:l,on:S.sort===k,act:function(){S.sort=k;renderAll()}}};
   var vw=function(k,l,i){return {icon:i,label:l,on:cfg.view===k,act:function(){cfg.view=k;saveCfg();renderNotes();syncSettings(false);if(stack.indexOf($('pFolder'))>-1)renderFolderList()}}};
-  openMenu($('moreBtn'),[vw('grid','عرض ودجات','grid'),vw('list','عرض قائمة','list'),so('date','الأحدث تعديلًا','clock'),so('old','الأقدم أولًا','clock'),so('title','حسب العنوان','az'),so('long','الأطول أولًا','list')]);
+  openMenu($('moreBtn'),[vw('grid','عرض ودجات','grid'),vw('list','عرض قائمة','list'),so('date','الأحدث تعديلًا','clock'),so('old','الأقدم أولًا','clock'),so('title','حسب العنوان','az'),so('long','الأطول أولًا','list'),{icon:'plus',label:'ملاحظة من قالب…',act:function(){setTimeout(function(){tplMenu($('moreBtn'))},80)}}]);
 });
 $('fMore').addEventListener('click',function(){
   var f=FOLDERS.filter(function(x){return x.id===S.folder})[0];if(!f)return;
@@ -1765,7 +1766,7 @@ function dupNote(){
   notes.unshift(c);save();renderAll();toast('تم إنشاء نسخة');
 }
 $('nMore').addEventListener('click',function(){
-  var n=byId(S.open);if(!n)return;
+  var n=byId(S.open);if(!n)return;try{saveRange()}catch(e){}
   var txt=function(){return (n.title?n.title+'\n\n':'')+textOf(n.body)};
   openMenu($('nMore'),[
     {icon:'pin',label:n.pinned?'إلغاء التثبيت':'تثبيت الملاحظة',act:function(){n.pinned=!n.pinned;save();pinState();toast(n.pinned?'تم التثبيت':'أُلغي التثبيت')}},
@@ -1775,6 +1776,8 @@ $('nMore').addEventListener('click',function(){
     {icon:'copy',label:'نسخ النص',act:function(){copyTxt(txt())}},
      {icon:'download',label:'تصدير كملف نصي',act:function(){exportTxt(n,txt())}},
     {icon:'copy',label:'تكرار الملاحظة',act:dupNote},
+    {icon:'clock',label:'إدراج التاريخ والوقت',act:insDate},
+    {icon:'speaker',label:(window.speechSynthesis&&speechSynthesis.speaking)?'إيقاف القراءة':'قراءة بصوت عالٍ',act:speakNote},
     {icon:'lock',label:n.lock?'إزالة القفل':'قفل الملاحظة',act:function(){if(n.lock)removeLock(n);else setLock(n)}},
     {icon:'trash',label:'حذف',act:function(){delNote(n)}}
   ]);
@@ -2077,33 +2080,86 @@ function prepareAttachment(f){
   setInterval(ctAll,350);ctAll();
 
   /* keyboard */
-  var kbNow=0,vv=window.visualViewport;
-  function kbMeasure(){var h=0;if(vv){h=Math.max(0,Math.round($('app').getBoundingClientRect().bottom-(vv.offsetTop+vv.height)))}return h>60?h:0}
-  function kbApply(){var h=kbMeasure();if(h===kbNow)return;var up=h>kbNow;kbNow=h;root.style.setProperty('--kb',h+'px');root.classList.toggle('kb-open',h>0);if(up)caretFollow(160)}
+  var kbNow=0,kbSig='',vv=window.visualViewport,vkH=0,est=0,estT=0,maxIH=window.innerHeight||0;
+  /* APK / WebView: the system may report nothing when the keyboard opens, so we also listen to the VirtualKeyboard API
+     and, as a last resort, estimate the height while a text field is focused on a touch device. */
+  try{var vk=navigator.virtualKeyboard;if(vk){vk.overlaysContent=true;vk.addEventListener('geometrychange',function(){vkH=Math.round(vk.boundingRect.height)||0;kbApply();setTimeout(kbApply,120)})}}catch(e){}
+  function isEd(el){return !!el&&(el.tagName==='INPUT'||el.tagName==='TEXTAREA'||el.isContentEditable)}
+  function vvMeasure(){
+    if(!vv)return 0;
+    var ih=Math.max(window.innerHeight||0,document.documentElement.clientHeight||0),h=Math.round(ih-vv.height);
+    return(h>60&&(vv.scale||1)<=1.02)?h:0;
+  }
+  function kbMeasure(){return Math.max(vvMeasure(),vkH,est)}
+  function kbApply(){
+    var ih=Math.max(window.innerHeight||0,document.documentElement.clientHeight||0),hv=vvMeasure();
+    if(est&&(hv||vkH||ih<maxIH-60))est=0; /* a real signal arrived: drop the estimate */
+    var h=Math.max(hv,vkH,est),top=0,ht=0;
+    if(h&&h===hv){top=Math.max(0,Math.round(vv.offsetTop));ht=Math.round(vv.height)}else if(h){ht=ih-h}
+    var sig=h?(h+':'+top+':'+ht):'0';
+    if(sig===kbSig)return;
+    var up=h>kbNow;kbSig=sig;kbNow=h;
+    if(h){root.style.setProperty('--vvt',top+'px');root.style.setProperty('--vvh',ht+'px')}
+    else{root.style.removeProperty('--vvt');root.style.removeProperty('--vvh')}
+    root.style.setProperty('--kb',h+'px');root.classList.toggle('kb-open',h>0);
+    if(h)caretFollow(up?80:0);
+  }
+  function estCheck(){
+    clearTimeout(estT);
+    if(!isEd(document.activeElement)||!(window.matchMedia&&matchMedia('(pointer:coarse)').matches)){if(est){est=0;kbApply()}return}
+    estT=setTimeout(function(){
+      if(!isEd(document.activeElement))return;
+      var ih=window.innerHeight||0;
+      if(vvMeasure()||vkH||ih<maxIH-60)return; /* a real signal exists, trust it */
+      est=Math.max(250,Math.min(400,Math.round(ih*.4)));kbApply();
+    },550);
+  }
   function kbSoon(){kbApply();setTimeout(kbApply,90);setTimeout(kbApply,260);setTimeout(kbApply,520)}
   if(vv){vv.addEventListener('resize',kbApply);vv.addEventListener('scroll',kbApply)}
   window.addEventListener('resize',kbSoon);
-  document.addEventListener('focusin',kbSoon);document.addEventListener('focusout',kbSoon);
+  document.addEventListener('focusin',function(){kbSoon();estCheck()});document.addEventListener('focusout',function(){kbSoon();setTimeout(estCheck,120)});
+  window.addEventListener('resize',function(){if(!kbNow&&!est&&window.innerHeight>maxIH)maxIH=window.innerHeight});
 
   /* keep the caret line above the bar/keyboard: older text moves up, newer stays visible */
-  var cfT=0,cfRaf=0,sAnim=0;
+  var cfT=0,cfRaf=0,gRaf=0,gTarget=0,gLast=0;
   function caretFollow(d){clearTimeout(cfT);cfT=setTimeout(function(){cancelAnimationFrame(cfRaf);cfRaf=requestAnimationFrame(caretDo)},d||0)}
-  function animScroll(sc,d){
-    cancelAnimationFrame(sAnim);var from=sc.scrollTop,to=Math.max(0,Math.min(sc.scrollHeight-sc.clientHeight,from+d)),t0=performance.now(),dur=reducedMotion()?1:300;
-    if(Math.abs(to-from)<1)return;
-    (function step(t){var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);sc.scrollTop=from+(to-from)*e;if(k<1)sAnim=requestAnimationFrame(step)})(t0);
+  function glideStop(){if(gRaf){cancelAnimationFrame(gRaf);gRaf=0}}
+  /* ease toward a moving target: every new line nudges the target by one line, so the text rises line by line, smoothly */
+  function glide(sc,delta){
+    var max=Math.max(0,sc.scrollHeight-sc.clientHeight);
+    gTarget=Math.max(0,Math.min(max,sc.scrollTop+delta));
+    if(reducedMotion()){sc.scrollTop=gTarget;return}
+    if(gRaf)return;
+    gLast=performance.now();
+    (function step(t){
+      var dt=Math.min(48,Math.max(8,t-gLast));gLast=t;
+      var cur=sc.scrollTop,diff=gTarget-cur;
+      if(Math.abs(diff)<.6){sc.scrollTop=gTarget;gRaf=0;return}
+      var k=1-Math.pow(1-.28,dt/16.67),st=diff*k;
+      if(Math.abs(st)<1)st=diff>0?Math.min(1,diff):Math.max(-1,diff);
+      sc.scrollTop=cur+st;
+      gRaf=requestAnimationFrame(step);
+    })(gLast);
+  }
+  (function(){var sc=$('pNote').querySelector('.scroll');['touchstart','wheel','pointerdown'].forEach(function(ev){sc.addEventListener(ev,glideStop,{passive:true})})})();
+  function caretRect(ed,r){
+    var rs=r.getClientRects();if(rs.length)return rs[rs.length-1];
+    var c=r.startContainer,o=r.startOffset,n=null;
+    if(c===ed){n=ed.childNodes[o]||ed.childNodes[o-1]}else n=c;
+    if(!n)return null;
+    if(n.nodeType===3){var rr=document.createRange();rr.selectNodeContents(n);var q=rr.getClientRects();if(q.length)return q[q.length-1];n=n.parentNode}
+    if(!n||n===ed||!n.getBoundingClientRect)return null;
+    var b=n.getBoundingClientRect();return b.height>140?null:b;
   }
   function caretDo(){
     if(!S.open)return;var ed=ED();if(document.activeElement!==ed)return;
     var sel=window.getSelection();if(!sel||!sel.rangeCount)return;var r=sel.getRangeAt(0);if(!r.collapsed||!inEd(r.startContainer))return;
-    var rc=null,rs=r.getClientRects();if(rs.length)rc=rs[rs.length-1];
-    if(!rc||(!rc.height&&!rc.width)){var n=r.startContainer;n=n.nodeType===1?n:n.parentNode;if(!n||n===ed||!n.getBoundingClientRect)return;rc=n.getBoundingClientRect()}
-    var pg=$('pNote'),sc=pg.querySelector('.scroll'),vb=vv?vv.offsetTop+vv.height:window.innerHeight;
-    var rb=$('formatRibbon'),open=rb&&!rb.classList.contains('is-hidden');
-    var limit=vb-(kbNow?10:14+(parseFloat(getComputedStyle(root).getPropertyValue('--sab'))||0))-58-(open?4+rb.offsetHeight:0)-26;
-    var topLim=pg.querySelector('.topbar').getBoundingClientRect().bottom+16,d=0;
+    var rc=caretRect(ed,r);if(!rc||(!rc.height&&!rc.width))return;
+    var pg=$('pNote'),sc=pg.querySelector('.scroll'),rb=$('formatRibbon'),open=rb&&!rb.classList.contains('is-hidden');
+    var pill=pg.querySelector('.nbar .pill'),barTop=((open?rb:pill)||pg.querySelector('.nbar')).getBoundingClientRect().top;
+    var limit=barTop-18,topLim=pg.querySelector('.topbar').getBoundingClientRect().bottom+16,d=0;
     if(rc.bottom>limit)d=rc.bottom-limit;else if(rc.top<topLim)d=rc.top-topLim;
-    if(d)animScroll(sc,d);
+    if(Math.abs(d)>.5)glide(sc,d);
   }
   ED().addEventListener('input',function(){caretFollow(0)});
   ED().addEventListener('keyup',function(e){if(e.key==='Enter'||e.key.indexOf('Arrow')===0)caretFollow(0)});
@@ -2111,6 +2167,100 @@ function prepareAttachment(f){
   document.addEventListener('selectionchange',function(){if(S.open&&document.activeElement===ED())caretFollow(40)});
   $('nFormat').addEventListener('click',function(){caretFollow(320)});
 })();
+
+/* note title slides to the centre of the top bar once it scrolls away (same motion as Folders / Settings) */
+(function(){
+  var pg=$('pNote'),tb=pg&&pg.querySelector('.topbar'),sc=pg&&pg.querySelector('.scroll'),t=$('nTitle');if(!tb||!sc||!t)return;
+  var d=document.createElement('div');d.className='ctitle';d.innerHTML='<span></span>';tb.appendChild(d);
+  var sp=d.firstChild,on=false,txt='';
+  function upd(){
+    var v=String(t.value||'').trim(),c=false;
+    if(S.open&&v&&pg.classList.contains('show')){var r=t.getBoundingClientRect();c=r.height>0&&r.bottom<tb.getBoundingClientRect().bottom-6}
+    if(c&&v!==txt){txt=v;sp.textContent=v}
+    if(c!==on){on=c;d.classList.toggle('show',c)}
+  }
+  sc.addEventListener('scroll',upd,{passive:true});t.addEventListener('input',upd);
+  setInterval(upd,300);upd();
+})();
+
+/* ===== v8: welcome notice, templates, read aloud, confetti, custom colour, greeting ===== */
+function greetHTML(){var d=new Date(),h=d.getHours(),g=h<5?'سهرة سعيدة':h<12?'صباح الخير':h<17?'نهارك سعيد':'مساء الخير';
+  return '<div class="greet">'+g+' · '+d.toLocaleDateString('ar',{weekday:'long',day:'numeric',month:'long'})+'</div>'}
+function streakDays(){var set={};notes.concat(trash).forEach(function(n){[n.created,n.ts].forEach(function(t){if(t)set[new Date(t).toDateString()]=1})});
+  var d=new Date(),c=0;if(!set[d.toDateString()])d.setDate(d.getDate()-1);while(set[d.toDateString()]){c++;d.setDate(d.getDate()-1)}return c}
+/* templates */
+function tplMenu(anchor){
+  var dt=new Date().toLocaleDateString('ar',{weekday:'long',day:'numeric',month:'long'});
+  var P=function(t){return '<div>'+esc(t)+'</div>'},H=function(t){return '<h2>'+esc(t)+'</h2>'},K=function(t){return '<div class="task"><input type="checkbox" contenteditable="false"> <span>'+esc(t)+'</span></div>'},E='<div><br></div>';
+  var T=[
+    {i:'list',l:'قائمة تسوق',t:'قائمة التسوق',b:['الخضار والفواكه','الحليب والبيض','الخبز','أغراض أخرى'].map(K).join('')},
+    {i:'check',l:'خطة اليوم',t:'خطة اليوم · '+dt,b:H('أهم المهام')+['المهمة الأولى','المهمة الثانية','المهمة الثالثة'].map(K).join('')+E+H('ملاحظات')+E},
+    {i:'compose',l:'يوميات',t:dt,b:H('كيف كان يومي؟')+E+H('ما الذي أنا ممتن له؟')+E+H('ما الذي تعلمته؟')+E},
+    {i:'note',l:'ملاحظات اجتماع',t:'اجتماع · '+dt,b:H('الحضور')+E+H('النقاط الرئيسية')+E+H('المتابعة')+K('مهمة للمتابعة')}
+  ];
+  openMenu(anchor||$('compose'),T.map(function(x){return {icon:x.i,label:x.l,act:function(){
+    var n={id:'n'+Date.now(),title:x.t,body:x.b,folder:'personal',pinned:false,ts:Date.now(),created:Date.now()};
+    notes.unshift(n);save();renderAll();openNote(n.id,false,stack.length===1?$('compose').getBoundingClientRect():null);
+  }}}));
+}
+(function(){var c=$('compose'),t=0,fired=false;
+  c.addEventListener('pointerdown',function(){fired=false;clearTimeout(t);t=setTimeout(function(){fired=true;tplMenu(c);try{if(cfg.haptics!==false&&navigator.vibrate)navigator.vibrate(12)}catch(e){}},520)});
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){c.addEventListener(ev,function(){clearTimeout(t)})});
+  c.addEventListener('click',function(e){if(fired){e.stopImmediatePropagation();e.preventDefault();fired=false}},true);
+  c.addEventListener('contextmenu',function(e){e.preventDefault()});
+})();
+/* insert date / read aloud */
+function insDate(){richCmd('insertText',new Date().toLocaleString('ar',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit'})+' ')}
+function speakNote(){
+  var ss=window.speechSynthesis;if(!ss||!window.SpeechSynthesisUtterance){toast('القراءة الصوتية غير مدعومة على هذا الجهاز');return}
+  if(ss.speaking){ss.cancel();toast('أُوقفت القراءة');return}
+  var n=byId(S.open);if(!n)return;var tx=(String($('nTitle').value||'')+'. '+textOf(serialize())).trim();
+  if(tx.length<3){toast('لا يوجد نص للقراءة');return}
+  var u=new SpeechSynthesisUtterance(tx);u.lang='ar-SA';u.rate=.95;ss.speak(u);toast('جارٍ القراءة بصوت عالٍ…');
+}
+window.addEventListener('pagehide',function(){try{speechSynthesis.cancel()}catch(e){}});
+/* confetti when every task is done */
+function confetti(){
+  if(!cfg.motion)return;var app=$('app'),cols=['#FFD60A','#FF453A','#32D74B','#0A84FF','#BF5AF2','#FF9F0A'],ox=window.innerWidth/2,oy=window.innerHeight*.58;
+  for(var i=0;i<36;i++){(function(){
+    var d=document.createElement('div'),a=-Math.PI/2+(Math.random()-.5)*2.5,v=150+Math.random()*230,dx=Math.cos(a)*v,dy=Math.sin(a)*v;
+    d.style.cssText='position:absolute;left:'+ox+'px;top:'+oy+'px;width:8px;height:12px;border-radius:2px;pointer-events:none;z-index:310;background:'+cols[i%6];
+    app.appendChild(d);
+    var an=d.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:'translate('+dx+'px,'+(dy+300)+'px) rotate('+Math.round(Math.random()*720-360)+'deg)',opacity:0}],{duration:1000+Math.random()*600,easing:'cubic-bezier(.2,.7,.3,1)'});
+    an.onfinish=function(){d.remove()};
+  })()}
+  try{if(cfg.haptics!==false&&navigator.vibrate)navigator.vibrate([10,40,10])}catch(e){}
+}
+document.addEventListener('change',function(e){var t=e.target;if(!t||!t.matches||!t.matches('#nBody input[type=checkbox]')||!t.checked)return;
+  setTimeout(function(){var all=qa('#nBody input[type=checkbox]');if(all.length&&all.every(function(x){return x.checked})){confetti();toast('أحسنت! أنجزت كل المهام')}},60)});
+/* custom accent colour */
+ACCENTS.push(['custom','لون مخصص']);ACC_NAMES.custom='لون مخصص';
+function customVars(){
+  var c=String(cfg.cc||'#FF2D55'),m=/^#([0-9a-f]{6})$/i.exec(c);if(!m)return;var r=parseInt(m[1].slice(0,2),16),g=parseInt(m[1].slice(2,4),16),b=parseInt(m[1].slice(4),16);
+  var s=root.style;s.setProperty('--acc',c);s.setProperty('--acc-rgb',r+','+g+','+b);s.setProperty('--on-accent',(r*.299+g*.587+b*.114)>150?'#000':'#fff');s.setProperty('--la','.22');s.setProperty('--lad','.28');s.setProperty('--tab-active','var(--acc)');
+}
+var _applyCfg=applyCfg;applyCfg=function(){_applyCfg();
+  if(cfg.accent==='custom')customVars();else['--acc','--acc-rgb','--on-accent','--la','--lad','--tab-active'].forEach(function(k){root.style.removeProperty(k)})};
+var _setAccent=setAccent;setAccent=function(a){
+  if(a!=='custom'){_setAccent(a);return}
+  var i=document.createElement('input');i.type='color';i.value=/^#[0-9a-f]{6}$/i.test(cfg.cc||'')?cfg.cc:'#FF2D55';i.className='file-picker';i.setAttribute('aria-label','اختيار لون');
+  i.addEventListener('input',function(){cfg.cc=i.value;cfg.accent='custom';saveCfg();applyCfg();syncSettings(false)});
+  i.addEventListener('change',function(){setTimeout(function(){i.remove()},300)});
+  document.body.appendChild(i);i.click();
+};
+/* first-launch notice + "about" */
+function showWelcome(again){
+  if(!again&&store.get('lg-welcome-v1',0))return;
+  var w=$('wl');if(!w){w=document.createElement('div');w.id='wl';w.className='wl';w.setAttribute('role','dialog');w.setAttribute('aria-modal','true');
+    w.innerHTML='<div class="wl-card"><div class="wl-ic">'+ic('shield')+'</div><h2>ملاحظة!</h2><p>هذا التطبيق ليس محاكاة، بل تطبيق حقيقي وآمن، وخصوصيتك محفوظة.</p><p>وهو ليس تمثيلًا لنظام iOS 26، بل اقتباس للغة تصميم Liquid Glass فقط، ولا يمتّ بأي صلة إلى Apple.</p><button class="wl-btn" type="button">فهمت</button></div>';
+    $('app').appendChild(w);
+    w.querySelector('.wl-btn').addEventListener('click',function(){w.classList.remove('on');store.set('lg-welcome-v1',1)});
+  }
+  void w.offsetWidth;w.classList.add('on');
+}
+var _doAct=doAct;doAct=function(a){if(a==='welcome'){showWelcome(true);return}_doAct(a)};
+setTimeout(function(){showWelcome(false)},700);
+applyCfg();
 
 /* three-dots buttons morph into an X while their menu is open */
 ['moreBtn','fMore'].forEach(function(id){var b=$(id);if(!b)return;b.classList.add('dots-btn');
@@ -2190,6 +2340,31 @@ button:not(#moreBtn).circle:active,button:not(#moreBtn).btn:active{transform:sca
 <style id="ux-v7">
 .n-body,.n-title{font-family:var(--nfont,var(--font))}
 .n-body{line-height:var(--lh,1.75)}
+</style>
+
+<style id="ux-v8">
+/* the app box follows the visible area while the keyboard is open (bars never hide behind it) */
+html.kb-open #app{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%)}
+.nbar{transform:none;will-change:auto}
+#pNote .scroll{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 150px)}
+.kb-open #pNote .nbar{animation:nbarRise .5s var(--ease)}
+@keyframes nbarRise{from{transform:translateY(26px);opacity:.4}to{transform:none;opacity:1}}
+/* the home dock steps aside while the search keyboard is up */
+.dock{transition:transform .5s var(--sp),opacity .25s ease}
+.kb-open #pRoot .dock{opacity:0;pointer-events:none;transform:translateY(26px)}
+</style>
+<style id="ux-v9">
+.greet{margin:0 6px 14px;color:var(--fg2);font-size:15px;font-weight:500}
+.swatch[data-acc="custom"]{background:conic-gradient(#FF3B30,#FFD60A,#34C759,#5AC8FA,#AF52DE,#FF3B30)}
+.wl{position:absolute;inset:0;z-index:300;display:grid;place-items:center;padding:24px;background:rgba(0,0,0,.38);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:opacity .35s ease}
+.wl.on{opacity:1;pointer-events:auto}
+.wl-card{width:min(100%,380px);background:var(--card);color:var(--fg);border-radius:36px;padding:28px 24px 22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);transform:translateY(26px) scale(.94);transition:transform .65s var(--sp)}
+.wl.on .wl-card{transform:none}
+.wl-ic{width:64px;height:64px;border-radius:22px;background:var(--acc);color:var(--on-accent);display:grid;place-items:center;margin:0 auto 14px}
+.wl-ic .ic{width:32px;height:32px}
+.wl-card h2{margin:0 0 10px;font-size:23px}
+.wl-card p{margin:0 0 10px;color:var(--fg2);line-height:1.8;font-size:16px}
+.wl-btn{margin-top:10px;width:100%;height:52px;border:0;border-radius:99px;background:var(--acc);color:var(--on-accent);font:700 17px var(--font)}
 </style>
 </body></html>
 ف

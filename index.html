@@ -1015,8 +1015,8 @@ function sqAll(){SQCAP.forEach(function(c){qa(c[0]).forEach(function(el){
 var sqT=0;function sqSoon(){if(!sqT)sqT=requestAnimationFrame(function(){sqT=0;sqAll()})}
 /* ---------- legal ---------- */
 var DOCS={
-privacy:['سياسة الخصوصية','<p>آخر تحديث: 27 أكتوبر 2026</p><h3>مقدمة</h3><p>iNote تطبيق ملاحظات يعمل داخل متصفحك. نحترم خصوصيتك ولا نجمع أي بيانات عنك.</p><h3>ما الذي يُخزَّن؟</h3><p>ملاحظاتك ومجلداتك والصور والملفات التي ترفقها وإعداداتك تُحفظ على جهازك فقط، داخل مساحة التخزين الخاصة بالمتصفح (LocalStorage وIndexedDB). لا توجد حسابات، ولا يُرسل محتواك إلى أي خادم.</p><h3>ما الذي لا نفعله؟</h3><p>لا نستخدم أدوات تحليل أو تتبّع ولا إعلانات، ولا نبيع بياناتك ولا نشاركها مع أي طرف.</p><h3>الاستضافة</h3><p>يُقدَّم التطبيق كملفات ثابتة عبر Cloudflare، وقد تسجّل الاستضافة بيانات تقنية عامة عن الطلبات (مثل عنوان IP) وفق سياستها الخاصة، ولا علاقة لذلك بمحتوى ملاحظاتك.</p><h3>الحذف والنسخ الاحتياطي</h3><p>مسح بيانات الموقع أو إلغاء تثبيت التطبيق قد يحذف ملاحظاتك نهائيًا. يُنصح بالتصدير الدوري من الإعدادات، علمًا أن النسخة الاحتياطية تشمل النصوص دون المرفقات.</p><h3>الأطفال</h3><p>التطبيق لا يجمع بيانات من أي مستخدم، بمن فيهم الأطفال.</p><h3>التعديلات</h3><p>قد نحدّث هذه السياسة، وسيظهر تاريخ آخر تحديث في أعلاها.</p>'],
-terms:['بنود الاستخدام','<p>آخر تحديث: 27 أكتوبر 2026</p><h3>القبول</h3><p>باستخدامك iNote فإنك توافق على هذه البنود. إن لم توافق فلا تستخدم التطبيق.</p><h3>محتواك ملكك</h3><p>كل ما تكتبه أو ترفقه يبقى ملكًا لك، وهو محفوظ على جهازك ولا نطّلع عليه. أنت المسؤول عن محتواك.</p><h3>الاستخدام المقبول</h3><p>يُمنع استخدام التطبيق في أي نشاط مخالف للقانون، أو محاولة تعطيله أو العبث بخدمته.</p><h3>النسخ الاحتياطي</h3><p>لأن البيانات محلية، فأنت المسؤول عن حفظ نسخة احتياطية. قد تُفقد البيانات عند مسح بيانات المتصفح أو تغيير الجهاز أو امتلاء مساحة التخزين.</p><h3>المرفقات</h3><p>حجم المرفقات وأنواعها غير مقيّدة من التطبيق، لكنها تعتمد على المساحة التي يسمح بها جهازك ومتصفحك.</p><h3>إخلاء الضمان</h3><p>يُقدَّم التطبيق كما هو دون أي ضمانات، ولا نتحمل مسؤولية أي فقدان للبيانات أو أضرار ناتجة عن استخدامه.</p><h3>التعديلات</h3><p>قد نعدّل هذه البنود، واستمرارك في الاستخدام يعني قبول النسخة المحدّثة.</p>']};
+privacy:['سياسة الخصوصية','<p>آخر تحديث: 29 أكتوبر 2026</p><h3>مقدمة</h3><p>iNote تطبيق ملاحظات يعمل داخل متصفحك. يمكنك استخدامه بدون حساب فتبقى ملاحظاتك على جهازك فقط، أو بحساب قوقل (اختياري) لمزامنة نص ملاحظاتك بين أجهزتك. نحترم خصوصيتك ولا نبيع بياناتك.</p><h3>ما الذي يُخزَّن؟</h3><p>ملاحظاتك ومجلداتك والصور والملفات التي ترفقها وإعداداتك تُحفظ على جهازك داخل مساحة التخزين الخاصة بالمتصفح (LocalStorage وIndexedDB). بدون حساب لا يُرسل أي شيء إلى أي خادم. وإذا سجّلت الدخول بحساب قوقل فإن نص ملاحظاتك ومجلداتك يُنسخ أيضًا إلى حسابك في خدمة Google Firebase (Firestore) لمزامنته بين أجهزتك، أما الصور والملفات المرفقة فتبقى على جهازك ولا تُرفع.</p><h3>تسجيل الدخول بحساب قوقل</h3><p>عند تسجيل الدخول نستلم من قوقل عبر خدمة Firebase Authentication اسمك وبريدك وصورتك ومعرّف حسابك فقط، ولا نطّلع على كلمة سرك أبدًا لأن قوقل هي من تتولى التحقق. لا نستخدم هذه البيانات لغير تسجيل الدخول والمزامنة، ولا نبيعها ولا نشاركها مع أي طرف. النسخة المتزامنة مرتبطة بحسابك ولا يصل إليها حساب آخر وفق قواعد الأمان المضبوطة، ولا نقرأها، لكنها غير مشفّرة من الطرف إلى الطرف، أي إن مدير قاعدة البيانات يملك تقنيًا صلاحية الوصول إليها. عند حذف ملاحظة نهائيًا من التطبيق يُحذف نصها من نسخة الحساب أيضًا. يمكنك استخدام التطبيق بدون حساب في أي وقت، وإدارة أو إلغاء ربط التطبيق بحسابك من إعدادات حساب قوقل.</p><h3>ما الذي لا نفعله؟</h3><p>لا نستخدم أدوات تحليل أو تتبّع ولا إعلانات، ولا نبيع بياناتك ولا نشاركها مع أي طرف.</p><h3>الاستضافة</h3><p>يُقدَّم التطبيق كملفات ثابتة عبر Cloudflare، وقد تسجّل الاستضافة بيانات تقنية عامة عن الطلبات (مثل عنوان IP) وفق سياستها الخاصة، وتخضع بيانات تسجيل الدخول لسياسة قوقل وFirebase، ولا علاقة لذلك بمحتوى ملاحظاتك.</p><h3>الحذف والنسخ الاحتياطي</h3><p>مسح بيانات الموقع أو إلغاء تثبيت التطبيق قد يحذف ملاحظاتك نهائيًا. يُنصح بالتصدير الدوري من الإعدادات، علمًا أن النسخة الاحتياطية تشمل النصوص دون المرفقات.</p><h3>الأطفال</h3><p>التطبيق لا يجمع محتوى من أي مستخدم، بمن فيهم الأطفال.</p><h3>التعديلات</h3><p>قد نحدّث هذه السياسة، وسيظهر تاريخ آخر تحديث في أعلاها.</p>'],
+terms:['بنود الاستخدام','<p>آخر تحديث: 29 أكتوبر 2026</p><h3>القبول</h3><p>باستخدامك iNote فإنك توافق على هذه البنود. إن لم توافق فلا تستخدم التطبيق.</p><h3>الحساب</h3><p>تسجيل الدخول بحساب قوقل اختياري. أنت المسؤول عن أمان حسابك، ولا يؤثر استخدام الحساب على ملكية ملاحظاتك.</p><h3>محتواك ملكك</h3><p>كل ما تكتبه أو ترفقه يبقى ملكًا لك، وهو محفوظ على جهازك (ونسخة من نصه في حسابك إن سجّلت الدخول) ولا نطّلع عليه. أنت المسؤول عن محتواك.</p><h3>الاستخدام المقبول</h3><p>يُمنع استخدام التطبيق في أي نشاط مخالف للقانون، أو محاولة تعطيله أو العبث بخدمته.</p><h3>النسخ الاحتياطي</h3><p>لأن البيانات تُحفظ محليًا (ويُزامَن نصها فقط عند تسجيل الدخول، دون المرفقات)، فأنت المسؤول عن حفظ نسخة احتياطية. قد تُفقد البيانات عند مسح بيانات المتصفح أو تغيير الجهاز أو امتلاء مساحة التخزين.</p><h3>المرفقات</h3><p>حجم المرفقات وأنواعها غير مقيّدة من التطبيق، لكنها تعتمد على المساحة التي يسمح بها جهازك ومتصفحك.</p><h3>إخلاء الضمان</h3><p>يُقدَّم التطبيق كما هو دون أي ضمانات، ولا نتحمل مسؤولية أي فقدان للبيانات أو أضرار ناتجة عن استخدامه.</p><h3>التعديلات</h3><p>قد نعدّل هذه البنود، واستمرارك في الاستخدام يعني قبول النسخة المحدّثة.</p>']};
 function openDoc(k){var d=DOCS[k];if(!d)return;$('dTitle').textContent=d[0];$('dBody').innerHTML=d[1];push($('pDoc'));var sc=$('pDoc').querySelector('.scroll');if(sc)sc.scrollTop=0}
 function doAct(a){
   if(a==='export')exportData();
@@ -1114,7 +1114,7 @@ function renderSettings(){
     srow('أقدم ملاحظة',notes.length?fmt({day:'numeric',month:'short',year:'numeric'},old):'—')+
   '</div><div class="sec">البيانات</div><div class="card">'+
     (dip?arow('install','download','تثبيت التطبيق على الشاشة الرئيسية'):'')+arow('export','download','تصدير نسخة احتياطية (JSON)')+arow('import','plus','استيراد نسخة احتياطية')+arow('emptytrash','trash','إفراغ المحذوفة مؤخرًا','dng')+
-  '</div><div class="sec">حول التطبيق</div><div class="card">'+arow('doc-privacy','shield','سياسة الخصوصية')+arow('doc-terms','note','بنود الاستخدام')+arow('welcome','shield','عن هذا التطبيق')+'</div><div class="foot">iNote · نسخة 4.1 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد '+(cfg.trashDays||30)+' يومًا</div>';
+  '</div><div class="sec">حول التطبيق</div><div class="card">'+arow('account','lock','الحساب والمزامنة')+arow('doc-privacy','shield','سياسة الخصوصية')+arow('doc-terms','note','بنود الاستخدام')+arow('welcome','shield','عن هذا التطبيق')+'</div><div class="foot">iNote · نسخة 4.1 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد '+(cfg.trashDays||30)+' يومًا</div>';
   syncSettings(false);
 }
 function exportData(){
@@ -2250,7 +2250,7 @@ function showWelcome(again){
   }
   void w.offsetWidth;w.classList.add('on');
 }
-var _doAct=doAct;doAct=function(a){if(a==='welcome'){showWelcome(true);return}_doAct(a)};
+var _doAct=doAct;doAct=function(a){if(a==='welcome'){showWelcome(true);return}if(a==='account'){if(window.glAccount)window.glAccount();else toast('الحساب غير متاح بدون إنترنت');return}_doAct(a)};
 setTimeout(function(){showWelcome(false)},700);
 
 /* ===== v10 ===== */
@@ -2510,7 +2510,7 @@ button,.row,.tab,.mi{touch-action:manipulation;-webkit-tap-highlight-color:trans
 .gl-btn.busy{opacity:.6;pointer-events:none}
 .gl-skip{border:0;background:none;color:var(--fg2);font:500 15px var(--font);padding:10px 16px;border-radius:99px;transition:transform .3s var(--sp),opacity .2s ease}
 .gl-skip:active{transform:scale(.92);opacity:.6}
-.gl-err{min-height:20px;margin:0;font-size:14px;color:#FF3B30;text-align:center}
+.wl-btn.sec{background:rgba(127,127,127,.16);color:var(--fg)}.wl-st{font-size:14px!important;min-height:20px;margin-bottom:6px!important}.gl-err{min-height:20px;margin:0;font-size:14px;color:#FF3B30;text-align:center}
 </style>
 <div class="gl" id="gl" role="dialog" aria-modal="true" aria-hidden="true"><div class="gl-in">
 <div class="gl-top"><div class="gl-ic"><svg class="ic" aria-hidden="true"><use href="#i-note"/></svg></div><h1 class="gl-t">أهلاً بك في iNote</h1><p class="gl-s">سجّل دخولك بحساب قوقل عشان تبدأ تكتب ملاحظاتك.</p></div>
@@ -2519,31 +2519,202 @@ button,.row,.tab,.mi{touch-action:manipulation;-webkit-tap-highlight-color:trans
 <button class="gl-skip" id="glSkip" type="button">المتابعة بدون حساب</button></div>
 </div></div>
 <script type="module">
-const gl=document.getElementById('gl'),btn=document.getElementById('glBtn'),skip=document.getElementById('glSkip'),err=document.getElementById('glErr');
-const app=document.getElementById('app')||document.body;
-const KEY='gl-skip-v1';
-const skipped=()=>{try{return localStorage.getItem(KEY)==='1'}catch(e){return false}};
-function open(){if(gl.classList.contains('show'))return;app.appendChild(gl);gl.classList.add('show');gl.setAttribute('aria-hidden','false');void gl.offsetWidth;gl.classList.add('on')}
-function close(){if(!gl.classList.contains('show'))return;gl.classList.add('out');gl.classList.remove('on');gl.setAttribute('aria-hidden','true');setTimeout(()=>{gl.classList.remove('show','out')},560)}
-skip.addEventListener('click',()=>{try{localStorage.setItem(KEY,'1')}catch(e){}close()});
-const MSG={'auth/popup-closed-by-user':'تم إلغاء تسجيل الدخول.','auth/cancelled-popup-request':'تم إلغاء تسجيل الدخول.','auth/unauthorized-domain':'هذا النطاق غير مضاف في Firebase (Authorized domains).','auth/network-request-failed':'تأكد من اتصالك بالإنترنت.'};
+const $=id=>document.getElementById(id);
+const gl=$('gl'),btn=$('glBtn'),skip=$('glSkip'),err=$('glErr');
+const app=$('app')||document.body;
+const SKIP='gl-skip-v1',FID='meta-folders';
+const KEYS={n:'lg-notes-v1',t:'lg-trash-v1',f:'lg-folders-v1'};
+const LS=window.localStorage,rawSet=Storage.prototype.setItem;
+const rawGet=k=>{try{return LS.getItem(k)}catch(e){return null}};
+const rawPut=(k,v)=>{try{rawSet.call(LS,k,v)}catch(e){}};
+const readJ=k=>{try{const v=rawGet(k);return v==null?null:JSON.parse(v)}catch(e){return null}};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function hash(s){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36)}
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;app.appendChild(t);setTimeout(()=>t.classList.add('in'),12);setTimeout(()=>{t.classList.remove('in');setTimeout(()=>t.remove(),500)},2600)}
+
+/* ---------- login screen ---------- */
+const skipped=()=>{try{return LS.getItem(SKIP)==='1'}catch(e){return false}};
+function openLogin(){if(gl.classList.contains('show'))return;app.appendChild(gl);gl.classList.add('show');gl.setAttribute('aria-hidden','false');void gl.offsetWidth;gl.classList.add('on')}
+function closeLogin(){if(!gl.classList.contains('show'))return;gl.classList.add('out');gl.classList.remove('on');gl.setAttribute('aria-hidden','true');setTimeout(()=>{gl.classList.remove('show','out')},560)}
+skip.addEventListener('click',()=>{try{LS.setItem(SKIP,'1')}catch(e){}closeLogin()});
+const MSG={'auth/popup-closed-by-user':'تم إلغاء تسجيل الدخول.','auth/cancelled-popup-request':'تم إلغاء تسجيل الدخول.','auth/unauthorized-domain':'هذا النطاق غير مضاف في Firebase (Authorized domains).','auth/network-request-failed':'تأكد من اتصالك بالإنترنت.','auth/popup-blocked':'المتصفح منع نافذة قوقل. افتح الموقع من Chrome وسمح بالنوافذ المنبثقة.','auth/operation-not-supported-in-this-environment':'افتح الموقع من متصفح Chrome مباشرة، مو من داخل تطبيق ثاني.'};
+
+/* ---------- sync state ---------- */
+let user=null,fs=null,F=null,B=null,busy=false,again=false,timer=0,status='',lastOk=0;
+const baseKey=()=>'gl-sync-v2:'+user.uid;
+const loadBase=()=>{const b=readJ(baseKey());return b&&b.ids?b:{lastSv:0,ids:{}}};
+const saveBase=b=>rawPut(baseKey(),JSON.stringify(b));
+const idle=()=>{const a=document.activeElement;return !(a&&a!==document.body&&(a.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))};
+function snap(){
+  const n=readJ(KEYS.n),t=readJ(KEYS.t),f=readJ(KEYS.f);
+  const notes=Array.isArray(n)?n:[],trash=Array.isArray(t)?t:[];
+  const m=new Map();
+  notes.forEach(o=>{if(o&&o.id)m.set(o.id,{o,tr:false})});
+  trash.forEach(o=>{if(o&&o.id)m.set(o.id,{o,tr:true})});
+  m.forEach(e=>{e.j=JSON.stringify(e.o);e.h=hash((e.tr?'T':'N')+e.j)});
+  let fo=null;if(Array.isArray(f)){fo={o:f,j:JSON.stringify(f)};fo.h=hash('F'+fo.j)}
+  return {notes,trash,m,fo};
+}
+const cts=C=>{try{const o=JSON.parse(C.data);return Math.max(o.ts||0,o.del||0)}catch(e){return 0}};
+const lts=L=>Math.max(L.o.ts||0,L.o.del||0);
+
+async function run(apply,depth){
+  const {collection,doc,getDocs,query,where,writeBatch,Timestamp,serverTimestamp}=F;
+  const col=collection(fs,'users',user.uid,'notes');
+  const base=loadBase();
+  const snapC=await getDocs(base.lastSv?query(col,where('sv','>=',Timestamp.fromMillis(base.lastSv))):col);
+  const cloud=new Map();let maxSv=base.lastSv;
+  snapC.forEach(d=>{const x=d.data();const sv=x.sv&&x.sv.toMillis?x.sv.toMillis():0;cloud.set(d.id,Object.assign({},x,{sv}));if(sv>maxSv)maxSv=sv});
+  const S=snap();
+  const pulls=[],pushes=[],adopt=[];
+  const ids=new Set([...S.m.keys(),...cloud.keys(),...Object.keys(base.ids)]);ids.delete(FID);
+  for(const id of ids){
+    const L=S.m.get(id),C=cloud.get(id),b=base.ids[id];
+    const lc=L?(!b||b.h!==L.h):!!(b&&!b.gone);
+    const cc=C?(C.deleted?!(b&&b.gone):(!b||b.h!==C.h)):false;
+    if(!lc&&!cc)continue;
+    if(lc&&!cc){pushes.push({id,L});continue}
+    if(L&&C&&!C.deleted&&C.h===L.h){adopt.push({id,h:L.h});continue}
+    if(!L&&C&&C.deleted){adopt.push({id,gone:true});continue}
+    if(!lc&&cc){pulls.push({id,C});continue}
+    if(!L){pulls.push({id,C});continue}
+    if(C.deleted){pushes.push({id,L});continue}
+    if(cts(C)>lts(L))pulls.push({id,C});else pushes.push({id,L});
+  }
+  /* safety: a sudden mass-disappearance of local notes is treated as data loss, never as deletion */
+  const purges=pushes.filter(p=>!p.L),known=Object.values(base.ids).filter(x=>!x.gone).length;
+  if(purges.length>5&&purges.length>known*0.5){
+    if(depth)throw new Error('mass-purge-guard');
+    purges.forEach(p=>{delete base.ids[p.id]});base.lastSv=0;saveBase(base);return run(apply,1);
+  }
+  /* folders */
+  let fPush=null,fPull=null;
+  {
+    const FL=S.fo,FC=cloud.get(FID),fb=base.ids[FID];
+    const lc=FL?(!fb||fb.h!==FL.h):false,cc=FC?(!fb||fb.h!==FC.h):false;
+    if(lc&&!cc)fPush=FL.o;
+    else if(!lc&&cc){if(FL&&FC.h===FL.h)adopt.push({id:FID,h:FL.h});else fPull=JSON.parse(FC.data)}
+    else if(lc&&cc){
+      if(FC.h===FL.h)adopt.push({id:FID,h:FL.h});
+      else{const c=JSON.parse(FC.data),seen=new Set(FL.o.map(x=>x&&x.id));fPull=FL.o.concat(c.filter(x=>x&&!seen.has(x.id)));fPush=fPull}
+    }
+  }
+  /* pushes first (always safe) */
+  const ops=[];let skippedBig=0;
+  for(const p of pushes){
+    const ref=doc(col,p.id);
+    if(p.L){
+      if(p.L.j.length>900000){skippedBig++;continue}
+      ops.push(b=>b.set(ref,{data:p.L.j,trashed:p.L.tr,deleted:false,h:p.L.h,sv:serverTimestamp()}));
+      base.ids[p.id]={h:p.L.h};
+    }else{
+      ops.push(b=>b.set(ref,{deleted:true,sv:serverTimestamp()}));
+      base.ids[p.id]={gone:true};
+    }
+  }
+  if(fPush){
+    const fj=JSON.stringify(fPush),fh=hash('F'+fj);
+    ops.push(b=>b.set(doc(col,FID),{data:fj,trashed:false,deleted:false,h:fh,sv:serverTimestamp()}));
+    base.ids[FID]={h:fh};
+  }
+  adopt.forEach(a=>{base.ids[a.id]=a.gone?{gone:true}:{h:a.h}});
+  for(let i=0;i<ops.length;i+=400){const wb=writeBatch(fs);ops.slice(i,i+400).forEach(o=>o(wb));await wb.commit()}
+  const needApply=pulls.length>0||!!fPull;
+  if(!needApply){base.lastSv=maxSv;saveBase(base);lastOk=Date.now();status=skippedBig?'تم، وتخطّينا '+skippedBig+' ملاحظة كبيرة جدًا':'';return {needApply:false}}
+  saveBase(base);
+  if(!apply)return {needApply:true};
+  /* apply pulls to the local copy, then reload so the app reads it */
+  let notes=S.notes.slice(),trash=S.trash.slice();
+  const rm=id=>{notes=notes.filter(x=>x&&x.id!==id);trash=trash.filter(x=>x&&x.id!==id)};
+  for(const {id,C} of pulls){
+    rm(id);
+    if(C.deleted){base.ids[id]={gone:true};continue}
+    const o=JSON.parse(C.data);(C.trashed?trash:notes).push(o);
+    base.ids[id]={h:hash((C.trashed?'T':'N')+JSON.stringify(o))};
+  }
+  rawPut(KEYS.n,JSON.stringify(notes));rawPut(KEYS.t,JSON.stringify(trash));
+  if(fPull){rawPut(KEYS.f,JSON.stringify(fPull));base.ids[FID]={h:hash('F'+JSON.stringify(fPull))}}
+  base.lastSv=maxSv;saveBase(base);lastOk=Date.now();
+  location.reload();
+  return {needApply:false,reloading:true};
+}
+async function sync(){
+  if(!user||!fs)return;
+  if(busy){again=true;return}
+  busy=true;
+  try{
+    const r=await run(false,0);
+    if(r.needApply){
+      if(idle()){await sleep(450);if(idle())await run(true,0);else setTimeout(sync,3000)}
+      else setTimeout(sync,3000);
+    }
+  }catch(e){
+    console.warn('sync failed',e);
+    const c=e&&e.code;
+    status=c==='permission-denied'?'المزامنة غير مفعّلة بعد (قواعد Firestore).':c==='failed-precondition'||c==='not-found'?'قاعدة Firestore غير منشأة بعد.':'تعذّرت المزامنة، تأكد من الإنترنت.';
+  }finally{busy=false;if(again){again=false;setTimeout(sync,500)}}
+}
+Storage.prototype.setItem=function(k){
+  rawSet.apply(this,arguments);
+  if(user&&this===LS&&(k===KEYS.n||k===KEYS.t||k===KEYS.f)){clearTimeout(timer);timer=setTimeout(sync,2500)}
+};
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sync()});
+window.addEventListener('online',()=>sync());
+setInterval(()=>{if(document.visibilityState==='visible')sync()},90000);
+
+/* ---------- account dialog ---------- */
+function dlg(){let d=$('gld');if(!d){d=document.createElement('div');d.id='gld';d.className='wl';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');app.appendChild(d);d.addEventListener('click',e=>{if(e.target===d)closeD()})}return d}
+function openD(inner){const d=dlg();d.innerHTML='<div class="wl-card">'+inner+'</div>';void d.offsetWidth;d.classList.add('on');return d}
+function closeD(){const d=$('gld');if(d)d.classList.remove('on')}
+const setSt=t=>{const s=$('glSt');if(s)s.textContent=t};
+const stText=()=>status||(lastOk?'تمت المزامنة ✓':'جاهز للمزامنة');
+let authApi=null;
+window.glAccount=function(){
+  if(!user){
+    const d=openD('<div class="wl-ic"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></div><h2>الحساب</h2><p>سجّل الدخول بحساب قوقل عشان تتزامن ملاحظاتك بين أجهزتك.</p><button class="wl-btn" id="glIn" type="button">تسجيل الدخول بقوقل</button><button class="wl-btn sec" id="glX" type="button">إغلاق</button>');
+    d.querySelector('#glX').onclick=closeD;
+    d.querySelector('#glIn').onclick=()=>{try{LS.removeItem(SKIP)}catch(e){}closeD();setTimeout(openLogin,250)};
+    return;
+  }
+  const d=openD('<div class="wl-ic"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></div><h2>الحساب</h2><p>'+E(user.displayName||'')+'<br><span dir="ltr">'+E(user.email||'')+'</span></p><p class="wl-st" id="glSt">'+E(stText())+'</p><button class="wl-btn" id="glSync" type="button">مزامنة الآن</button><button class="wl-btn sec" id="glOut" type="button">تسجيل الخروج</button><button class="wl-btn sec" id="glX" type="button">إغلاق</button>');
+  d.querySelector('#glX').onclick=closeD;
+  d.querySelector('#glSync').onclick=async()=>{setSt('جاري المزامنة…');status='';await sync();while(busy)await sleep(200);setSt(stText())};
+  d.querySelector('#glOut').onclick=async()=>{
+    setSt('جاري حفظ نسختك قبل الخروج…');
+    try{
+      await sleep(600);while(busy)await sleep(200);
+      busy=true;let r;try{r=await run(false,0)}finally{busy=false}
+      const bk=baseKey();
+      Object.values(KEYS).forEach(k=>LS.removeItem(k));LS.removeItem(bk);
+      await authApi.signOut();location.reload();
+    }catch(e){console.warn(e);setSt('تعذّر حفظ نسختك في الحساب، تأكد من الإنترنت ولا تسجّل الخروج الآن.')}
+  };
+};
+
+/* ---------- firebase ---------- */
 try{
   const A=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js');
-  const B=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
+  const AU=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
+  F=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js');
   const fb=A.initializeApp({apiKey:"AIzaSyCPVfIPsn_9Suy_y2vEAwav80UiBc3c8w4",authDomain:"my-site-1f332.firebaseapp.com",projectId:"my-site-1f332",appId:"1:86359061419:web:9ab96f3c0eaa220e20d8ee"});
-  const auth=B.getAuth(fb);
-  window.glAuth={auth,signOut:()=>B.signOut(auth)};
+  const auth=AU.getAuth(fb);fs=F.getFirestore(fb);
+  authApi={signOut:()=>AU.signOut(auth)};
+  window.glAuth={auth};
   btn.addEventListener('click',async()=>{
     err.textContent='';btn.classList.add('busy');
-    try{await B.signInWithPopup(auth,new B.GoogleAuthProvider())}
+    try{await AU.signInWithPopup(auth,new AU.GoogleAuthProvider())}
     catch(e){
-      if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){try{await B.signInWithRedirect(auth,new B.GoogleAuthProvider());return}catch(e2){e=e2}}
       err.textContent=MSG[e&&e.code]||'صار خطأ، حاول مرة ثانية.';
     }
     btn.classList.remove('busy');
   });
-  B.onAuthStateChanged(auth,u=>{if(u){try{localStorage.removeItem(KEY)}catch(e){}close()}else if(!skipped()){open()}});
-}catch(e){/* بدون إنترنت أو فشل التحميل: التطبيق يشتغل عادي */}
+  AU.onAuthStateChanged(auth,u=>{
+    user=u||null;
+    if(u){try{LS.removeItem(SKIP)}catch(e){}closeLogin();sync()}
+    else if(!skipped())openLogin();
+  });
+}catch(e){console.warn('firebase unavailable',e)}
 </script>
 </body></html>
 ف

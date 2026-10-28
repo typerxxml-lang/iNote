@@ -2489,5 +2489,61 @@ button,.row,.tab,.mi{touch-action:manipulation;-webkit-tap-highlight-color:trans
 ::highlight(fnd){background:rgba(255,214,10,.45);color:inherit}
 ::highlight(fndc){background:var(--acc);color:var(--on-accent)}
 </style>
+<style id="gl-login">
+.gl{position:absolute;inset:0;z-index:700;display:none;align-items:center;justify-content:center;opacity:0;background:color-mix(in srgb,var(--bg) 70%,transparent);-webkit-backdrop-filter:blur(34px) saturate(1.5);backdrop-filter:blur(34px) saturate(1.5);transition:opacity .45s ease}
+.gl.show{display:flex}.gl.on{opacity:1}
+.gl-in{width:100%;max-width:380px;height:100%;max-height:780px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 90px) 28px calc(env(safe-area-inset-bottom,0px) + 34px);box-sizing:border-box;transform:scale(1.08) translateY(14px);transition:transform .8s var(--sp-soft),opacity .35s ease}
+.gl.on .gl-in{transform:none}
+.gl.out .gl-in{transform:scale(1.14);opacity:0;transition:transform .55s var(--ease),opacity .34s ease}
+.gl-top{display:flex;flex-direction:column;align-items:center;text-align:center}
+.gl-ic{width:92px;height:92px;border-radius:30px;background:var(--acc);color:var(--on-accent);display:grid;place-items:center;box-shadow:0 14px 40px rgba(var(--acc-rgb),.35);opacity:0;transform:scale(.6) translateY(14px);transition:transform .9s var(--sp),opacity .4s ease .1s}
+.gl-ic .ic{width:46px;height:46px}
+.gl.on .gl-ic{opacity:1;transform:none}
+.gl-t{margin:26px 0 8px;font-size:30px;font-weight:700;line-height:1.3;opacity:0;transform:translateY(16px);transition:transform .8s var(--sp-soft) .12s,opacity .4s ease .12s}
+.gl-s{margin:0;color:var(--fg2);font-size:16px;line-height:1.8;max-width:290px;opacity:0;transform:translateY(16px);transition:transform .8s var(--sp-soft) .2s,opacity .4s ease .2s}
+.gl.on .gl-t,.gl.on .gl-s{opacity:1;transform:none}
+.gl-bot{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0;transform:translateY(26px);transition:transform .85s var(--sp) .28s,opacity .4s ease .28s}
+.gl.on .gl-bot{opacity:1;transform:none}
+.gl-btn{width:100%;height:56px;border:0;border-radius:99px;background:var(--card);color:var(--fg);font:700 17px var(--font);display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 0 0 .6px var(--sep),0 8px 26px rgba(0,0,0,.12);transition:transform .35s var(--sp),opacity .25s ease;-webkit-tap-highlight-color:transparent}
+.gl-btn:active{transform:scale(.95)}
+.gl-btn svg{width:22px;height:22px;flex:none}
+.gl-btn.busy{opacity:.6;pointer-events:none}
+.gl-skip{border:0;background:none;color:var(--fg2);font:500 15px var(--font);padding:10px 16px;border-radius:99px;transition:transform .3s var(--sp),opacity .2s ease}
+.gl-skip:active{transform:scale(.92);opacity:.6}
+.gl-err{min-height:20px;margin:0;font-size:14px;color:#FF3B30;text-align:center}
+</style>
+<div class="gl" id="gl" role="dialog" aria-modal="true" aria-hidden="true"><div class="gl-in">
+<div class="gl-top"><div class="gl-ic"><svg class="ic" aria-hidden="true"><use href="#i-note"/></svg></div><h1 class="gl-t">أهلاً بك في iNote</h1><p class="gl-s">سجّل دخولك بحساب قوقل عشان تبدأ تكتب ملاحظاتك.</p></div>
+<div class="gl-bot"><p class="gl-err" id="glErr"></p>
+<button class="gl-btn" id="glBtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3.1-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.3 0 11.8-2.1 15.7-5.7l-7.6-5.9c-2.1 1.4-4.8 2.3-8.1 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg><span>المتابعة بحساب قوقل</span></button>
+<button class="gl-skip" id="glSkip" type="button">المتابعة بدون حساب</button></div>
+</div></div>
+<script type="module">
+const gl=document.getElementById('gl'),btn=document.getElementById('glBtn'),skip=document.getElementById('glSkip'),err=document.getElementById('glErr');
+const app=document.getElementById('app')||document.body;
+const KEY='gl-skip-v1';
+const skipped=()=>{try{return localStorage.getItem(KEY)==='1'}catch(e){return false}};
+function open(){if(gl.classList.contains('show'))return;app.appendChild(gl);gl.classList.add('show');gl.setAttribute('aria-hidden','false');void gl.offsetWidth;gl.classList.add('on')}
+function close(){if(!gl.classList.contains('show'))return;gl.classList.add('out');gl.classList.remove('on');gl.setAttribute('aria-hidden','true');setTimeout(()=>{gl.classList.remove('show','out')},560)}
+skip.addEventListener('click',()=>{try{localStorage.setItem(KEY,'1')}catch(e){}close()});
+const MSG={'auth/popup-closed-by-user':'تم إلغاء تسجيل الدخول.','auth/cancelled-popup-request':'تم إلغاء تسجيل الدخول.','auth/unauthorized-domain':'هذا النطاق غير مضاف في Firebase (Authorized domains).','auth/network-request-failed':'تأكد من اتصالك بالإنترنت.'};
+try{
+  const A=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js');
+  const B=await import('https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js');
+  const fb=A.initializeApp({apiKey:"AIzaSyCPVfIPsn_9Suy_y2vEAwav80UiBc3c8w4",authDomain:"my-site-1f332.firebaseapp.com",projectId:"my-site-1f332",appId:"1:86359061419:web:9ab96f3c0eaa220e20d8ee"});
+  const auth=B.getAuth(fb);
+  window.glAuth={auth,signOut:()=>B.signOut(auth)};
+  btn.addEventListener('click',async()=>{
+    err.textContent='';btn.classList.add('busy');
+    try{await B.signInWithPopup(auth,new B.GoogleAuthProvider())}
+    catch(e){
+      if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')){try{await B.signInWithRedirect(auth,new B.GoogleAuthProvider());return}catch(e2){e=e2}}
+      err.textContent=MSG[e&&e.code]||'صار خطأ، حاول مرة ثانية.';
+    }
+    btn.classList.remove('busy');
+  });
+  B.onAuthStateChanged(auth,u=>{if(u){try{localStorage.removeItem(KEY)}catch(e){}close()}else if(!skipped()){open()}});
+}catch(e){/* بدون إنترنت أو فشل التحميل: التطبيق يشتغل عادي */}
+</script>
 </body></html>
 ف

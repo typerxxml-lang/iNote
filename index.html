@@ -2363,6 +2363,8 @@ if(!store.get('lg-intro-v1',0)){store.set('lg-intro-v1',1);
   store.set('lg-notes-v1',notes);try{save();renderAll()}catch(e){}}
 DOCS.guide=guide(cur);
 if(cur!=='ar'){setLang(cur,false)}
+/* Rebuild settings after installing the language and guide controls. */
+renderSettings();
 })();
 
 

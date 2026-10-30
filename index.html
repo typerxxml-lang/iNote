@@ -3248,8 +3248,16 @@ try{
       await AU.setPersistence(auth,AU.browserLocalPersistence);
       const prov=new AU.GoogleAuthProvider();prov.setCustomParameters({prompt:'select_account'});
       if(window.median&&median.socialLogin&&median.socialLogin.google){
-        const r=await median.socialLogin.google.login();
-        if(!(r&&r.idToken))throw {code:'median-no-token'};
+        // Median returns the native Google result through its required callback.
+        const r=await new Promise((resolve,reject)=>{
+          try{
+            median.socialLogin.google.login({callback:(response)=>{
+              if(response&&response.error){reject({code:'median-google-error',message:response.error});return}
+              if(response&&response.idToken){resolve(response);return}
+              reject({code:'median-no-token'});
+            }});
+          }catch(error){reject(error)}
+        });
         await AU.signInWithCredential(auth,AU.GoogleAuthProvider.credential(r.idToken));
       }else{
         try{await AU.signInWithPopup(auth,prov)}

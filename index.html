@@ -2468,6 +2468,10 @@ function findShow(){if(!FR.length)return;try{CSS.highlights.set('fndc',new Highl
 ['moreBtn','fMore'].forEach(function(id){var b=$(id);if(!b)return;b.classList.add('dots-btn');
   b.innerHTML='<svg class="dots-glyph" viewBox="0 0 24 24" aria-hidden="true"><circle class="d1" cx="5.5" cy="12" r="1.7"/><circle class="d2" cx="12" cy="12" r="1.7"/><circle class="d3" cx="18.5" cy="12" r="1.7"/><line class="x1" x1="6.5" y1="6.5" x2="17.5" y2="17.5"/><line class="x2" x1="17.5" y1="6.5" x2="6.5" y2="17.5"/></svg>'});
 
+/* ===== account UI hook (profile, sync, app download) ===== */
+window.glSq=function(){if(typeof sqSoon==='function')sqSoon()};
+window.glExport=function(){exportData()};
+(function(){var _r=renderSettings;renderSettings=function(){_r();if(window.glAccPaint)window.glAccPaint()}})();
 })();
 </script>
 
@@ -2634,11 +2638,117 @@ button,.row,.tab,.mi{touch-action:manipulation;-webkit-tap-highlight-color:trans
 <button class="gl-btn" id="glBtn" type="button"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.5-.8-3.1-.8-4.7s.3-3.2.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.3 0 11.8-2.1 15.7-5.7l-7.6-5.9c-2.1 1.4-4.8 2.3-8.1 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg><span>المتابعة بحساب قوقل</span></button>
 <button class="gl-skip" id="glSkip" type="button">المتابعة بدون حساب</button></div>
 </div></div>
+<style id="gl-acc">
+/* ===== account / profile / app download ===== */
+.av{--s:76px;position:relative;width:var(--s);height:var(--s);border-radius:50%;flex:none;display:grid;place-items:center;overflow:hidden;isolation:isolate;
+  background:linear-gradient(150deg,rgba(var(--acc-rgb),1),rgba(var(--acc-rgb),.68));color:var(--on-accent);font:700 calc(var(--s)*.42)/1 var(--font);
+  -webkit-user-select:none;user-select:none;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .5s var(--sp)}
+.av.avq{border-radius:30%}
+.av:active{transform:scale(.92)}
+.av b{position:relative;z-index:0;font-weight:700}
+.av .ic{width:calc(var(--s)*.5);height:calc(var(--s)*.5);stroke-width:1.7;position:relative;z-index:0}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;-webkit-user-drag:none;pointer-events:none}
+/* liquid-glass shine only: specular highlights + bright rim, no blur, no tint, no shadow */
+.av::before{content:"";position:absolute;inset:0;border-radius:inherit;z-index:3;pointer-events:none;opacity:var(--shn,1);
+  background:
+   radial-gradient(115% 62% at 30% -6%,rgba(255,255,255,.78) 0%,rgba(255,255,255,.22) 40%,rgba(255,255,255,0) 62%),
+   radial-gradient(80% 52% at 84% 112%,rgba(255,255,255,.42) 0%,rgba(255,255,255,0) 62%),
+   linear-gradient(var(--spec,135deg),rgba(255,255,255,.26) 0%,rgba(255,255,255,0) 26%,rgba(255,255,255,0) 70%,rgba(255,255,255,.2) 100%);
+  box-shadow:inset 0 1.5px .5px rgba(255,255,255,.9),inset 0 -1.5px .5px rgba(255,255,255,.38),inset 0 0 18px -5px rgba(255,255,255,.7);
+  transition:transform .6s var(--sp)}
+.av:active::before{transform:translate(4%,5%) scale(1.04)}
+.av::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1.2px;z-index:4;pointer-events:none;opacity:var(--shn,1);
+  background:linear-gradient(var(--spec,135deg),#fff 0%,rgba(255,255,255,0) 32%,rgba(255,255,255,0) 60%,rgba(255,255,255,.75) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--shn:.7}}
+:root[data-theme="dark"]{--shn:.7}
+
+.acc-head{display:flex;align-items:center;gap:16px;padding:20px 18px}
+.acc-head+.row::before{content:"";position:absolute;top:0;inset-inline:18px;height:.5px;background:var(--sep)}
+.acc-id{min-width:0;flex:1}
+.acc-n{font-weight:700;font-size:21px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc-e{color:var(--fg2);font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acc-chip{display:inline-flex;align-items:center;gap:7px;margin-top:9px;padding:4px 12px;border-radius:99px;background:var(--seg-bg);font-size:12.5px;font-weight:600;color:var(--fg2)}
+.acc-chip i{width:7px;height:7px;border-radius:50%;background:#34C759;flex:none}
+.acc-chip[data-s="busy"] i{background:var(--acc);animation:accp 1s ease-in-out infinite}
+.acc-chip[data-s="err"] i{background:#FF9500}
+.acc-chip[data-s="idle"] i{background:var(--fg3)}
+@keyframes accp{50%{opacity:.25;transform:scale(.7)}}
+@media (prefers-reduced-motion:reduce){.acc-chip[data-s="busy"] i{animation:none}}
+.glchev{color:var(--fg3)!important;width:18px!important;height:18px!important;stroke-width:2.6!important}
+#app[dir=ltr] .glchev{transform:scaleX(-1)}
+.row.act .sl{flex:1;margin-inline-start:2px}
+
+.acc-promo{padding:22px 18px 18px;text-align:start}
+.promo-top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.promo-top h3{margin:0 0 3px;font-size:20px;line-height:1.35}
+.promo-top p{margin:0;color:var(--fg2);font-size:14.5px;line-height:1.7}
+.perks{list-style:none;margin:16px 0 18px;padding:0;display:grid;gap:14px}
+.perks li{display:flex;gap:13px;align-items:flex-start}
+.perks .pi{width:38px;height:38px;border-radius:13px;background:rgba(var(--acc-rgb),.16);color:var(--accent);display:grid;place-items:center;flex:none}
+.perks .pi .ic{width:21px;height:21px;stroke-width:2}
+.perks b{display:block;font-size:15.5px;line-height:1.5}
+.perks span.pt{display:block;color:var(--fg2);font-size:13.5px;line-height:1.65;margin-top:1px}
+.acc-go{width:100%;height:56px;border:0;border-radius:99px;background:var(--acc);color:var(--on-accent);font:700 17px var(--font);display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:0 10px 28px rgba(var(--acc-rgb),.32);transition:transform .35s var(--sp)}
+.acc-go:active{transform:scale(.95)}
+.acc-go svg{width:22px;height:22px;flex:none}
+.acc-go .gw{width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.acc-go .gw svg{width:18px;height:18px}
+.acc-note{text-align:center;color:var(--fg2);font-size:13px;margin:12px 0 0}
+
+.wl-card{max-height:100%;overflow-y:auto;scrollbar-width:none}
+.wl-card::-webkit-scrollbar{display:none}
+.wl-card .av{margin:0 auto 16px}
+.wl-btn.dngb{background:#FF3B30;color:#fff}
+.wl-btn:disabled{opacity:.38;pointer-events:none}
+.gl-inp{display:block;width:100%;height:52px;border:0;border-radius:18px;background:var(--seg-bg);color:var(--fg);font:500 17px var(--font);padding:0 16px;margin:4px 0 8px;outline:0;box-sizing:border-box}
+.gl-inp:focus{box-shadow:0 0 0 2px var(--acc)}
+.gl-chk{display:flex;align-items:center;gap:10px;text-align:start;margin:4px 0 14px;color:var(--fg2);font-size:14.5px;line-height:1.6}
+.gl-chk input{width:20px;height:20px;accent-color:var(--acc);flex:none;margin:0}
+
+/* download page */
+.dlp{position:absolute;inset:0;z-index:650;display:none;flex-direction:column;background:var(--bg);opacity:0;transform:translateY(28px) scale(.97);transition:opacity .4s ease,transform .75s var(--sp)}
+.dlp.show{display:flex}.dlp.on{opacity:1;transform:none}
+.dlp.out{opacity:0;transform:translateY(20px) scale(.97);transition:opacity .3s ease,transform .45s var(--ease)}
+.dl-top{flex:none;padding:calc(env(safe-area-inset-top,0px) + 10px) var(--gr) 0 var(--gl)}
+#app[dir=ltr] .dl-back .ic{transform:scaleX(-1)}
+.dl-body{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;width:100%;max-width:440px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 24px calc(env(safe-area-inset-bottom,0px) + 36px)}
+.dl-body::-webkit-scrollbar{display:none}
+.dl-body>*{opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .8s var(--sp-soft)}
+.dlp.on .dl-body>*{opacity:1;transform:none}
+.dlp.on .dl-body>:nth-child(2){transition-delay:.06s}.dlp.on .dl-body>:nth-child(3){transition-delay:.12s}.dlp.on .dl-body>:nth-child(4){transition-delay:.18s}
+.dlp.on .dl-body>:nth-child(5){transition-delay:.24s}.dlp.on .dl-body>:nth-child(6){transition-delay:.3s}.dlp.on .dl-body>:nth-child(7){transition-delay:.36s}
+.dl-body .av{margin-top:8px}
+.dl-t{font-size:32px;font-weight:700;margin:22px 0 8px;line-height:1.3}
+.dl-s{color:var(--fg2);font-size:16px;line-height:1.85;margin:0 0 22px;max-width:310px}
+.dl-file{width:100%;display:flex;align-items:center;gap:14px;padding:14px 18px;text-align:start}
+.dl-fi{width:46px;height:46px;border-radius:15px;background:rgba(var(--acc-rgb),.16);color:var(--accent);display:grid;place-items:center;flex:none}
+.dl-file b{display:block;font-size:17px;line-height:1.4}
+.dl-file small{display:block;color:var(--fg2);font-size:13.5px}
+.dl-go{margin-top:16px;width:100%;height:62px;border-radius:99px;background:var(--acc);color:var(--on-accent);display:flex;align-items:center;justify-content:center;gap:10px;font:700 18px var(--font);text-decoration:none;box-shadow:0 12px 32px rgba(var(--acc-rgb),.38);transition:transform .35s var(--sp),opacity .25s;-webkit-tap-highlight-color:transparent}
+.dl-go:active{transform:scale(.95)}
+.dl-go .ic{width:24px;height:24px;stroke-width:2.2}
+.dl-hint{color:var(--fg2);font-size:13px;line-height:1.7;margin:12px 0 0;max-width:320px}
+.dl-note{width:100%;margin-top:24px;padding:18px;text-align:start}
+.dl-note b{display:flex;align-items:center;gap:8px;font-size:16.5px;margin-bottom:8px}
+.dl-note b .ic{color:var(--accent);width:20px;height:20px}
+.dl-note p{margin:0 0 14px;color:var(--fg2);line-height:1.95;font-size:15px}
+.dl-json{width:100%;height:48px;border:0;border-radius:99px;background:var(--seg-bg);color:var(--fg);font:600 15px var(--font);display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .3s var(--sp)}
+.dl-json:active{transform:scale(.94)}
+.dl-json .ic{width:19px;height:19px}
+</style>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.7"/><path d="M5 20c.6-3.7 3.6-5.8 7-5.8s6.4 2.1 7 5.8"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 4H6.5A2.5 2.5 0 0 0 4 6.5v11A2.5 2.5 0 0 0 6.5 20H10"/><path d="M15 8l4 4-4 4M19 12H9"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="3"/><path d="M11 17.5h2"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18.5a4 4 0 0 1-.6-7.95A5.6 5.6 0 0 1 17 8.7a4.9 4.9 0 0 1 .5 9.8H7z"/></symbol>
+<symbol id="i-pen" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19l-4 1z"/><path d="M14.5 6.5l3 3"/></symbol>
+</defs></svg>
 <script type="module">
 const $=id=>document.getElementById(id);
 const gl=$('gl'),btn=$('glBtn'),skip=$('glSkip'),err=$('glErr');
 const app=$('app')||document.body;
-const SKIP='gl-skip-v1',FID='meta-folders';
+const SKIP='gl-skip-v1',FID='meta-folders',PID='meta-profile',PK='gl-prof-v1',AUTO='gl-autosync-v1',DELP='gl-del-pending',APK='iNote.apk',APK_MB='6.9';
 const KEYS={n:'lg-notes-v1',t:'lg-trash-v1',f:'lg-folders-v1'};
 const LS=window.localStorage,rawSet=Storage.prototype.setItem;
 const rawGet=k=>{try{return LS.getItem(k)}catch(e){return null}};
@@ -2657,7 +2767,7 @@ skip.addEventListener('click',()=>{try{LS.setItem(SKIP,'1')}catch(e){}closeLogin
 const MSG={'auth/popup-closed-by-user':'تم إلغاء تسجيل الدخول.','auth/cancelled-popup-request':'تم إلغاء تسجيل الدخول.','auth/unauthorized-domain':'هذا النطاق غير مضاف في Firebase (Authorized domains).','auth/network-request-failed':'تأكد من اتصالك بالإنترنت.','auth/popup-blocked':'المتصفح منع نافذة قوقل. افتح الموقع من Chrome وسمح بالنوافذ المنبثقة.','auth/operation-not-supported-in-this-environment':'افتح الموقع من متصفح Chrome مباشرة، مو من داخل تطبيق ثاني.'};
 
 /* ---------- sync state ---------- */
-let user=null,fs=null,F=null,B=null,busy=false,again=false,timer=0,status='',lastOk=0;
+let user=null,fs=null,F=null,B=null,busy=false,again=false,timer=0,status='',lastOk=0,deleting=false;
 const baseKey=()=>'gl-sync-v2:'+user.uid;
 const loadBase=()=>{const b=readJ(baseKey());return b&&b.ids?b:{lastSv:0,ids:{}}};
 const saveBase=b=>rawPut(baseKey(),JSON.stringify(b));
@@ -2684,7 +2794,7 @@ async function run(apply,depth){
   snapC.forEach(d=>{const x=d.data();const sv=x.sv&&x.sv.toMillis?x.sv.toMillis():0;cloud.set(d.id,Object.assign({},x,{sv}));if(sv>maxSv)maxSv=sv});
   const S=snap();
   const pulls=[],pushes=[],adopt=[];
-  const ids=new Set([...S.m.keys(),...cloud.keys(),...Object.keys(base.ids)]);ids.delete(FID);
+  const ids=new Set([...S.m.keys(),...cloud.keys(),...Object.keys(base.ids)]);ids.delete(FID);ids.delete(PID);
   for(const id of ids){
     const L=S.m.get(id),C=cloud.get(id),b=base.ids[id];
     const lc=L?(!b||b.h!==L.h):!!(b&&!b.gone);
@@ -2756,9 +2866,9 @@ async function run(apply,depth){
   return {needApply:false,reloading:true};
 }
 async function sync(){
-  if(!user||!fs)return;
+  if(!user||!fs||deleting)return;
   if(busy){again=true;return}
-  busy=true;
+  busy=true;try{window.glStat&&window.glStat()}catch(e){}
   try{
     const r=await run(false,0);
     if(r.needApply){
@@ -2769,15 +2879,15 @@ async function sync(){
     console.warn('sync failed',e);
     const c=e&&e.code;
     status=c==='permission-denied'?'المزامنة غير مفعّلة بعد (قواعد Firestore).':c==='failed-precondition'||c==='not-found'?'قاعدة Firestore غير منشأة بعد.':'تعذّرت المزامنة، تأكد من الإنترنت.';
-  }finally{busy=false;if(again){again=false;setTimeout(sync,500)}}
+  }finally{busy=false;try{window.glStat&&window.glStat()}catch(e){}if(again){again=false;setTimeout(sync,500)}}
 }
 Storage.prototype.setItem=function(k){
   rawSet.apply(this,arguments);
-  if(user&&this===LS&&(k===KEYS.n||k===KEYS.t||k===KEYS.f)){clearTimeout(timer);timer=setTimeout(sync,2500)}
+  if(user&&this===LS&&(k===KEYS.n||k===KEYS.t||k===KEYS.f)){clearTimeout(timer);timer=setTimeout(()=>{if(autoOn())sync()},2500)}
 };
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')sync()});
-window.addEventListener('online',()=>sync());
-setInterval(()=>{if(document.visibilityState==='visible')sync()},90000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoOn())sync()});
+window.addEventListener('online',()=>{if(autoOn())sync()});
+setInterval(()=>{if(document.visibilityState==='visible'&&autoOn())sync()},90000);
 
 /* ---------- account dialog ---------- */
 function dlg(){let d=$('gld');if(!d){d=document.createElement('div');d.id='gld';d.className='wl';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');app.appendChild(d);d.addEventListener('click',e=>{if(e.target===d)closeD()})}return d}
@@ -2793,7 +2903,7 @@ window.glAccount=function(){
     d.querySelector('#glIn').onclick=()=>{try{LS.removeItem(SKIP)}catch(e){}closeD();setTimeout(openLogin,250)};
     return;
   }
-  const d=openD('<div class="wl-ic"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></div><h2>الحساب</h2><p>'+E(user.displayName||'')+'<br><span dir="ltr">'+E(user.email||'')+'</span></p><p class="wl-st" id="glSt">'+E(stText())+'</p><button class="wl-btn" id="glSync" type="button">مزامنة الآن</button><button class="wl-btn sec" id="glOut" type="button">تسجيل الخروج</button><button class="wl-btn sec" id="glX" type="button">إغلاق</button>');
+  const d=openD('<div class="wl-ic"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg></div><h2>الحساب</h2><p>'+E(dispName())+'<br><span dir="ltr">'+E(user.email||'')+'</span></p><p class="wl-st" id="glSt">'+E(stText())+'</p><button class="wl-btn" id="glSync" type="button">مزامنة الآن</button><button class="wl-btn sec" id="glOut" type="button">تسجيل الخروج</button><button class="wl-btn sec" id="glX" type="button">إغلاق</button>');
   d.querySelector('#glX').onclick=closeD;
   d.querySelector('#glSync').onclick=async()=>{setSt('جاري المزامنة…');status='';await sync();while(busy)await sleep(200);setSt(stText())};
   d.querySelector('#glOut').onclick=async()=>{
@@ -2808,6 +2918,316 @@ window.glAccount=function(){
   };
 };
 
+/* ---------- account: profile, settings section, app download ---------- */
+let prof=readJ(PK)||{},authReady=false,authFailed=false,lastProfFetch=0,runningDel=false;
+try{const p=JSON.parse(LS.getItem(DELP)||'null');if(p&&Date.now()-(p.ts||0)<600000)deleting=true}catch(e){}
+const autoOn=()=>{try{return LS.getItem(AUTO)!=='0'}catch(e){return true}};
+const isAr=()=>{const l=(document.documentElement.lang||'ar').toLowerCase();return l==='ar'||l.indexOf('ar-')===0};
+const tr=(a,e)=>isAr()?a:e;
+const loc=()=>isAr()?'ar-u-nu-latn':(document.documentElement.lang||'en');
+const I=(n,c)=>'<svg class="ic '+(c||'')+'" aria-hidden="true"><use href="#i-'+n+'"/></svg>';
+const gIcon=()=>{const b=$('glBtn'),s=b&&b.querySelector('svg');return s?s.outerHTML:''};
+const UA=navigator.userAgent||'';
+const inApp=/median|gonative/i.test(UA)||!!window.median||!!window.gonative;
+const isIOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const showDl=()=>!inApp&&!isIOS;
+const srcUser=()=>user?{uid:user.uid,email:user.email||'',gname:user.displayName||'',gphoto:user.photoURL||''}:(prof.uid?{uid:prof.uid,email:prof.email||'',gname:prof.gname||'',gphoto:prof.gphoto||''}:null);
+function dispName(){const s=srcUser();if(!s)return '';return ((prof.uid===s.uid&&prof.name)||'').trim()||s.gname||(s.email?s.email.split('@')[0]:'')}
+function photoSrc(){const s=srcUser();if(!s)return '';return (prof.uid===s.uid&&prof.photo)?prof.photo:(s.gphoto||'')}
+function avHTML(size,editable){
+  const s=srcUser(),n=dispName(),p=photoSrc(),ch=(n||'?').trim().charAt(0).toUpperCase();
+  return '<span class="av'+''+'"'+(editable?' data-gl="photo" role="button" tabindex="0" aria-label="'+E(tr('تغيير الصورة','Change photo'))+'"':'')+' style="--s:'+size+'px">'+
+    (s?'<b>'+E(ch)+'</b>':I('user'))+(p?'<img alt="" referrerpolicy="no-referrer" src="'+E(p)+'" onerror="this.remove()">':'')+'</span>';
+}
+function ago(t){
+  const s=Math.max(0,(Date.now()-t)/1000);if(s<45)return tr('قبل لحظات','just now');
+  const m=Math.round(s/60);if(m<60)return tr('قبل '+m+' دقيقة',m+' min ago');
+  const h=Math.round(m/60);if(h<24)return tr('قبل '+h+' ساعة',h+' h ago');
+  return new Date(t).toLocaleDateString(loc(),{day:'numeric',month:'short'});
+}
+const stState=()=>busy?'busy':status?'err':lastOk?'ok':'idle';
+const stLine=()=>busy?tr('جارٍ المزامنة…','Syncing…'):status?status:lastOk?tr('آخر مزامنة ','Last sync ')+ago(lastOk):tr('بانتظار المزامنة','Waiting to sync');
+const chipText=()=>({busy:tr('جارٍ المزامنة…','Syncing…'),err:tr('تعذّرت المزامنة','Sync problem'),ok:tr('متزامن','Synced'),idle:tr('متصل','Connected')})[stState()];
+const chipHTML=()=>'<span class="acc-chip" data-glchip data-s="'+stState()+'"><i></i><span>'+E(chipText())+'</span></span>';
+function fmtDate(v){try{const d=new Date(v);return isNaN(d)?'—':d.toLocaleDateString(loc(),{day:'numeric',month:'long',year:'numeric'})}catch(e){return '—'}}
+const row=(a,icon,label,sub,cls)=>'<div class="row act gx '+(cls||'')+'" data-gl="'+a+'">'+I(icon)+(sub?'<div class="sl"><span>'+label+'</span><small'+(sub.attr||'')+'>'+sub.t+'</small></div>':'<span style="flex:1;margin-inline-start:2px">'+label+'</span>')+'</div>';
+
+function outHTML(){
+  const perks=[
+    ['restore',tr('مزامنة تلقائية بين أجهزتك','Automatic sync across devices'),tr('اكتب في الجوال وكمّل من الموقع، وكل شي يتحدّث لحاله.','Write on your phone, continue on the web — it all stays up to date.')],
+    ['cloud',tr('نسخة سحابية لملاحظاتك','A cloud copy of your notes'),tr('لو غيّرت جهازك أو حذفت التطبيق ترجع لك ملاحظاتك بتسجيل الدخول.','New phone or reinstalled app? Sign in and your notes come back.')],
+    ['folder',tr('المجلدات والمحذوفات تتزامن معك','Folders and trash sync too'),tr('تنظيمك كله يوصلك كما تركته.','Your whole setup follows you.')],
+    ['image',tr('اسم وصورة خاصين بك','Your own name and photo'),tr('غيّر الاسم وارفع صورتك بلمعة Liquid Glass.','Change your name and upload your own picture with a Liquid Glass shine.')],
+    ['shield',tr('تحكّم كامل بحسابك','Full control of your account'),tr('تسجيل خروج وحذف الحساب وبياناتك متى ما أردت.','Sign out or delete your account and data any time.')]
+  ].map(p=>'<li><span class="pi">'+I(p[0])+'</span><div><b>'+p[1]+'</b><span class="pt">'+p[2]+'</span></div></li>').join('');
+  return '<div class="sec glx">'+tr('الحساب','Account')+'</div><div class="card glx acc-promo">'+
+    '<div class="promo-top">'+avHTML(64,false)+'<div><h3>'+tr('سجّل دخولك','Sign in')+'</h3><p>'+tr('اربط ملاحظاتك بحسابك واستفد من:','Link your notes to your account and get:')+'</p></div></div>'+
+    '<ul class="perks">'+perks+'</ul>'+
+    '<button class="acc-go" type="button" data-gl="login"><span class="gw">'+gIcon()+'</span><span>'+tr('المتابعة بحساب قوقل','Continue with Google')+'</span></button>'+
+    '<p class="acc-note">'+tr('أو كمّل بدون حساب، ملاحظاتك تبقى على جهازك.','Or keep going without an account — your notes stay on this device.')+'</p></div>';
+}
+function inHTML(s){
+  const cu=user,custom=!!(prof.uid===s.uid&&prof.photo),md=cu&&cu.metadata||{};
+  return '<div class="sec glx">'+tr('الحساب','Account')+'</div><div class="card glx">'+
+    '<div class="acc-head">'+avHTML(76,true)+'<div class="acc-id"><div class="acc-n">'+E(dispName())+'</div><div class="acc-e"><bdi>'+E(s.email)+'</bdi></div>'+chipHTML()+'</div></div>'+
+    row('name','pen',tr('تغيير الاسم','Change name'))+
+    row('photo','image',tr('تغيير الصورة','Change photo'))+
+    (custom?row('photo-reset','user',tr('استخدام صورة حساب قوقل','Use my Google photo')):'')+
+  '</div><div class="sec glx">'+tr('المزامنة','Sync')+'</div><div class="card glx">'+
+    row('sync','restore',tr('مزامنة الآن','Sync now'),{t:E(stLine()),attr:' data-glst'})+
+    '<div class="row st"><div class="sl"><span>'+tr('المزامنة التلقائية','Automatic sync')+'</span><small>'+tr('عند الإيقاف تتزامن فقط بزر «مزامنة الآن»','When off, sync only runs with “Sync now”')+'</small></div><button class="sw" type="button" role="switch" data-glsw="auto" aria-checked="'+autoOn()+'"></button></div>'+
+    '<div class="row st"><span>'+tr('عضو منذ','Member since')+'</span><span class="val">'+(md.creationTime?E(fmtDate(md.creationTime)):'—')+'</span></div>'+
+    '<div class="row st"><span>'+tr('آخر تسجيل دخول','Last sign-in')+'</span><span class="val">'+(md.lastSignInTime?E(fmtDate(md.lastSignInTime)):'—')+'</span></div>'+
+    '<div class="row st"><span>'+tr('طريقة الدخول','Sign-in method')+'</span><span class="val">Google</span></div>'+
+  '</div><div class="sec glx">'+tr('الجلسة','Session')+'</div><div class="card glx">'+
+    row('out','logout',tr('تسجيل الخروج','Sign out'))+
+    row('del','trash',tr('حذف الحساب','Delete account'),null,'dng')+
+  '</div>';
+}
+function dlBlock(){
+  if(!showDl())return '';
+  return '<div class="sec glx">'+tr('التطبيق','App')+'</div><div class="card glx"><div class="row act gx" data-gl="dl">'+I('download')+
+    '<div class="sl"><span>'+tr('تنزيل التطبيق','Download the app')+'</span><small>'+tr('نسخة أندرويد أسلس وأفضل من الموقع','Android app — smoother and better than the website')+'</small></div>'+I('fwd','glchev')+'</div></div>';
+}
+function paint(){
+  const root=$('sSettings');if(!root)return;
+  root.querySelectorAll('.glx').forEach(n=>n.remove());
+  const s=srcUser(),big=root.querySelector('.big');
+  const a=(!authReady&&!authFailed&&!s)?'':(!s?outHTML():inHTML(s));
+  if(a&&big)big.insertAdjacentHTML('afterend',a);
+  const d=dlBlock();
+  if(d){const f=root.querySelector('.foot');if(f)f.insertAdjacentHTML('beforebegin',d);else root.insertAdjacentHTML('beforeend',d)}
+  if(window.glSq)window.glSq();
+}
+function paintStatus(){
+  document.querySelectorAll('[data-glst]').forEach(n=>{n.textContent=stLine()});
+  document.querySelectorAll('[data-glchip]').forEach(n=>{n.dataset.s=stState();const t=n.querySelector('span');if(t)t.textContent=chipText()});
+}
+window.glAccPaint=paint;window.glStat=paintStatus;
+setInterval(paintStatus,30000);
+new MutationObserver(()=>paint()).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+
+/* profile data (name + photo) lives in the user's own cloud space, cached locally */
+async function pushProf(){
+  if(!user||!fs||!F)return;
+  const ref=F.doc(F.collection(fs,'users',user.uid,'notes'),PID);
+  await F.setDoc(ref,{deleted:true,prof:{name:prof.name||'',photo:prof.photo||''},sv:F.serverTimestamp()});
+  delete prof.dirty;rawPut(PK,JSON.stringify(prof));
+}
+async function saveProfile(p){
+  const s=srcUser();if(!s)return;
+  prof=Object.assign({},prof.uid===s.uid?prof:{},{uid:s.uid,email:s.email,gname:s.gname,gphoto:s.gphoto},p);
+  Object.keys(p).forEach(k=>{if(!p[k])delete prof[k]});
+  prof.dirty=1;rawPut(PK,JSON.stringify(prof));paint();
+  try{await pushProf()}catch(e){console.warn('profile save failed',e);toast(tr('انحفظ على الجهاز، وبيُرفع لاحقًا','Saved on this device, will upload later'))}
+}
+async function loadProf(force){
+  if(!user||!fs||!F)return;
+  if(!force&&Date.now()-lastProfFetch<60000)return;
+  lastProfFetch=Date.now();
+  try{
+    if(prof.uid===user.uid&&prof.dirty){await pushProf();return}
+    const snap=await F.getDoc(F.doc(F.collection(fs,'users',user.uid,'notes'),PID));
+    const d=snap.exists()?(snap.data().prof||{}):{};
+    prof={uid:user.uid,email:user.email||'',gname:user.displayName||'',gphoto:user.photoURL||''};
+    if(d.name)prof.name=String(d.name).slice(0,40);
+    if(d.photo&&String(d.photo).indexOf('data:image/')===0&&d.photo.length<600000)prof.photo=d.photo;
+    rawPut(PK,JSON.stringify(prof));paint();
+  }catch(e){console.warn('profile load failed',e)}
+}
+function onSignedIn(u){
+  if(prof.uid&&prof.uid!==u.uid)prof={};
+  prof=Object.assign(prof,{uid:u.uid,email:u.email||'',gname:u.displayName||'',gphoto:u.photoURL||''});
+  rawPut(PK,JSON.stringify(prof));paint();loadProf(true);
+}
+function onSignedOut(){prof={};try{LS.removeItem(PK)}catch(e){}paint()}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')loadProf(false)});
+
+function needUser(){
+  if(user)return true;
+  toast(authReady?tr('سجّل دخولك أولًا','Please sign in first'):tr('جارٍ تحميل الحساب… تأكد من الاتصال','Loading your account… check your connection'));
+  return false;
+}
+function toAvatar(f){
+  return new Promise((res,rej)=>{
+    const u=URL.createObjectURL(f),im=new Image();
+    im.onload=()=>{
+      try{
+        const S=256,c=document.createElement('canvas');c.width=c.height=S;const x=c.getContext('2d');
+        const m=Math.min(im.naturalWidth,im.naturalHeight),sx=(im.naturalWidth-m)/2,sy=(im.naturalHeight-m)/2;
+        x.imageSmoothingQuality='high';x.drawImage(im,sx,sy,m,m,0,0,S,S);
+        let d='';
+        if(/png|webp|gif|svg/.test(f.type)){d=c.toDataURL('image/png')}
+        if(!d||d.length>300000){
+          const c2=document.createElement('canvas');c2.width=c2.height=S;const y=c2.getContext('2d');
+          y.fillStyle='#fff';y.fillRect(0,0,S,S);y.imageSmoothingQuality='high';y.drawImage(im,sx,sy,m,m,0,0,S,S);
+          let q=.9;d=c2.toDataURL('image/jpeg',q);while(d.length>150000&&q>.45){q-=.1;d=c2.toDataURL('image/jpeg',q)}
+        }
+        URL.revokeObjectURL(u);res(d);
+      }catch(e){URL.revokeObjectURL(u);rej(e)}
+    };
+    im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img'))};
+    im.src=u;
+  });
+}
+function pickPhoto(){
+  if(!needUser())return;
+  document.querySelectorAll('.glx-file').forEach(n=>n.remove());
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.className='file-picker glx-file';
+  app.appendChild(inp);
+  inp.addEventListener('change',async()=>{
+    const f=inp.files&&inp.files[0];inp.remove();if(!f)return;
+    try{const url=await toAvatar(f);await saveProfile({photo:url});toast(tr('تم تغيير الصورة','Photo updated'))}
+    catch(e){console.warn(e);toast(tr('تعذّر استخدام هذه الصورة','Couldn’t use this image'))}
+  });
+  inp.addEventListener('cancel',()=>inp.remove());
+  inp.click();
+}
+function nameDialog(){
+  if(!needUser())return;
+  const s=srcUser();
+  const d=openD(avHTML(84,false)+'<h2>'+tr('تغيير الاسم','Change name')+'</h2><p>'+tr('هذا الاسم يظهر في حسابك داخل التطبيق.','This name is shown on your account in the app.')+'</p>'+
+    '<input class="gl-inp" id="glNm" maxlength="40" autocomplete="off" value="'+E(dispName())+'" placeholder="'+E(s.gname||'')+'">'+
+    '<button class="wl-btn" id="glSv" type="button">'+tr('حفظ','Save')+'</button><button class="wl-btn sec" id="glX" type="button">'+tr('إلغاء','Cancel')+'</button>');
+  const inp=d.querySelector('#glNm');
+  const save=async()=>{const v=inp.value.trim().slice(0,40);closeD();await saveProfile({name:v===(s.gname||'')?'':v});toast(tr('تم حفظ الاسم','Name saved'))};
+  d.querySelector('#glX').onclick=closeD;d.querySelector('#glSv').onclick=save;
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();save()}});
+  setTimeout(()=>{try{inp.focus();inp.select()}catch(e){}},380);
+}
+async function syncNow(){
+  if(!needUser())return;
+  status='';paintStatus();await sync();while(busy)await sleep(200);
+  paintStatus();loadProf(true);toast(status||tr('تمت المزامنة','Synced'));
+}
+function outDialog(){
+  if(!needUser())return;
+  const d=openD(avHTML(84,false)+'<h2>'+tr('تسجيل الخروج؟','Sign out?')+'</h2><p>'+tr('نرفع آخر تغييراتك أولًا، ثم نزيل نسخة الملاحظات من هذا الجهاز. ترجع لك كلها بتسجيل الدخول بنفس الحساب.','We’ll upload your latest changes first, then remove the notes from this device. Sign in with the same account to get them all back.')+'</p><p class="wl-st" id="glSt"></p>'+
+    '<button class="wl-btn dngb" id="glGo" type="button">'+tr('تسجيل الخروج','Sign out')+'</button><button class="wl-btn sec" id="glX" type="button">'+tr('إلغاء','Cancel')+'</button>');
+  d.querySelector('#glX').onclick=closeD;
+  const go=d.querySelector('#glGo');
+  go.onclick=async()=>{
+    go.disabled=true;setSt(tr('نرفع آخر التغييرات قبل الخروج…','Uploading your latest changes…'));
+    try{
+      await sleep(600);while(busy)await sleep(200);
+      busy=true;try{await run(false,0)}finally{busy=false}
+      const bk=baseKey();
+      Object.values(KEYS).forEach(k=>LS.removeItem(k));LS.removeItem(bk);LS.removeItem(PK);
+      await authApi.signOut();location.reload();
+    }catch(e){console.warn(e);go.disabled=false;setSt(tr('ما قدرنا نرفع التغييرات، فلم نسجّل الخروج لحماية ملاحظاتك. تأكد من الاتصال وحاول مرة ثانية.','Couldn’t upload your changes, so we didn’t sign out. Check your connection and try again.'))}
+  };
+}
+function delDialog(){
+  if(!needUser())return;
+  const word=tr('حذف','DELETE');
+  const d=openD('<div class="wl-ic" style="background:#FF3B30;color:#fff">'+I('trash')+'</div><h2>'+tr('حذف الحساب نهائيًا','Delete account permanently')+'</h2>'+
+    '<p>'+tr('سيتم حذف حسابك وكل ملاحظاتك ومجلداتك المخزّنة في السحابة، ولا يمكن التراجع عن هذا.','Your account and all notes and folders stored in the cloud will be deleted. This can’t be undone.')+'</p>'+
+    '<label class="gl-chk"><input type="checkbox" id="glWipe"><span>'+tr('احذف الملاحظات المحفوظة على هذا الجهاز أيضًا','Also delete the notes saved on this device')+'</span></label>'+
+    '<p style="margin-bottom:4px">'+tr('اكتب «حذف» للتأكيد','Type “DELETE” to confirm')+'</p>'+
+    '<input class="gl-inp" id="glCf" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="'+E(word)+'">'+
+    '<p class="wl-st" id="glSt"></p><button class="wl-btn dngb" id="glGo" type="button" disabled>'+tr('احذف حسابي','Delete my account')+'</button><button class="wl-btn sec" id="glX" type="button">'+tr('إلغاء','Cancel')+'</button>');
+  const cf=d.querySelector('#glCf'),go=d.querySelector('#glGo');
+  d.querySelector('#glX').onclick=closeD;
+  cf.addEventListener('input',()=>{go.disabled=cf.value.trim().toLowerCase()!==word.toLowerCase()});
+  go.onclick=async()=>{
+    go.disabled=true;cf.disabled=true;
+    try{await runDelete(d.querySelector('#glWipe').checked,false)}
+    catch(e){console.warn(e);cf.disabled=false;go.disabled=false;setSt(tr('تعذّر حذف الحساب، تأكد من الاتصال وحاول مرة ثانية.','Couldn’t delete the account. Check your connection and try again.'))}
+  };
+}
+async function needReauth(wipe,u){
+  LS.setItem(DELP,JSON.stringify({uid:u.uid,wipe:!!wipe,ts:Date.now()}));
+  setSt(tr('نتأكد إنك أنت.. بنفتح تسجيل قوقل لحظة','Confirming it’s you — opening Google sign-in…'));
+  await sleep(700);await authApi.reauth();
+}
+async function runDelete(wipe,resumed){
+  runningDel=true;deleting=true;
+  const u=authApi&&authApi.cur();
+  if(!u){runningDel=false;deleting=false;throw new Error('no-user')}
+  const bk='gl-sync-v2:'+u.uid;
+  try{
+    if(!resumed){
+      const t=Date.parse((u.metadata&&u.metadata.lastSignInTime)||'')||0;
+      if(Date.now()-t>240000){await needReauth(wipe,u);return}
+    }
+    setSt(tr('جارٍ حذف بياناتك…','Deleting your data…'));
+    await sleep(300);while(busy)await sleep(200);
+    busy=true;
+    try{
+      const snap=await F.getDocs(F.collection(fs,'users',u.uid,'notes')),ds=snap.docs;
+      for(let i=0;i<ds.length;i+=400){const wb=F.writeBatch(fs);ds.slice(i,i+400).forEach(x=>wb.delete(x.ref));await wb.commit()}
+    }finally{busy=false}
+    try{await authApi.del()}
+    catch(e){if(e&&e.code==='auth/requires-recent-login'&&!resumed){await needReauth(wipe,u);return}throw e}
+    try{LS.removeItem(bk);LS.removeItem(PK);LS.removeItem(DELP);LS.setItem(SKIP,'1')}catch(e){}
+    if(wipe)Object.values(KEYS).forEach(k=>{try{LS.removeItem(k)}catch(e){}});
+    prof={};setSt(tr('تم حذف حسابك','Your account was deleted'));
+    setTimeout(()=>location.reload(),1100);
+  }catch(e){runningDel=false;deleting=false;throw e}
+}
+function resumeDelete(u){
+  let p=null;try{p=JSON.parse(LS.getItem(DELP)||'null')}catch(e){}
+  if(!p||p.uid!==u.uid||Date.now()-(p.ts||0)>600000){try{LS.removeItem(DELP)}catch(e){}deleting=false;return}
+  deleting=true;
+  openD('<div class="wl-ic" style="background:#FF3B30;color:#fff">'+I('trash')+'</div><h2>'+tr('نكمل حذف الحساب…','Finishing account deletion…')+'</h2><p class="wl-st" id="glSt"></p>');
+  runDelete(!!p.wipe,true).catch(e=>{console.warn(e);setSt(tr('تعذّر إكمال الحذف، حاول مرة ثانية من الإعدادات.','Couldn’t finish. Please try again from Settings.'));try{LS.removeItem(DELP)}catch(_){}})
+}
+
+/* app download page (website only) */
+function closeDl(){
+  const p=$('glDl');if(!p||!p.classList.contains('show'))return;
+  p.classList.add('out');p.classList.remove('on');
+  setTimeout(()=>p.classList.remove('show','out'),460);
+}
+function openDl(){
+  let p=$('glDl');
+  if(!p){p=document.createElement('div');p.id='glDl';p.className='dlp';p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');app.appendChild(p)}
+  p.innerHTML='<div class="dl-top"><button class="glass circle btn dl-back" type="button" aria-label="'+E(tr('رجوع','Back'))+'">'+I('back')+'</button></div>'+
+    '<div class="dl-body">'+
+      '<span class="av avq" style="--s:104px">'+I('phone')+'</span>'+
+      '<h1 class="dl-t">'+tr('تنزيل التطبيق','Download the app')+'</h1>'+
+      '<p class="dl-s">'+tr('نسخة أندرويد من iNote بتجربة أسلس وأفضل من الموقع.','The Android version of iNote — smoother and better than the website.')+'</p>'+
+      '<div class="card dl-file"><span class="dl-fi">'+I('phone')+'</span><div><b dir="ltr" style="text-align:start">'+APK+'</b><small>'+tr('أندرويد','Android')+' · <bdi>'+APK_MB+' MB</bdi></small></div></div>'+
+      '<a class="dl-go" id="glApk" href="'+APK+'" download="'+APK+'" type="application/vnd.android.package-archive">'+I('download')+'<span>'+tr('اضغط هنا لتنزيل التطبيق','Tap here to download the app')+'</span></a>'+
+      '<p class="dl-hint">'+tr('قد يطلب منك أندرويد السماح بالتثبيت من هذا المتصفح، وافق وكمّل.','Android may ask you to allow installs from this browser — just allow it and continue.')+'</p>'+
+      '<div class="card dl-note"><b>'+I('shield')+tr('ملاحظاتك بأمان','Your notes are safe')+'</b>'+
+        '<p>'+tr('إذا حمّلت نسخة APK فهذا لا يعني أن كل ملاحظاتك راحت.. سجّل دخولك بنفس الحساب، أو إذا كنت تريد الاستخدام دون حساب فقط حمّل نسخة احتياطية (ملف JSON).','Downloading the APK doesn’t mean your notes are gone.. just sign in with the same account, or if you use the app without an account, simply download a backup (JSON file).')+'</p>'+
+        '<button class="dl-json" id="glJson" type="button">'+I('download')+tr('تنزيل نسخة احتياطية JSON','Download a JSON backup')+'</button></div>'+
+    '</div>';
+  p.querySelector('.dl-back').onclick=closeDl;
+  p.querySelector('#glApk').addEventListener('click',()=>toast(tr('بدأ التنزيل…','Download started…')));
+  p.querySelector('#glJson').onclick=()=>{if(window.glExport)window.glExport()};
+  p.classList.add('show');void p.offsetWidth;p.classList.add('on');
+  if(window.glSq)window.glSq();
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDl()});
+
+/* settings clicks */
+function act(a){
+  if(a==='login'){if(!authApi){toast(tr('تسجيل الدخول يحتاج اتصال بالإنترنت','Signing in needs an internet connection'));return}try{LS.removeItem(SKIP)}catch(e){}openLogin();return}
+  if(a==='photo')return pickPhoto();
+  if(a==='photo-reset'){if(needUser())saveProfile({photo:''}).then(()=>toast(tr('رجعت صورة حساب قوقل','Back to your Google photo')));return}
+  if(a==='name')return nameDialog();
+  if(a==='sync')return syncNow();
+  if(a==='out')return outDialog();
+  if(a==='del')return delDialog();
+  if(a==='dl')return openDl();
+}
+$('sSettings').addEventListener('click',e=>{
+  const sw=e.target.closest&&e.target.closest('[data-glsw]');
+  if(sw){
+    const on=sw.getAttribute('aria-checked')!=='true';
+    try{LS.setItem(AUTO,on?'1':'0')}catch(_){}
+    sw.setAttribute('aria-checked',String(on));
+    toast(on?tr('تشغّلت المزامنة التلقائية','Automatic sync is on'):tr('وقفت المزامنة التلقائية','Automatic sync is off'));
+    if(on)sync();
+    return;
+  }
+  const el=e.target.closest&&e.target.closest('[data-gl]');
+  if(el)act(el.dataset.gl);
+});
+paint();
+
 /* ---------- firebase ---------- */
 try{
   let A=null,AU=null;
@@ -2820,7 +3240,7 @@ try{
   const auth=AU.getAuth(fb);fs=F.getFirestore(fb);
   // Keep the Firebase session in persistent browser storage (including WebViews that support it).
   await AU.setPersistence(auth,AU.browserLocalPersistence);
-  authApi={signOut:()=>AU.signOut(auth)};
+  authApi={signOut:()=>AU.signOut(auth),cur:()=>auth.currentUser,del:()=>AU.deleteUser(auth.currentUser),reauth:async()=>{await AU.setPersistence(auth,AU.browserLocalPersistence);await AU.reauthenticateWithRedirect(auth.currentUser,new AU.GoogleAuthProvider())}};
   window.glAuth={auth};
   btn.addEventListener('click',async()=>{
     err.textContent='';btn.classList.add('busy');
@@ -2833,17 +3253,17 @@ try{
       btn.classList.remove('busy');
     }
   });
-  AU.getRedirectResult(auth).catch(e=>{
+  AU.getRedirectResult(auth).then(r=>{if(r&&r.user)resumeDelete(r.user);else if(deleting&&!runningDel){deleting=false;try{LS.removeItem(DELP)}catch(_){}}}).catch(e=>{deleting=false;try{LS.removeItem(DELP)}catch(_){}
     console.error('Google redirect result failed:',e);
     err.textContent=MSG[e&&e.code]||'تعذّر إكمال تسجيل الدخول، حاول مرة ثانية.';
     btn.classList.remove('busy');
   });
   AU.onAuthStateChanged(auth,u=>{
-    user=u||null;
-    if(u){try{LS.removeItem(SKIP)}catch(e){}closeLogin();sync()}
-    else if(!skipped())openLogin();
+    user=u||null;authReady=true;
+    if(u){try{LS.removeItem(SKIP)}catch(e){}closeLogin();onSignedIn(u);sync()}
+    else{onSignedOut();if(!skipped()&&!deleting)openLogin()}
   });
-}catch(e){console.warn('firebase unavailable',e);if(navigator.onLine)toast('تعذّر تحميل خدمة تسجيل الدخول، حدّث الصفحة.')}
+}catch(e){authFailed=true;try{paint()}catch(_){}console.warn('firebase unavailable',e);if(navigator.onLine)toast('تعذّر تحميل خدمة تسجيل الدخول، حدّث الصفحة.')}
 </script>
 </body></html>
 ف

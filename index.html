@@ -2764,7 +2764,7 @@ const skipped=()=>{try{return LS.getItem(SKIP)==='1'}catch(e){return false}};
 function openLogin(){if(gl.classList.contains('show'))return;app.appendChild(gl);gl.classList.add('show');gl.setAttribute('aria-hidden','false');void gl.offsetWidth;gl.classList.add('on')}
 function closeLogin(){if(!gl.classList.contains('show'))return;gl.classList.add('out');gl.classList.remove('on');gl.setAttribute('aria-hidden','true');setTimeout(()=>{gl.classList.remove('show','out')},560)}
 skip.addEventListener('click',()=>{try{LS.setItem(SKIP,'1')}catch(e){}closeLogin()});
-const MSG={'auth/popup-closed-by-user':'تم إلغاء تسجيل الدخول.','auth/cancelled-popup-request':'تم إلغاء تسجيل الدخول.','auth/unauthorized-domain':'هذا النطاق غير مضاف في Firebase (Authorized domains).','auth/network-request-failed':'تأكد من اتصالك بالإنترنت.','auth/popup-blocked':'المتصفح منع نافذة قوقل. افتح الموقع من Chrome وسمح بالنوافذ المنبثقة.','auth/operation-not-supported-in-this-environment':'افتح الموقع من متصفح Chrome مباشرة، مو من داخل تطبيق ثاني.'};
+const MSG={'median-no-token':'تسجيل قوقل داخل التطبيق غير مفعّل. افتح الموقع من Chrome وسجّل منه.','auth/network-request-failed':'تحقق من الإنترنت.','auth/popup-closed-by-user':'تم إلغاء تسجيل الدخول.','auth/cancelled-popup-request':'تم إلغاء تسجيل الدخول.','auth/unauthorized-domain':'هذا النطاق غير مضاف في Firebase (Authorized domains).','auth/network-request-failed':'تأكد من اتصالك بالإنترنت.','auth/popup-blocked':'المتصفح منع نافذة قوقل. افتح الموقع من Chrome وسمح بالنوافذ المنبثقة.','auth/operation-not-supported-in-this-environment':'افتح الموقع من متصفح Chrome مباشرة، مو من داخل تطبيق ثاني.'};
 
 /* ---------- sync state ---------- */
 let user=null,fs=null,F=null,B=null,busy=false,again=false,timer=0,status='',lastOk=0,deleting=false;
@@ -3246,7 +3246,16 @@ try{
     err.textContent='';btn.classList.add('busy');
     try{
       await AU.setPersistence(auth,AU.browserLocalPersistence);
-      await AU.signInWithRedirect(auth,new AU.GoogleAuthProvider());
+      const prov=new AU.GoogleAuthProvider();prov.setCustomParameters({prompt:'select_account'});
+      if(window.median&&median.socialLogin&&median.socialLogin.google){
+        const r=await median.socialLogin.google.login();
+        if(!(r&&r.idToken))throw {code:'median-no-token'};
+        await AU.signInWithCredential(auth,AU.GoogleAuthProvider.credential(r.idToken));
+      }else{
+        try{await AU.signInWithPopup(auth,prov)}
+        catch(e){if(e&&(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment'))await AU.signInWithRedirect(auth,prov);else throw e}
+      }
+      btn.classList.remove('busy');
     }catch(e){
       console.error('Google sign-in redirect failed:',e);
       err.textContent=MSG[e&&e.code]||'صار خطأ، حاول مرة ثانية.';

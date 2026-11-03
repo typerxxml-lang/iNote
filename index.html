@@ -228,6 +228,19 @@ button{cursor:pointer;-webkit-appearance:none;appearance:none}
 .mi .ic{width:22px;height:22px}
 .mi .ck{margin-inline-start:auto}
 .mi+.mi{margin-top:1px}
+.mi.sel{background:var(--press)}
+.wtag{font-size:11px;font-weight:800;letter-spacing:.4px;color:var(--fg2);background:var(--press);border-radius:8px;padding:3px 8px;flex:none;direction:ltr}
+/* writing-settings submenu: flies out beside the main menu */
+#wmenu{z-index:210;transform:translateX(var(--sx,26px)) scale(.88);opacity:0}
+#wmenu.open{transform:none;opacity:1}
+#wmenu .mi{padding:10px 14px;font-size:16px}
+.menu.has-sub{transform:scale(.95) translateX(var(--mx,0px));opacity:.3;pointer-events:none;filter:saturate(.8)}
+.wh{display:flex;align-items:center;gap:10px;padding:10px 12px 6px;font-size:15px;font-weight:750;color:var(--fg)}
+.wh .wback{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border:0;border-radius:50%;background:var(--press);color:var(--fg);padding:0;flex:none}
+.wh .wback .ic{width:18px;height:18px}
+.wsec{padding:10px 14px 3px;font-size:12px;font-weight:700;color:var(--fg2);opacity:.8}
+.ck.pop{animation:chkPop .5s var(--spring2)}
+@media (prefers-reduced-motion:reduce){#wmenu,.menu.has-sub{transition:none}}
 
 /* لمعان الحواف: شعرة رفيعة جدًا (ما عدا أزرار الملاحظة الجديدة) + شيل التلاشي السفلي */
 .glass:where(:not(#compose):not(#fCompose)){box-shadow:0 10px 32px var(--shadow),0 1px 3px rgba(0,0,0,.06),inset 0 0 0 .3px var(--hair)}
@@ -654,6 +667,7 @@ html.reduce .pw *,html.reduce .pw{animation:none!important;transition-duration:.
   <div class="pw" id="pw" aria-hidden="true" role="dialog" aria-modal="true"><div class="pw-in"><div class="pw-top" id="pwTop"><svg class="pw-lock" id="pwLock" viewBox="0 0 24 24" aria-hidden="true"><path class="shackle" d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><rect x="5" y="10.5" width="14" height="9.5" rx="3"/></svg><div class="pw-t" id="pwT"></div><div class="pw-s" id="pwS"></div><div class="pw-dots" id="pwD"><i></i><i></i><i></i><i></i></div></div><div class="pw-pad" id="pwPad"><button class="pk" data-k="1" style="--n:0" aria-label="1">1</button><button class="pk" data-k="2" style="--n:1" aria-label="2">2</button><button class="pk" data-k="3" style="--n:2" aria-label="3">3</button><button class="pk" data-k="4" style="--n:3" aria-label="4">4</button><button class="pk" data-k="5" style="--n:4" aria-label="5">5</button><button class="pk" data-k="6" style="--n:5" aria-label="6">6</button><button class="pk" data-k="7" style="--n:6" aria-label="7">7</button><button class="pk" data-k="8" style="--n:7" aria-label="8">8</button><button class="pk" data-k="9" style="--n:8" aria-label="9">9</button><span class="pw-gap"></span><button class="pk" data-k="0" style="--n:9" aria-label="0">0</button><div class="pw-cell"><button class="pk ghost kc" data-k="c" style="--n:10">إلغاء</button><button class="pk ghost kd" data-k="d" style="--n:10" aria-label="حذف"><svg class="ic"><use href="#i-backspace"/></svg></button></div></div></div></div>
   <div class="scrim" id="scrim"></div>
   <div class="glass menu" id="menu"></div>
+  <div class="glass menu" id="wmenu" aria-label="إعدادات الكتابة"></div>
 </div>
 <script>
 (function(){
@@ -1281,6 +1295,7 @@ function push(p,rect){
 }
 function pop(rect){
   if(stack.length<2)return;
+  try{closeMenu()}catch(e){}
   if(!S.fp){S.ign=(S.ign||0)+1;try{history.back()}catch(e){}}
   var p=stack.pop(),below=stack[stack.length-1];
   if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
@@ -1389,10 +1404,10 @@ qEl.addEventListener('blur',function(){if(!qEl.value)$('pRoot').classList.remove
 $('cancelBtn').addEventListener('click',function(){qEl.value='';S.q='';qEl.blur();$('pRoot').classList.remove('searching');renderNotes()});
 
 /* ---------- menu ---------- */
-var menu=$('menu'),scrim=$('scrim'),menuG=null,menuActs=[];
+var menu=$('menu'),scrim=$('scrim'),menuG=null,menuActs=[],menuItems=[];
 function openMenu(anchor,items){
   if(anchor&&anchor.classList&&anchor.classList.contains('dots-btn'))anchor.classList.add('menu-active');
-  menuActs=items.map(function(i){return i.act});
+  menuActs=items.map(function(i){return i.act});menuItems=items;
   menu.innerHTML='<div class="mscroll">'+items.map(function(i,k){return '<button class="mi" data-m="'+k+'" style="--k:'+k+'">'+(i.dot?'<span class="dot" style="background:'+i.dot+'"></span>':ic(i.icon))+'<span>'+i.label+'</span>'+(i.on?ic('check','ck'):'')+'</button>'}).join('')+'</div>';
   menu.style.display='block';scrim.style.display='block';scrim.classList.add('open');menuFit(items.length);
   if(anchor&&anchor.id==='nMore'){anchor.classList.add('menu-active');anchor.innerHTML='<svg class="menu-glyph" viewBox="0 0 24 24" aria-hidden="true"><line class="top" x1="4" y1="7" x2="20" y2="7"/><line class="mid" x1="4" y1="12" x2="20" y2="12"/><line class="bottom" x1="4" y1="17" x2="20" y2="17"/></svg>'}
@@ -1410,9 +1425,87 @@ function openMenu(anchor,items){
   if(!menuG)menuG=glass(menu,{r:26,disp:.26,bz:.34,blur:1.7}); else {menuG.w=0;menuG.build()}
   void menu.offsetWidth;menu.classList.add('open');
 }
-function closeMenu(){qa('.dots-btn.menu-active').forEach(function(b){b.classList.remove('menu-active')});menu.classList.remove('open');scrim.classList.remove('open');var nb=$('nMore');if(nb&&nb.classList.contains('menu-active')){nb.classList.remove('menu-active');nb.innerHTML='<svg class="menu-glyph" viewBox="0 0 24 24" aria-hidden="true"><line class="top" x1="4" y1="7" x2="20" y2="7"/><line class="mid" x1="4" y1="12" x2="20" y2="12"/><line class="bottom" x1="4" y1="17" x2="20" y2="17"/></svg>'}setTimeout(function(){if(!menu.classList.contains('open')){menu.style.display='none';scrim.style.display='none'}},320)}
+function closeMenu(){closeWr();qa('.dots-btn.menu-active').forEach(function(b){b.classList.remove('menu-active')});menu.classList.remove('open');scrim.classList.remove('open');var nb=$('nMore');if(nb&&nb.classList.contains('menu-active')){nb.classList.remove('menu-active');nb.innerHTML='<svg class="menu-glyph" viewBox="0 0 24 24" aria-hidden="true"><line class="top" x1="4" y1="7" x2="20" y2="7"/><line class="mid" x1="4" y1="12" x2="20" y2="12"/><line class="bottom" x1="4" y1="17" x2="20" y2="17"/></svg>'}setTimeout(function(){if(!menu.classList.contains('open')){menu.style.display='none';scrim.style.display='none'}},320)}
 scrim.addEventListener('click',closeMenu);
-menu.addEventListener('click',function(e){var b=e.target.closest('.mi');if(!b)return;var a=menuActs[+b.dataset.m];closeMenu();if(a)a()});
+menu.addEventListener('click',function(e){var b=e.target.closest('.mi');if(!b)return;var it=menuItems[+b.dataset.m];if(!it)return;if(it.keep){b.classList.add('sel');if(it.act)it.act();return}closeMenu();var a=it.act;if(a)a()});
+
+/* ---------- writing-settings submenu: flies out beside the note menu ---------- */
+var wmenu=$('wmenu'),wmenuG=null,wrK=0;
+function wrCur(){var n=byId(S.open);return (n&&n.wr)||{}}
+function wrState(){var w=wrCur();return{f:w.font||cfg.font,d:w.dir||cfg.dir,l:String(w.lh||cfg.lh||'1.75'),sp:('spell' in w)?!!w.spell:cfg.spell!==false,st:('stats' in w)?!!w.stats:cfg.showStats!==false}}
+function wrSet(k,v){var n=byId(S.open);if(!n)return;
+  if(v===null){if(n.wr){delete n.wr[k];if(!Object.keys(n.wr).length)delete n.wr}}
+  else{n.wr=Object.assign({},n.wr);n.wr[k]=v}
+  save();try{applyExtra()}catch(e){}wrSync();
+}
+function wrRow(k,v,html){return '<button class="mi" data-wk="'+k+'" data-wv="'+v+'" style="--k:'+(wrK++)+'">'+html+'</button>'}
+function wrRender(){
+  wrK=0;var F=FONTS(),fp=function(f){return ' style="font-family:'+(F[f]||F.plex)+'"'};
+  var h='<div class="mscroll">';
+  h+='<div class="wh"><button class="wback" aria-label="رجوع">'+ic('back')+'</button><span>إعدادات الكتابة</span></div>';
+  h+='<div class="wsec">خط الملاحظة</div>';
+  h+=wrRow('font','plex','<span'+fp('plex')+'>بلكس (افتراضي)</span>');
+  h+=wrRow('font','system','<span'+fp('system')+'>النظام</span>');
+  h+=wrRow('font','serif','<span'+fp('serif')+'>سيريف</span>');
+  h+='<div class="wsec">اتجاه الكتابة</div>';
+  h+=wrRow('dir','rtl','<span>يمين</span><span class="wtag">RTL</span>');
+  h+=wrRow('dir','ltr','<span>يسار</span><span class="wtag">LTR</span>');
+  h+=wrRow('dir','auto','<span>تلقائي</span><span class="wtag">AUTO</span>');
+  h+='<div class="wsec">تباعد الأسطر</div>';
+  h+=wrRow('lh','1.4','<span>مضغوط</span>');
+  h+=wrRow('lh','1.75','<span>عادي</span>');
+  h+=wrRow('lh','2.1','<span>مريح</span>');
+  h+='<div class="wsec">خيارات الكتابة</div>';
+  h+=wrRow('spell','1','<span>المدقق الإملائي</span>');
+  h+=wrRow('stats','1','<span>إحصائيات الملاحظة</span>');
+  h+=wrRow('reset','1',ic('restore')+'<span>إعادة ضبط الملاحظة</span>');
+  h+='</div>';
+  wmenu.innerHTML=h;wrSync();
+}
+function wrSync(){
+  var s=wrState();
+  qa('.mi',wmenu).forEach(function(b){
+    var k=b.dataset.wk,v=b.dataset.wv,on=false;
+    if(k==='font')on=s.f===v;else if(k==='dir')on=s.d===v;else if(k==='lh')on=s.l===v;
+    else if(k==='spell')on=s.sp;else if(k==='stats')on=s.st;
+    var ck=b.querySelector('.ck');
+    if(on){if(!ck)b.insertAdjacentHTML('beforeend',ic('check','ck pop'))}
+    else if(ck)ck.remove();
+  });
+}
+function openWrMenu(){
+  var n=byId(S.open);if(!n)return;
+  wrRender();
+  wmenu.style.display='block';
+  menuFit(qa('.mi',wmenu).length,wmenu);
+  var mr=menu.getBoundingClientRect(),w=wmenu.offsetWidth,h=wmenu.offsetHeight,vw=window.innerWidth,vh=window.innerHeight,left,side;
+  if(mr.left>w+10){left=mr.left-w-10;side='l'}
+  else if(vw-mr.right>w+10){left=mr.right+10;side='r'}
+  else{left=Math.min(vw-w-10,mr.left+24);side='r'}
+  left=Math.max(10,left);
+  var top=Math.max(10,Math.min(vh-h-10,mr.top));
+  wmenu.style.left=left+'px';wmenu.style.top=top+'px';
+  wmenu.style.setProperty('--sx',side==='l'?'-30px':'30px');
+  wmenu.style.transformOrigin=(side==='l'?'100% ':'0% ')+(top+50<mr.top?'0%':'100%');
+  menu.classList.add('has-sub');
+  menu.style.setProperty('--mx',side==='l'?'12px':'-12px');
+  if(!wmenuG)wmenuG=glass(wmenu,{r:26,disp:.26,bz:.34,blur:1.7});else{wmenuG.w=0;wmenuG.build()}
+  void wmenu.offsetWidth;wmenu.classList.add('open');
+}
+function closeWr(){
+  wmenu.classList.remove('open');menu.classList.remove('has-sub');
+  qa('.mi.sel',menu).forEach(function(b){b.classList.remove('sel')});
+  setTimeout(function(){if(!wmenu.classList.contains('open'))wmenu.style.display='none'},360);
+}
+wmenu.addEventListener('click',function(e){
+  if(e.target.closest('.wback')){closeWr();return}
+  var b=e.target.closest('.mi');if(!b)return;
+  var k=b.dataset.wk,s=wrState();
+  if(k==='reset'){var n=byId(S.open);if(n){delete n.wr;save();try{applyExtra()}catch(_){}}wrSync();toast('أُعيد ضبط إعدادات الكتابة');return}
+  if(k==='spell'){wrSet('spell',!s.sp);return}
+  if(k==='stats'){wrSet('stats',!s.st);return}
+  wrSet(k,b.dataset.wv);
+});
 
 $('moreBtn').addEventListener('click',function(){
   var so=function(k,l,i){return {icon:i,label:l,on:S.sort===k,act:function(){S.sort=k;renderAll()}}};
@@ -1451,6 +1544,7 @@ function openNote(id,focusNew,rect){
   try{$('nBody').innerHTML=bodyHTML(n.body)}catch(err){console.error('iNote body restore failed:',err);$('nBody').textContent=String(n.body||'')}
   try{$('nDate').textContent=whenFull(n.ts||Date.now())}catch(_){$('nDate').textContent=''}
   push($('pNote'),rect);grow();
+  try{applyExtra()}catch(err){console.error('iNote note settings failed:',err)}
   if(!rect){var sc=$('pNote').querySelector('.scroll');if(sc)sc.scrollTop=0}
   try{stats()}catch(err){console.error('iNote note stats failed:',err)}
   try{renderAtts()}catch(err){console.error('iNote attachment setup failed:',err)}
@@ -1798,7 +1892,8 @@ $('nMore').addEventListener('click',function(){
     {icon:'clock',label:'إدراج التاريخ والوقت',act:insDate},
     {icon:'speaker',label:(window.speechSynthesis&&speechSynthesis.speaking)?'إيقاف القراءة':'قراءة بصوت عالٍ',act:speakNote},
     {icon:'lock',label:n.lock?'إزالة القفل':'قفل الملاحظة',act:function(){if(n.lock)removeLock(n);else setLock(n)}},
-    {icon:'trash',label:'حذف',act:function(){delNote(n)}}
+    {icon:'trash',label:'حذف',act:function(){delNote(n)}},
+    {icon:'sliders',label:'إعدادات الملاحظة',keep:true,act:openWrMenu}
   ]);
 });
 function trashMenu(el){
@@ -2050,12 +2145,14 @@ if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
 /* ===== v6: more settings + features ===== */
 function FONTS(){return {plex:'var(--font)',system:'-apple-system,"SF Arabic",system-ui,"Segoe UI",Roboto,sans-serif',serif:'"Noto Naskh Arabic","Amiri","Geeza Pro","Times New Roman",serif'}}
 function applyExtra(){
-  root.style.setProperty('--nfont',(FONTS()[cfg.font]||FONTS().plex));
-  root.style.setProperty('--lh',String(cfg.lh||1.75));
+  var w=wrCur(),F=FONTS();
+  root.style.setProperty('--nfont',(F[w.font||cfg.font]||F.plex));
+  root.style.setProperty('--lh',String(w.lh||cfg.lh||1.75));
   var b=$('nBody'),t=$('nTitle'),st=$('nStats');
-  if(b){b.setAttribute('spellcheck',cfg.spell===false?'false':'true');b.setAttribute('dir',cfg.dir==='auto'?'auto':'rtl')}
-  if(t)t.setAttribute('dir',cfg.dir==='auto'?'auto':'rtl');
-  if(st)st.style.display=cfg.showStats===false?'none':'';
+  var dr=w.dir||cfg.dir,sp=('spell' in w)?w.spell:cfg.spell,stt=('stats' in w)?w.stats:cfg.showStats;
+  if(b){b.setAttribute('spellcheck',sp===false?'false':'true');b.setAttribute('dir',dr==='auto'?'auto':dr)}
+  if(t)t.setAttribute('dir',dr==='auto'?'auto':dr);
+  if(st)st.style.display=stt===false?'none':'';
 }
 function exportTxt(n,text){
   try{var name=String(n.title||'ملاحظة').replace(/[\\\/:*?"<>|]+/g,' ').trim().slice(0,60)||'ملاحظة';
@@ -2385,10 +2482,11 @@ function wrToggle(){
   /* the card's squircle clip is measured, so re-measure every frame while its height animates (otherwise the new rows get clipped = black gap) */
   var t0=performance.now();(function fr(){try{sqAll()}catch(e){}if(performance.now()-t0<700)requestAnimationFrame(fr)})();
 }
-function menuFit(n){var ms=menu.querySelector('.mscroll'),f=menu.querySelector('.mi');if(!ms)return;ms.style.maxHeight='';ms.classList.remove('sc','ft','fb');
+function menuFit(n,el){var m=el||menu,ms=m.querySelector('.mscroll'),f=m.querySelector('.mi');if(!ms)return;ms.style.maxHeight='';ms.classList.remove('sc','ft','fb');
   if(n>6&&f){ms.style.maxHeight=((f.offsetHeight+1)*6)+'px';ms.classList.add('sc');ms.scrollTop=0;mFade(ms)}}
 function mFade(ms){ms.classList.toggle('ft',ms.scrollTop>4);ms.classList.toggle('fb',ms.scrollTop+ms.clientHeight<ms.scrollHeight-4)}
 menu.addEventListener('scroll',function(e){if(e.target.classList&&e.target.classList.contains('mscroll'))mFade(e.target)},true);
+wmenu.addEventListener('scroll',function(e){if(e.target.classList&&e.target.classList.contains('mscroll'))mFade(e.target)},true);
 /* ribbon edge fades */
 function ribFade(){var b=document.querySelector('#formatRibbon .fr-scroll');if(!b)return;var sl=Math.abs(b.scrollLeft),mx=b.scrollWidth-b.clientWidth-4,rtl=getComputedStyle(b).direction==='rtl',st=sl<4,en=sl>=mx;
   b.classList.toggle('fl',rtl?!en:!st);b.classList.toggle('fr2',rtl?!st:!en)}

@@ -2570,6 +2570,42 @@ function findShow(){if(!FR.length)return;try{CSS.highlights.set('fndc',new Highl
 window.glSq=function(){if(typeof sqSoon==='function')sqSoon()};
 window.glExport=function(){exportData()};
 (function(){var _r=renderSettings;renderSettings=function(){_r();if(window.glAccPaint)window.glAccPaint()}})();
+
+/* ===== sync hooks: apply pulled cloud data in place (no page reload) ===== */
+window.glPreSync=function(){
+  /* push in-memory notes to storage (only if different) so sync sees the latest local state */
+  clearTimeout(saveT);
+  var a=JSON.stringify(notes),b=JSON.stringify(trash);
+  if(localStorage.getItem('lg-notes-v1')!==a)localStorage.setItem('lg-notes-v1',a);
+  if(localStorage.getItem('lg-trash-v1')!==b)localStorage.setItem('lg-trash-v1',b);
+};
+window.glApplyRemote=function(){
+  var openId=S.open,before=null;
+  var o=openId?byId(openId):null;if(o)before=JSON.stringify(o);
+  clearTimeout(saveT);
+  var nn=store.get('lg-notes-v1',null),tt=store.get('lg-trash-v1',[]),ff=store.get('lg-folders-v1',null);
+  if(!Array.isArray(nn))throw new Error('bad notes data');
+  notes=nn;notes.forEach(function(n){if(!n.created)n.created=n.ts});
+  trash=Array.isArray(tt)?tt:[];
+  if(Array.isArray(ff)&&ff.length)FOLDERS=ff;
+  if(openId){
+    var n=byId(openId);
+    if(!n){leaveNote(true);return}  /* note was deleted/moved to trash from another device */
+    if(JSON.stringify(n)!==before){
+      var a=document.activeElement,typing=a&&a!==document.body&&(a.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
+      if(!typing){
+        try{
+          Object.keys(urls).forEach(function(k){try{URL.revokeObjectURL(urls[k])}catch(_){}});urls={};
+          $('nTitle').value=String(n.title||'');
+          $('nBody').innerHTML=bodyHTML(n.body);
+          $('nDate').textContent=whenFull(n.ts||Date.now());
+          grow();try{applyExtra()}catch(_){}try{stats()}catch(_){}try{renderAtts()}catch(_){}try{pinState()}catch(_){}
+        }catch(err){console.error('iNote open note refresh failed:',err)}
+      }
+    }
+  }
+  renderAll();
+};
 })();
 </script>
 
@@ -2890,6 +2926,7 @@ async function run(apply,depth){
   const snapC=await getDocs(base.lastSv?query(col,where('sv','>=',Timestamp.fromMillis(base.lastSv))):col);
   const cloud=new Map();let maxSv=base.lastSv;
   snapC.forEach(d=>{const x=d.data();const sv=x.sv&&x.sv.toMillis?x.sv.toMillis():0;cloud.set(d.id,Object.assign({},x,{sv}));if(sv>maxSv)maxSv=sv});
+  if(apply){try{window.glPreSync&&window.glPreSync()}catch(e){}}
   const S=snap();
   const pulls=[],pushes=[],adopt=[];
   const ids=new Set([...S.m.keys(),...cloud.keys(),...Object.keys(base.ids)]);ids.delete(FID);ids.delete(PID);
@@ -2949,7 +2986,11 @@ async function run(apply,depth){
   saveBase(base);
   if(!apply)return {needApply:true};
   /* apply pulls to the local copy, then reload so the app reads it */
-  let notes=S.notes.slice(),trash=S.trash.slice();
+  try{window.glPreSync&&window.glPreSync()}catch(e){}
+  const S2=snap();
+  /* if a pulled note was edited locally while we were talking to the server, don't overwrite it; retry shortly */
+  if(pulls.some(({id})=>{const a=S.m.get(id),b=S2.m.get(id);return (a?a.h:null)!==(b?b.h:null)})){setTimeout(sync,1500);return {needApply:false}}
+  let notes=S2.notes.slice(),trash=S2.trash.slice();
   const rm=id=>{notes=notes.filter(x=>x&&x.id!==id);trash=trash.filter(x=>x&&x.id!==id)};
   for(const {id,C} of pulls){
     rm(id);
@@ -2960,6 +3001,11 @@ async function run(apply,depth){
   rawPut(KEYS.n,JSON.stringify(notes));rawPut(KEYS.t,JSON.stringify(trash));
   if(fPull){rawPut(KEYS.f,JSON.stringify(fPull));base.ids[FID]={h:hash('F'+JSON.stringify(fPull))}}
   base.lastSv=maxSv;saveBase(base);lastOk=Date.now();
+  /* update the running app in place so the user stays on the current screen */
+  if(window.glApplyRemote){
+    try{window.glApplyRemote();return {needApply:false,reloading:false}}
+    catch(e){console.error('in-place apply failed, falling back to reload',e)}
+  }
   location.reload();
   return {needApply:false,reloading:true};
 }

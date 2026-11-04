@@ -22,12 +22,19 @@
 <style id="bubble-css">
 /* iOS 26 bubble motion: JS drives transform each frame, so no transform transition while pressed */
 .glass.btn{will-change:transform}
+.glass.btn.lite{z-index:60;transition:background .3s,box-shadow .4s var(--sp)!important}
 .glass.btn.hot{z-index:60;transition:background .3s,box-shadow .4s var(--sp)!important;
   box-shadow:0 14px 34px var(--shadow),0 0 26px rgba(255,255,255,.22),inset 0 0 0 .3px var(--hair)}
 .glass.btn>*{position:relative}
 .glass.btn::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;
   background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.7),rgba(255,255,255,.2) 38%,transparent 70%)}
 .glass.btn.glowing::before{opacity:1}
+/* مفاتيح قفل الملاحظة (.pk) تاخذ نفس الفقاعة */
+.pk.lite,.pk.hot{z-index:60;transition:background .2s ease,box-shadow .2s ease!important}
+.pk.hot{box-shadow:0 14px 34px var(--shadow),0 0 26px rgba(255,255,255,.22),inset 0 0 0 .3px var(--hair)}
+.pk.ghost.hot{box-shadow:none}
+.pk>*{position:relative}
+.pk.glowing::before{opacity:1;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.7),rgba(255,255,255,.2) 38%,transparent 70%)}
 </style>
 <style id="ios26-css">
 /* menus: bigger glass = thicker material (deeper shadow) */
@@ -556,7 +563,7 @@ button:focus-visible,[role="button"]:focus-visible{outline:2px solid color-mix(i
 .pw-dots.good i{border-color:#30D158}.pw-dots.good i.on{background:#30D158}
 .pk{font-weight:400;background:color-mix(in srgb,var(--fg) 6%,transparent);box-shadow:inset 0 0 0 .5px var(--hair);transition:background .2s ease,box-shadow .2s ease,transform .2s var(--ios-ease)}
 .pk::before{background:radial-gradient(circle at 50% 24%,rgba(255,255,255,.36),transparent 68%);transition:opacity .2s ease}
-.pk.dn{transform:scale(.955)!important;background:color-mix(in srgb,var(--fg) 13%,transparent);box-shadow:inset 0 0 0 .5px var(--hair)}
+.pk.dn{background:color-mix(in srgb,var(--fg) 13%,transparent);box-shadow:inset 0 0 0 .5px var(--hair)}
 .pw.on .pw-pad .pk:not(.kd){animation:iosKeyIn .38s var(--ios-ease) backwards;animation-delay:calc(var(--n,0)*18ms + 60ms)}
 @keyframes iosKeyIn{from{opacity:0;transform:translateY(7px) scale(.97)}to{opacity:1;transform:none}}
 /* tidy small screens: never let the keypad exceed the visible viewport */
@@ -2041,17 +2048,8 @@ function pwFail(msg,count,after){
     },320);
   },720);
 }
-function pkDown(b){
-  b.classList.add('dn');
-  if(b._a)b._a.cancel();
-  b._a=pwAnim(b,[{transform:'scale(1)'},{transform:'scale(1.17)'}],{duration:200,easing:'cubic-bezier(.2,.9,.3,1.4)',fill:'forwards'});
-}
-function pkUp(b){
-  if(!b.classList.contains('dn'))return;b.classList.remove('dn');
-  var s=1;try{s=new DOMMatrix(getComputedStyle(b).transform).a||1}catch(e){}
-  if(b._a)b._a.cancel();
-  b._a=pwAnim(b,[{transform:'scale('+s+')'},{transform:'scale(.92)',offset:.3},{transform:'scale(1.045)',offset:.62},{transform:'scale(.992)',offset:.82},{transform:'scale(1)'}],{duration:680,easing:'ease-out'});
-}
+function pkDown(b){b.classList.add('dn')}   /* الحركة صارت من محرك الفقاعة */
+function pkUp(b){b.classList.remove('dn')}
 qa('.pk',pwPad).forEach(function(b){
   var k=b.dataset.k;
   b.addEventListener('pointerdown',function(e){e.preventDefault();pkDown(b);if(k==='c')return;if(k==='d')pwBack();else pwDigit(k)});
@@ -2141,7 +2139,7 @@ document.addEventListener('scroll',function(e){
       s.vp+=(s.tp-s.p)*.28;s.vp*=.6;s.p+=s.vp;
       paint(el,s);
       var busy=el._held||Math.abs(s.tx-s.x)>.1||Math.abs(s.vx)>.1||Math.abs(s.ty-s.y)>.1||Math.abs(s.vy)>.1||Math.abs(s.tp-s.p)>.003||Math.abs(s.vp)>.003;
-      if(busy)keep.push(el);else{el.classList.remove('hot');el.style.transform=''}
+      if(busy)keep.push(el);else{el.classList.remove('hot','lite');el.style.transform=''}
     });
     live=keep;if(live.length)raf=requestAnimationFrame(step);
   }
@@ -2154,7 +2152,7 @@ document.addEventListener('scroll',function(e){
     run(cur);
   }
   function end(){
-    if(!cur)return;var k=cur,was=eng;cur=null;pid=null;eng=false;clearTimeout(tm);
+    if(!cur)return;var k=cur,was=true;cur=null;pid=null;eng=false;clearTimeout(tm);
     nearEls.forEach(function(el){el.classList.remove('glowing','near')});nearEls=[];
     if(was){var s=stOf(k);s.tx=0;s.ty=0;s.tp=0;k._held=false;k.classList.remove('glowing');refr(k,1);run(k)}
     document.removeEventListener('pointermove',mv,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('pointercancel',up,true);
@@ -2182,8 +2180,9 @@ document.addEventListener('scroll',function(e){
   function up(e){if(e.pointerId===pid)end()}
   document.addEventListener('pointerdown',function(e){
     if(cur||(e.pointerType==='mouse'&&e.button!==0))return;
-    var k=e.target.closest&&e.target.closest('.glass.btn');if(!k||k.disabled)return;
+    var k=e.target.closest&&e.target.closest('.glass.btn,.pk');if(!k||k.disabled)return;
     cur=k;pid=e.pointerId;rc=k.getBoundingClientRect();eng=false;ox=px=e.clientX;oy=py=e.clientY;
+    k._held=true;k.classList.add('lite');if(!reduce)stOf(k).tp=-.35;else stOf(k);run(k);   /* أي ضغطة = انضغاط فقاعي خفيف */
     tm=setTimeout(engage,150);   /* ضغطة سريعة = ما يطلع زنبرك ولا نور؛ يبدأ بعد 150ms ضغط مطوّل أو أول ما تسحب 6px */
     document.addEventListener('pointermove',mv,true);document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true);
   },true);
@@ -2229,7 +2228,7 @@ document.addEventListener('scroll',function(e){
     var circle=rtl?rr.right-33:rr.left+33,tc=rr.left+on.offsetLeft+on.offsetWidth/2;
     tabsEl.style.setProperty('--mdx',(circle-tc)+'px');
   }
-  function minimize(){if(isMin)return;setTW();calcMdx();isMin=true;dock.classList.add('min')}
+  function minimize(){return}  /* تعطيل انطواء البار عند السكرول */
   function expand(){if(!isMin)return;isMin=false;dock.classList.remove('min')}
   setTW();window.addEventListener('resize',function(){setTW();if(isMin)calcMdx()});
   document.addEventListener('scroll',function(e){

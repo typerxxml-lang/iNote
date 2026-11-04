@@ -19,6 +19,42 @@
 .dev{text-align:center;color:var(--fg2);opacity:.55;font-size:12.5px;line-height:1.9;padding:20px 0 4px}
 .dev a{color:inherit;text-decoration:underline;text-underline-offset:3px}
 </style>
+<style id="bubble-css">
+/* iOS 26 bubble motion: JS drives transform each frame, so no transform transition while pressed */
+.glass.btn{will-change:transform}
+.glass.btn.hot{z-index:60;transition:background .3s,box-shadow .4s var(--sp)!important;
+  box-shadow:0 14px 34px var(--shadow),0 0 26px rgba(255,255,255,.22),inset 0 0 0 .3px var(--hair)}
+.glass.btn>*{position:relative}
+.glass.btn::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.7),rgba(255,255,255,.2) 38%,transparent 70%)}
+.glass.btn.glowing::before{opacity:1}
+</style>
+<style id="ios26-css">
+/* menus: bigger glass = thicker material (deeper shadow) */
+.menu.open{box-shadow:0 18px 48px var(--shadow),0 2px 6px rgba(0,0,0,.08),inset 0 0 0 .3px var(--hair)}
+/* glow that spreads from the finger onto nearby glass */
+.tabs-bg::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.55),rgba(255,255,255,.14) 36%,transparent 68%)}
+.tabs-bg.glowing::before{opacity:1}
+.glass.near.glowing::before{opacity:.38;transition:opacity .45s}
+/* tab bar lifts: selected tab grows 16%, bar swells */
+.tab .ic{transition:transform .5s var(--sp)}
+.tabs.press .tab.on{transform:scale(1.16)}
+.tabs.press .tabs-bg{transform:scale(1.035,1.07)}
+/* minimise on scroll: bar collapses into a circle holding the selected icon */
+.dock{justify-content:space-between}
+.tabs{max-width:100vw;transition:max-width .55s var(--sp)}
+.tabs-row{width:var(--tw,100%);flex:none}
+.tab{transition:color .3s,transform .5s var(--sp),opacity .3s,filter .35s,gap .4s}
+.tab span{transition:opacity .25s,font-size .4s}
+.dock .tabs .lens{transition:background .25s,box-shadow .25s,opacity .3s}
+.dock.min .tabs{max-width:66px}
+.dock.min .lens{opacity:0}
+.dock.min .tab:not(.on){opacity:0;filter:blur(8px);pointer-events:none}
+.dock.min .tab.on{transform:translateX(var(--mdx,0px));gap:0}
+.dock.min .tab.on span{opacity:0;font-size:0}
+@media (prefers-reduced-motion:reduce){.tabs{transition:none}.tab{transition:color .3s}}
+</style>
 </head><body>
 
 
@@ -2084,10 +2120,132 @@ document.addEventListener('scroll',function(e){
 },true);
 
 
+/* ---------- iOS 26 bubble motion (press swells the glass, drag stretches it, release springs back) ---------- */
+(function(){
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var live=[],raf=0,cur=null,rc=null,pid=null,eng=false,tm=0,ox=0,oy=0,px=0,py=0,nearEls=[];
+  function stOf(el){return el._s||(el._s={x:0,vx:0,y:0,vy:0,p:0,vp:0,tx:0,ty:0,tp:0})}
+  function paint(el,s){
+    var sp=Math.hypot(s.vx,s.vy),b=1+s.p*.18,
+        sx=b*(1+Math.min(sp*.006,.14))*(1+Math.min(Math.abs(s.x)*.004,.1)),
+        sy=b*(1-Math.min(sp*.003,.07))*(1+Math.min(Math.abs(s.y)*.004,.1));
+    el.style.transform='translate3d('+s.x+'px,'+s.y+'px,0) scale('+sx+','+sy+')';
+  }
+  function run(el){if(live.indexOf(el)<0)live.push(el);if(!raf)raf=requestAnimationFrame(step)}
+  function step(){
+    raf=0;var keep=[];
+    live.forEach(function(el){
+      var s=el._s;
+      s.vx+=(s.tx-s.x)*.22;s.vx*=.65;s.x+=s.vx;
+      s.vy+=(s.ty-s.y)*.24;s.vy*=.62;s.y+=s.vy;
+      s.vp+=(s.tp-s.p)*.28;s.vp*=.6;s.p+=s.vp;
+      paint(el,s);
+      var busy=el._held||Math.abs(s.tx-s.x)>.1||Math.abs(s.vx)>.1||Math.abs(s.ty-s.y)>.1||Math.abs(s.vy)>.1||Math.abs(s.tp-s.p)>.003||Math.abs(s.vp)>.003;
+      if(busy)keep.push(el);else{el.classList.remove('hot');el.style.transform=''}
+    });
+    live=keep;if(live.length)raf=requestAnimationFrame(step);
+  }
+  function gOf(el){for(var i=0;i<glasses.length;i++)if(glasses[i].el===el)return glasses[i]}
+  function refr(el,k){var g=gOf(el);if(g&&g.ok)g.dm.setAttribute('scale',(g.scale*k).toFixed(1))}
+  function aim(e){
+    var s=stOf(cur),dx=e.clientX-(rc.left+rc.width/2),dy=e.clientY-(rc.top+rc.height/2);
+    if(!reduce){s.tx=Math.max(-16,Math.min(16,dx*.35));s.ty=Math.max(-16,Math.min(16,dy*.35))}
+    cur.style.setProperty('--gx',(e.clientX-rc.left)+'px');cur.style.setProperty('--gy',(e.clientY-rc.top)+'px');
+    run(cur);
+  }
+  function end(){
+    if(!cur)return;var k=cur,was=eng;cur=null;pid=null;eng=false;clearTimeout(tm);
+    nearEls.forEach(function(el){el.classList.remove('glowing','near')});nearEls=[];
+    if(was){var s=stOf(k);s.tx=0;s.ty=0;s.tp=0;k._held=false;k.classList.remove('glowing');refr(k,1);run(k)}
+    document.removeEventListener('pointermove',mv,true);document.removeEventListener('pointerup',up,true);document.removeEventListener('pointercancel',up,true);
+  }
+  function engage(){
+    if(!cur||eng)return;eng=true;var k=cur;
+    k._held=true;k.classList.add('hot','glowing');
+    if(!reduce)stOf(k).tp=1;else stOf(k);
+    refr(k,1.6);aim({clientX:px,clientY:py});
+    /* الإضاءة تبدأ تحت الإصبع وتمتد للزجاج القريب */
+    document.querySelectorAll('.glass.btn,.tabs-bg').forEach(function(el){
+      if(el===k)return;var r=el.getBoundingClientRect();if(!r.width)return;
+      var dx=Math.max(rc.left-r.right,r.left-rc.right,0),dy=Math.max(rc.top-r.bottom,r.top-rc.bottom,0);
+      if(Math.hypot(dx,dy)<110){
+        el.style.setProperty('--gx',Math.max(0,Math.min(r.width,px-r.left))+'px');
+        el.style.setProperty('--gy',Math.max(0,Math.min(r.height,py-r.top))+'px');
+        el.classList.add('glowing','near');nearEls.push(el);
+      }
+    });
+  }
+  function mv(e){
+    if(!cur||e.pointerId!==pid)return;px=e.clientX;py=e.clientY;
+    if(eng)aim(e);else if(Math.hypot(px-ox,py-oy)>6){clearTimeout(tm);engage()}
+  }
+  function up(e){if(e.pointerId===pid)end()}
+  document.addEventListener('pointerdown',function(e){
+    if(cur||(e.pointerType==='mouse'&&e.button!==0))return;
+    var k=e.target.closest&&e.target.closest('.glass.btn');if(!k||k.disabled)return;
+    cur=k;pid=e.pointerId;rc=k.getBoundingClientRect();eng=false;ox=px=e.clientX;oy=py=e.clientY;
+    tm=setTimeout(engage,150);   /* ضغطة سريعة = ما يطلع زنبرك ولا نور؛ يبدأ بعد 150ms ضغط مطوّل أو أول ما تسحب 6px */
+    document.addEventListener('pointermove',mv,true);document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true);
+  },true);
+})();
+
+/* ---------- iOS 26: materialize / tab lift / minimise on scroll ---------- */
+(function(){
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function gOf(el){for(var i=0;i<glasses.length;i++)if(glasses[i].el===el)return glasses[i]}
+  /* 1) التجسّد: القائمة تظهر وتختفي بتعديل شدة الانكسار بدل التلاشي فقط (أكبر = عدسة أوضح ثم تستقر) */
+  function eo(x){return 1-Math.pow(1-x,3)}function eio(x){return x*x*(3-2*x)}
+  function tween(g,fn,dur){
+    var id={};g._tw=id;var t0=performance.now();
+    (function f(now){
+      if(g._tw!==id)return;var t=Math.min(1,(now-t0)/dur),k=fn(t);g._k=k;
+      g.dm.setAttribute('scale',(g.scale*k).toFixed(1));if(t<1)requestAnimationFrame(f);
+    })(t0);
+  }
+  ['menu','wmenu'].forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
+    new MutationObserver(function(){
+      var open=el.classList.contains('open');if(open===el._o)return;el._o=open;
+      var g=gOf(el);if(!g||!g.ok||reduce)return;
+      if(open){g.dm.setAttribute('scale','0');tween(g,function(t){return t<.45?1.5*eo(t/.45):1.5-.5*eio((t-.45)/.55)},520)}
+      else{var k0=g._k==null?1:g._k;tween(g,function(t){return k0*(1-eo(t))},240)}
+    }).observe(el,{attributes:true,attributeFilter:['class']});
+  });
+
+  /* 2) توهج البار تحت الإصبع أثناء الضغط */
+  var bg=tabsEl.querySelector('.tabs-bg'),tdown=false;
+  function tg(e){var r=bg.getBoundingClientRect();bg.style.setProperty('--gx',(e.clientX-r.left)+'px');bg.style.setProperty('--gy',(e.clientY-r.top)+'px')}
+  tabsEl.addEventListener('pointerdown',function(e){tdown=true;tg(e);bg.classList.add('glowing')});
+  tabsEl.addEventListener('pointermove',function(e){if(tdown)tg(e)});
+  function tup(){tdown=false;bg.classList.remove('glowing')}
+  tabsEl.addEventListener('pointerup',tup);tabsEl.addEventListener('pointercancel',tup);tabsEl.addEventListener('lostpointercapture',tup);
+
+  /* 3) البار ينكمش لدائرة فيها أيقونة التبويب المحدد عند النزول، ويرجع عند الصعود أو بالضغط عليه */
+  var dock=document.querySelector('.dock'),row=tabsEl.querySelector('.tabs-row'),cmp=document.getElementById('compose'),isMin=false,acc=0,lastTop=new WeakMap();
+  function setTW(){var w=dock.clientWidth-(cmp?cmp.offsetWidth:66)-12;if(w>0)row.style.setProperty('--tw',w+'px')}
+  function calcMdx(){
+    var on=tabsEl.querySelector('.tab.on');if(!on)return;
+    var rr=row.getBoundingClientRect(),rtl=getComputedStyle(tabsEl).direction==='rtl';
+    var circle=rtl?rr.right-33:rr.left+33,tc=rr.left+on.offsetLeft+on.offsetWidth/2;
+    tabsEl.style.setProperty('--mdx',(circle-tc)+'px');
+  }
+  function minimize(){if(isMin)return;setTW();calcMdx();isMin=true;dock.classList.add('min')}
+  function expand(){if(!isMin)return;isMin=false;dock.classList.remove('min')}
+  setTW();window.addEventListener('resize',function(){setTW();if(isMin)calcMdx()});
+  document.addEventListener('scroll',function(e){
+    var t=e.target;if(!t||!t.classList||!t.classList.contains('scroll')||!t.closest('#pRoot'))return;
+    var top=t.scrollTop,last=lastTop.has(t)?lastTop.get(t):top,d=top-last;lastTop.set(t,top);
+    if(Math.abs(d)<1)return;if((d>0)!==(acc>0))acc=0;acc+=d;
+    if(acc>16&&top>80)minimize();else if(acc<-10||top<=8)expand();
+  },true);
+  /* ضغطة على الدائرة = يرجع البار (ما يبدأ سحب العدسة) */
+  tabsEl.addEventListener('pointerdown',function(e){if(isMin){e.stopImmediatePropagation();expand()}},true);
+})();
+
 /* ---------- init ---------- */
 renderAll();
 qa('.glass').forEach(function(el){
-  if(el.id==='menu')return;
+  if(el.id==='menu'||el.id==='wmenu')return;
   var keepSearchGlass=(el.id==='search'||el.id==='moreBtn'||el.id==='cancelBtn');
   var g=glass(el,el.classList.contains('lens')?{disp:.5,bz:.52,blur:1.1,sat:1.6,br:1.03}:(keepSearchGlass?(el.id==='search'?{blur:.6}:{blur:.6,fixed:true,fw:48,fh:48}):{blur:1.7,disp:.24,bz:.32,sat:1.1,br:1}));
   if(el.classList.contains('lens'))lensG=g;
@@ -2570,42 +2728,6 @@ function findShow(){if(!FR.length)return;try{CSS.highlights.set('fndc',new Highl
 window.glSq=function(){if(typeof sqSoon==='function')sqSoon()};
 window.glExport=function(){exportData()};
 (function(){var _r=renderSettings;renderSettings=function(){_r();if(window.glAccPaint)window.glAccPaint()}})();
-
-/* ===== sync hooks: apply pulled cloud data in place (no page reload) ===== */
-window.glPreSync=function(){
-  /* push in-memory notes to storage (only if different) so sync sees the latest local state */
-  clearTimeout(saveT);
-  var a=JSON.stringify(notes),b=JSON.stringify(trash);
-  if(localStorage.getItem('lg-notes-v1')!==a)localStorage.setItem('lg-notes-v1',a);
-  if(localStorage.getItem('lg-trash-v1')!==b)localStorage.setItem('lg-trash-v1',b);
-};
-window.glApplyRemote=function(){
-  var openId=S.open,before=null;
-  var o=openId?byId(openId):null;if(o)before=JSON.stringify(o);
-  clearTimeout(saveT);
-  var nn=store.get('lg-notes-v1',null),tt=store.get('lg-trash-v1',[]),ff=store.get('lg-folders-v1',null);
-  if(!Array.isArray(nn))throw new Error('bad notes data');
-  notes=nn;notes.forEach(function(n){if(!n.created)n.created=n.ts});
-  trash=Array.isArray(tt)?tt:[];
-  if(Array.isArray(ff)&&ff.length)FOLDERS=ff;
-  if(openId){
-    var n=byId(openId);
-    if(!n){leaveNote(true);return}  /* note was deleted/moved to trash from another device */
-    if(JSON.stringify(n)!==before){
-      var a=document.activeElement,typing=a&&a!==document.body&&(a.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));
-      if(!typing){
-        try{
-          Object.keys(urls).forEach(function(k){try{URL.revokeObjectURL(urls[k])}catch(_){}});urls={};
-          $('nTitle').value=String(n.title||'');
-          $('nBody').innerHTML=bodyHTML(n.body);
-          $('nDate').textContent=whenFull(n.ts||Date.now());
-          grow();try{applyExtra()}catch(_){}try{stats()}catch(_){}try{renderAtts()}catch(_){}try{pinState()}catch(_){}
-        }catch(err){console.error('iNote open note refresh failed:',err)}
-      }
-    }
-  }
-  renderAll();
-};
 })();
 </script>
 
@@ -2926,7 +3048,6 @@ async function run(apply,depth){
   const snapC=await getDocs(base.lastSv?query(col,where('sv','>=',Timestamp.fromMillis(base.lastSv))):col);
   const cloud=new Map();let maxSv=base.lastSv;
   snapC.forEach(d=>{const x=d.data();const sv=x.sv&&x.sv.toMillis?x.sv.toMillis():0;cloud.set(d.id,Object.assign({},x,{sv}));if(sv>maxSv)maxSv=sv});
-  if(apply){try{window.glPreSync&&window.glPreSync()}catch(e){}}
   const S=snap();
   const pulls=[],pushes=[],adopt=[];
   const ids=new Set([...S.m.keys(),...cloud.keys(),...Object.keys(base.ids)]);ids.delete(FID);ids.delete(PID);
@@ -2986,11 +3107,7 @@ async function run(apply,depth){
   saveBase(base);
   if(!apply)return {needApply:true};
   /* apply pulls to the local copy, then reload so the app reads it */
-  try{window.glPreSync&&window.glPreSync()}catch(e){}
-  const S2=snap();
-  /* if a pulled note was edited locally while we were talking to the server, don't overwrite it; retry shortly */
-  if(pulls.some(({id})=>{const a=S.m.get(id),b=S2.m.get(id);return (a?a.h:null)!==(b?b.h:null)})){setTimeout(sync,1500);return {needApply:false}}
-  let notes=S2.notes.slice(),trash=S2.trash.slice();
+  let notes=S.notes.slice(),trash=S.trash.slice();
   const rm=id=>{notes=notes.filter(x=>x&&x.id!==id);trash=trash.filter(x=>x&&x.id!==id)};
   for(const {id,C} of pulls){
     rm(id);
@@ -3001,11 +3118,6 @@ async function run(apply,depth){
   rawPut(KEYS.n,JSON.stringify(notes));rawPut(KEYS.t,JSON.stringify(trash));
   if(fPull){rawPut(KEYS.f,JSON.stringify(fPull));base.ids[FID]={h:hash('F'+JSON.stringify(fPull))}}
   base.lastSv=maxSv;saveBase(base);lastOk=Date.now();
-  /* update the running app in place so the user stays on the current screen */
-  if(window.glApplyRemote){
-    try{window.glApplyRemote();return {needApply:false,reloading:false}}
-    catch(e){console.error('in-place apply failed, falling back to reload',e)}
-  }
   location.reload();
   return {needApply:false,reloading:true};
 }

@@ -1206,8 +1206,10 @@ function glass(el,o){
   var f=mk('filter',{id:id,filterUnits:'userSpaceOnUse',x:0,y:0,width:10,height:10,'color-interpolation-filters':'sRGB'});
   var im=mk('feImage',{x:0,y:0,width:10,height:10,preserveAspectRatio:'none',result:'map'});
   var bl=mk('feGaussianBlur',{'in':'SourceGraphic',stdDeviation:o.blur==null?.6:o.blur,result:'b'});
-  var dm=mk('feDisplacementMap',{'in':'b',in2:'map',scale:0,xChannelSelector:'R',yChannelSelector:'G'});
-  f.appendChild(im);f.appendChild(bl);f.appendChild(dm);fdefs.appendChild(f);
+  var mb=mk('feGaussianBlur',{'in':'map',stdDeviation:1,result:'mapb'});   /* ينعّم خريطة الإزاحة: بدون بكسلات */
+  var dm=mk('feDisplacementMap',{'in':'b',in2:'mapb',scale:0,xChannelSelector:'R',yChannelSelector:'G',result:'d'});
+  var pb=mk('feGaussianBlur',{'in':'d',stdDeviation:.55});   /* بعد الإزاحة: يمسح درجات السلّم اللي تطلع خطوط ومربعات */
+  f.appendChild(im);f.appendChild(mb);f.appendChild(bl);f.appendChild(dm);f.appendChild(pb);fdefs.appendChild(f);
   var g={el:el,im:im,dm:dm,f:f,w:0,h:0,scale:0,ok:false};
   g.apply=function(){
     var v=(cfg.refract&&canRefract&&g.ok)?'url(#'+id+') saturate('+sat+') brightness('+br+')':'';
@@ -1218,20 +1220,22 @@ function glass(el,o){
     if(!w||!h||(w===g.w&&h===g.h))return;
     g.w=w;g.h=h;
     var m=Math.min(w,h),rad=Math.min(o.r||m/2,m/2),bz=Math.min(m*bzF,38),mx=Math.min(m*dispF,30);
-    var cv=document.createElement('canvas');cv.width=w;cv.height=h;
-    var cx=cv.getContext('2d'),img=cx.createImageData(w,h),d=img.data;
+    var S=Math.min(3,Math.ceil(window.devicePixelRatio||1));while(S>1&&w*h*S*S>600000)S--;   /* الخريطة بدقة الشاشة الفعلية */
+    var cw=Math.ceil(w*S),ch=Math.ceil(h*S);
+    var cv=document.createElement('canvas');cv.width=cw;cv.height=ch;
+    var cx=cv.getContext('2d'),img=cx.createImageData(cw,ch),d=img.data;
     var hx=w/2,hy=h/2,bx=hx-rad,by=hy-rad;
-    for(var y=0;y<h;y++){for(var x=0;x<w;x++){
-      var px=x+.5-hx,py=y+.5-hy,qx=Math.abs(px)-bx,qy=Math.abs(py)-by;
+    for(var y=0;y<ch;y++){for(var x=0;x<cw;x++){
+      var px=(x+.5)/S-hx,py=(y+.5)/S-hy,qx=Math.abs(px)-bx,qy=Math.abs(py)-by;
       var ox=Math.max(qx,0),oy=Math.max(qy,0),len=Math.sqrt(ox*ox+oy*oy);
       var dist=rad-(len+Math.min(Math.max(qx,qy),0));
       var R=128,G=128;
       if(dist>0&&dist<bz){
-        var t=dist/bz,mag=Math.pow(1-t,2.4),nx,ny,sx=px<0?-1:1,sy=py<0?-1:1;
+        var t=dist/bz,mag=Math.pow(1-t,2.4),nx,ny,sx=px<0?-1:1,sy=py<0?-1:1,e=Math.min(1,dist/1.2);mag*=e*e*(3-2*e);   /* حافة ناعمة بدل قفزة حادة */
         if(qx>0&&qy>0){nx=ox/len*sx;ny=oy/len*sy}else if(qx>qy){nx=sx;ny=0}else{nx=0;ny=sy}
         R=128-nx*mag*127;G=128-ny*mag*127;
       }
-      var i=(y*w+x)*4;d[i]=R;d[i+1]=G;d[i+2]=128;d[i+3]=255;
+      var i=(y*cw+x)*4;d[i]=R;d[i+1]=G;d[i+2]=128;d[i+3]=255;
     }}
     cx.putImageData(img,0,0);
     var url=cv.toDataURL();

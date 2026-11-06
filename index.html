@@ -1283,7 +1283,7 @@ function heroOpen(p,below,r){
   var rad=radFor(r);
   p.style.transition='none';p.classList.add('show');void p.offsetWidth;p.style.transition='';
   below.classList.add('recede');
-  p.animate([{clipPath:insetStr(r,rad),backgroundColor:srcColor(r)},{clipPath:'inset(0px 0px 0px 0px round 0px)',backgroundColor:cssVar('--bg')}],{duration:520,easing:'cubic-bezier(.22,1,.36,1)'});
+  p.animate([{clipPath:insetStr(r,rad),backgroundColor:srcColor(r)},{clipPath:'inset(0px 0px 0px 0px round 0px)',backgroundColor:cssVar('--bg')}],{duration:640,easing:'cubic-bezier(.22,1,.36,1)'});
   qa('.scroll',p).forEach(function(el){el.scrollTop=0;el.animate([{opacity:0,transform:'translateY(18px) scale(.985)'},{opacity:1,transform:'none'}],{duration:420,delay:90,easing:'cubic-bezier(.22,1,.36,1)',fill:'backwards'})});
   qa('.topbar,.nbar',p).forEach(function(el){el.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:360,delay:150,easing:'cubic-bezier(.22,1,.36,1)',fill:'backwards'})});
 }
@@ -1295,7 +1295,7 @@ function heroClose(p,below,r){
     {clipPath:full,backgroundColor:cssVar('--bg'),opacity:1,offset:0},
     {clipPath:tgt,backgroundColor:to,opacity:1,offset:.78},
     {clipPath:tgt,backgroundColor:to,opacity:0,offset:1}
-  ],{duration:390,easing:'cubic-bezier(.4,0,1,1)',fill:'forwards'}));
+  ],{duration:460,easing:'cubic-bezier(.32,.72,0,1)',fill:'forwards'}));
   qa('.scroll,.topbar,.nbar',p).forEach(function(el){anims.push(el.animate([{opacity:1},{opacity:0}],{duration:170,easing:'ease-out',fill:'forwards'}))});
   var done=false;
   p._finish=function(){
@@ -2663,6 +2663,36 @@ window.glExport=function(){exportData()};
     return d.innerHTML;
   }
 
+  /* squircle حقيقي طول الوقت (حتى أثناء الحركة) مثل بطاقات الصفحة */
+  var sqRaf=0;
+  function sqStep(){
+    if(sqRaf)cancelAnimationFrame(sqRaf);sqRaf=0;
+    var P=PK;if(!P||!P.el.isConnected)return;
+    var el=P.el,inn=el.firstChild,w=el.offsetWidth,h=el.offsetHeight,rad=parseFloat(getComputedStyle(el).borderTopLeftRadius)||0,key=w+'|'+h+'|'+rad.toFixed(1);
+    if(P.sqk!==key){P.sqk=key;inn.style.clipPath=inn.style.webkitClipPath=sqPath(w,h,rad*2)}
+    sqRaf=requestAnimationFrame(sqStep);
+  }
+  /* الضغط على المعاينة: تتكبّر لكامل الشاشة وتفتح الملاحظة (HERO) */
+  function openPeek(e){
+    var P=PK;if(!P||P.closing)return;
+    if(e){e.stopPropagation();e.preventDefault()}
+    var n=byId(P.id);if(!n)return;
+    if(n.lock){var id=P.id;try{closeMenu()}catch(_){}setTimeout(function(){if(typeof tryOpen==='function')tryOpen(id)},440);return}
+    P.closing=true;var el=P.el,b=el.getBoundingClientRect();
+    try{if(cfg.haptics!==false&&navigator.vibrate)navigator.vibrate(8)}catch(_){}
+    try{closeMenu()}catch(_){}
+    mn.classList.remove('pvm');
+    el.classList.add('go');
+    setBox(el,{left:0,top:0,width:window.innerWidth,height:window.innerHeight},0);
+    openNote(P.id,false,{left:b.left,top:b.top,right:b.right,bottom:b.bottom,width:b.width,height:b.height});
+    setTimeout(function(){scr.classList.remove('pv')},420);
+    setTimeout(function(){
+      if(P.c&&P.c.isConnected)P.c.style.visibility='';
+      if(el.parentNode)el.parentNode.removeChild(el);
+      if(PK===P)PK=null;
+    },780);
+  }
+
   function kill(){
     var P=PK;if(!P)return;PK=null;
     if(P.el&&P.el.parentNode)P.el.parentNode.removeChild(P.el);
@@ -2699,8 +2729,8 @@ window.glExport=function(){exportData()};
         '<div class="n-body"'+(cfg.dir==='auto'?' dir="auto"':'')+'>'+miniBody(n)+'</div>';
       mini.appendChild(sc);
     }
-    pv.appendChild(mini);pv.appendChild(face);
-    setBox(pv,r,isW?46:0);
+    var inn=document.createElement('div');inn.className='pv-in';inn.appendChild(mini);inn.appendChild(face);pv.appendChild(inn);
+    setBox(pv,r,isW?46:30);
     app.appendChild(pv);
     if(sc)natPh=Math.round(pad*2+sc.offsetHeight*k);
 
@@ -2722,6 +2752,7 @@ window.glExport=function(){exportData()};
     pv.classList.add('on');
     setBox(pv,{left:L,top:T,width:pw,height:ph},54);
     PK={c:c,id:n.id,el:pv,closing:false,held:true};
+    pv.addEventListener('click',openPeek);sqStep();
   }
 
   function close(){
@@ -2741,7 +2772,7 @@ window.glExport=function(){exportData()};
     if(rc&&rc.width>8&&rc.height>8&&rc.bottom>0&&rc.top<window.innerHeight){
       t.style.visibility='hidden';P.t=t;
       el.classList.remove('on');el.classList.add('back');
-      setBox(el,rc,t.classList.contains('wc')?46:0);
+      setBox(el,rc,t.classList.contains('wc')?46:30);
       el.addEventListener('transitionend',function(e){if(e.target===el&&e.propertyName==='height')end()});
       setTimeout(end,780);
     }else{
@@ -3623,18 +3654,20 @@ try{
 
 <style id="inote-peek-css">
 /* ===== معاينة الملاحظة عند الضغط المطوّل (تكبير + محتوى مصغّر) ===== */
-.scrim.pv{background:color-mix(in srgb,var(--bg) 34%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.25);backdrop-filter:blur(18px) saturate(1.25)}
-.menu.pvm{transition-delay:.13s,.13s}
-#npv{position:absolute;z-index:190;overflow:hidden;pointer-events:none;box-sizing:border-box;
-  background:color-mix(in srgb,var(--c,var(--card)) 26%,var(--card));
-  box-shadow:0 0 0 rgba(0,0,0,0),inset 0 0 0 .5px transparent;
-  transition:left .62s var(--sp-soft),top .62s var(--sp-soft),width .62s var(--sp-soft),height .62s var(--sp-soft),border-radius .62s var(--sp-soft),box-shadow .5s ease}
-#npv.rw{background:var(--card)}
-@supports (corner-shape:squircle){#npv{corner-shape:squircle}}
-#npv.on{box-shadow:0 30px 80px var(--shadow),inset 0 0 0 .5px var(--hair)}
-#npv.back{box-shadow:0 0 0 rgba(0,0,0,0),inset 0 0 0 .5px transparent;
-  transition:left .5s var(--ease),top .5s var(--ease),width .5s var(--ease),height .5s var(--ease),border-radius .5s var(--ease),box-shadow .35s ease}
-#npv.gone{opacity:0;transform:scale(.9);transition:opacity .28s ease,transform .36s var(--ease),box-shadow .3s ease}
+.scrim.pv{transition:opacity .45s ease,backdrop-filter .45s ease,-webkit-backdrop-filter .45s ease;background:color-mix(in srgb,var(--bg) 34%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.25);backdrop-filter:blur(18px) saturate(1.25)}
+.menu.pvm{transition-delay:.16s,.16s}
+#npv{position:absolute;z-index:190;pointer-events:none;box-sizing:border-box;will-change:left,top,width,height,filter;
+  filter:drop-shadow(0 0 0 rgba(0,0,0,0));
+  transition:left .72s var(--sp-soft),top .72s var(--sp-soft),width .72s var(--sp-soft),height .72s var(--sp-soft),border-radius .72s var(--sp-soft),filter .6s ease}
+#npv .pv-in{position:absolute;inset:0;overflow:hidden;background:color-mix(in srgb,var(--c,var(--card)) 26%,var(--card));transform:translateZ(0)}
+#npv.rw .pv-in{background:var(--card)}
+#npv.on{pointer-events:auto;cursor:pointer;filter:drop-shadow(0 28px 38px var(--shadow))}
+#npv.back{filter:drop-shadow(0 0 0 rgba(0,0,0,0));
+  transition:left .62s cubic-bezier(.22,1,.36,1),top .62s cubic-bezier(.22,1,.36,1),width .62s cubic-bezier(.22,1,.36,1),height .62s cubic-bezier(.22,1,.36,1),border-radius .62s cubic-bezier(.22,1,.36,1),filter .4s ease}
+#npv.go{pointer-events:none;opacity:0;filter:drop-shadow(0 0 0 rgba(0,0,0,0));transition:left .66s cubic-bezier(.22,1,.36,1),top .66s cubic-bezier(.22,1,.36,1),width .66s cubic-bezier(.22,1,.36,1),height .66s cubic-bezier(.22,1,.36,1),border-radius .66s cubic-bezier(.22,1,.36,1),filter .45s ease,opacity .32s ease .28s}
+#npv.go .pv-b{opacity:0;transition:opacity .16s ease}
+#npv.go .pv-a{opacity:0}
+#npv.gone{opacity:0;transform:scale(.92);transition:opacity .3s ease,transform .4s var(--ease),filter .3s ease}
 /* وجه البطاقة الأصلية: حجمه ثابت ويتلاشى أثناء التكبير */
 #npv .pv-a{position:absolute;inset-block-start:0;inset-inline-start:0;opacity:1;
   transition:opacity .24s ease,transform .55s var(--sp-soft)}
@@ -3644,7 +3677,7 @@ try{
 #npv.on .pv-a{opacity:0;transform:none!important}
 #npv.back .pv-a{transition:opacity .26s ease .08s}
 /* المحتوى المصغّر */
-#npv .pv-b{position:absolute;inset-block-start:0;inset-inline-start:0;overflow:hidden;opacity:0;transition:opacity .36s ease .1s}
+#npv .pv-b{position:absolute;inset-block-start:0;inset-inline-start:0;overflow:hidden;opacity:0;transition:opacity .42s ease .14s}
 #npv.on .pv-b{opacity:1}
 #npv.back .pv-b{opacity:0;transition:opacity .14s ease}
 #npv .pv-b.fade{-webkit-mask-image:linear-gradient(#000 calc(100% - 56px),transparent);mask-image:linear-gradient(#000 calc(100% - 56px),transparent)}

@@ -2641,6 +2641,137 @@ function findShow(){if(!FR.length)return;try{CSS.highlights.set('fndc',new Highl
 window.glSq=function(){if(typeof sqSoon==='function')sqSoon()};
 window.glExport=function(){exportData()};
 (function(){var _r=renderSettings;renderSettings=function(){_r();if(window.glAccPaint)window.glAccPaint()}})();
+
+/* ===== note peek preview (long-press) ===== */
+(function(){
+  var app=document.getElementById('app'),scr=document.getElementById('scrim'),mn=document.getElementById('menu');
+  if(!app||!scr||!mn||typeof openMenu!=='function'||typeof lpMenu!=='function')return;
+  var _open=openMenu,_lp=lpMenu,PK=null,pending=null,eatUntil=0;
+
+  function isRTL(){return getComputedStyle(app).direction==='rtl'}
+  function setBox(el,b,rad){el.style.left=b.left+'px';el.style.top=b.top+'px';el.style.width=b.width+'px';el.style.height=b.height+'px';el.style.borderRadius=rad+'px'}
+
+  /* نسخة خفيفة من نص الملاحظة: الصور تتحول لمربع، الملفات تبقى، وما فيها عناصر تفاعلية */
+  function miniBody(n){
+    var d=document.createElement('div');d.innerHTML=bodyHTML(n.body);
+    qa('.att-blk',d).forEach(function(b){
+      if(b.classList.contains('file')){b.removeAttribute('data-fid');b.removeAttribute('contenteditable');return}
+      var ph=document.createElement('div');ph.className='pv-img';ph.innerHTML=ic('clip');b.parentNode.replaceChild(ph,b)});
+    qa('input',d).forEach(function(i){i.disabled=true;i.tabIndex=-1;i.removeAttribute('id')});
+    qa('[contenteditable]',d).forEach(function(e){e.removeAttribute('contenteditable')});
+    while(d.childNodes.length>80)d.removeChild(d.lastChild);
+    return d.innerHTML;
+  }
+
+  function kill(){
+    var P=PK;if(!P)return;PK=null;
+    if(P.el&&P.el.parentNode)P.el.parentNode.removeChild(P.el);
+    if(P.t&&P.t.isConnected)P.t.style.visibility='';
+    if(P.c&&P.c.isConnected)P.c.style.visibility='';
+  }
+
+  function show(c,n,items){
+    kill();
+    var rtl=isRTL(),r=c.getBoundingClientRect(),isW=c.classList.contains('wc'),lk=!!n.lock;
+    var vw=window.innerWidth,vh=window.innerHeight,cs=getComputedStyle(document.documentElement);
+    var sT=parseFloat(cs.paddingTop)||0,sB=parseFloat(cs.paddingBottom)||0;
+    var natW=c.offsetWidth||r.width,natH=c.offsetHeight||r.height;
+
+    var pv=document.createElement('div');pv.id='npv';pv.className=isW?'wd':'rw';
+    if(isW&&n.color)pv.style.setProperty('--c',n.color);
+
+    /* وجه البطاقة: نسخة من البطاقة نفسها بحجمها الطبيعي */
+    var face=document.createElement('div');face.className='pv-a';
+    var cl=c.cloneNode(true);cl.removeAttribute('data-open');cl.removeAttribute('style');cl.classList.remove('sq','picked');
+    cl.style.width=natW+'px';cl.style.height=natH+'px';
+    face.style.transformOrigin=(rtl?'100%':'0%')+' 0%';face.style.transform='scale('+(r.width/natW)+')';
+    face.appendChild(cl);
+
+    /* المحتوى المصغّر */
+    var pw=Math.min(vw-48,360),pad=20,W0=480,k=(pw-pad*2)/W0;
+    var mini=document.createElement('div');mini.className='pv-b';mini.style.width=pw+'px';
+    var sc=null,natPh;
+    if(lk){mini.innerHTML='<div class="pv-lk">'+ic('lock')+'<span>ملاحظة مقفلة</span></div>';natPh=Math.round(pw*.62)}
+    else{
+      sc=document.createElement('div');sc.className='pv-sc';sc.style.width=W0+'px';
+      sc.style.transformOrigin=(rtl?'100%':'0%')+' 0%';sc.style.transform='scale('+k+')';
+      sc.innerHTML='<div class="pv-d">'+esc(whenFull(n.ts))+'</div><div class="pv-t">'+esc(n.title||(n.quick?'ملاحظة سريعة':'ملاحظة جديدة'))+'</div>'+
+        '<div class="n-body"'+(cfg.dir==='auto'?' dir="auto"':'')+'>'+miniBody(n)+'</div>';
+      mini.appendChild(sc);
+    }
+    pv.appendChild(mini);pv.appendChild(face);
+    setBox(pv,r,isW?46:0);
+    app.appendChild(pv);
+    if(sc)natPh=Math.round(pad*2+sc.offsetHeight*k);
+
+    /* نفتح القائمة مبدئيًا لقياس حجمها، ثم نرتب المجموعة (المعاينة + القائمة) */
+    _open({id:'',getBoundingClientRect:function(){return{left:0,right:0,top:0,bottom:0,width:0,height:0}}},items);
+    var mh=mn.offsetHeight,mw=mn.offsetWidth,gap=12,top0=sT+12,bot0=vh-sB-12;
+    var ph=Math.max(120,Math.min(natPh,bot0-top0-gap-mh));
+    var total=ph+gap+mh,cx=r.left+r.width/2,cy=r.top+r.height/2;
+    var L=Math.max(24,Math.min(vw-24-pw,cx-pw/2));
+    var T=Math.max(top0,Math.min(bot0-total,cy-total/2));
+    mini.style.height=ph+'px';
+    if(!lk&&natPh>ph+1)mini.classList.add('fade');
+    var ml=Math.max(12,Math.min(vw-mw-12,rtl?L+pw-mw:L));
+    mn.style.left=ml+'px';mn.style.top=(T+ph+gap)+'px';mn.style.transformOrigin=(rtl?'88%':'12%')+' 0%';
+    mn.classList.add('pvm');scr.classList.add('pv');
+
+    c.style.visibility='hidden';
+    void pv.offsetWidth;
+    pv.classList.add('on');
+    setBox(pv,{left:L,top:T,width:pw,height:ph},54);
+    PK={c:c,id:n.id,el:pv,closing:false,held:true};
+  }
+
+  function close(){
+    var P=PK;if(!P||P.closing)return;P.closing=true;
+    mn.classList.remove('pvm');
+    var el=P.el,t=P.c;
+    /* إذا انحذفت/تغيّرت البطاقة بعد الإجراء نبحث عن بطاقتها الجديدة */
+    if(!t||!t.isConnected)t=app.querySelector('[data-open="'+P.id+'"]');
+    var rc=t&&t.isConnected?t.getBoundingClientRect():null,fin=false;
+    function end(){
+      if(fin)return;fin=true;
+      if(P.t&&P.t.isConnected)P.t.style.visibility='';
+      if(el.parentNode)el.parentNode.removeChild(el);
+      if(PK===P)PK=null;
+    }
+    setTimeout(function(){scr.classList.remove('pv')},420);
+    if(rc&&rc.width>8&&rc.height>8&&rc.bottom>0&&rc.top<window.innerHeight){
+      t.style.visibility='hidden';P.t=t;
+      el.classList.remove('on');el.classList.add('back');
+      setBox(el,rc,t.classList.contains('wc')?46:0);
+      el.addEventListener('transitionend',function(e){if(e.target===el&&e.propertyName==='height')end()});
+      setTimeout(end,780);
+    }else{
+      el.classList.remove('on');el.classList.add('gone');
+      setTimeout(end,400);
+    }
+  }
+
+  lpMenu=function(c){pending=c;try{return _lp(c)}finally{pending=null}};
+  openMenu=function(a,items){
+    if(pending&&a===pending){
+      var c=pending,n=byId(c.dataset.open);pending=null;
+      if(n&&c.isConnected&&c.getBoundingClientRect().width>0){
+        try{return show(c,n,items)}catch(err){try{console.error(err)}catch(_){}kill();mn.classList.remove('pvm');scr.classList.remove('pv')}
+      }
+    }
+    scr.classList.remove('pv');mn.classList.remove('pvm');
+    return _open.apply(this,arguments);
+  };
+
+  /* أي إغلاق للقائمة (الضغط خارجها أو اختيار خيار) يرجّع المعاينة لمكانها */
+  new MutationObserver(function(){if(PK&&!PK.closing&&!scr.classList.contains('open'))close()}).observe(scr,{attributes:true,attributeFilter:['class']});
+
+  /* رفع الإصبع بعد الضغط المطوّل ما يعتبر نقرة على الملاحظة */
+  ['pointerup','pointercancel'].forEach(function(ev){document.addEventListener(ev,function(){if(PK&&PK.held){PK.held=false;eatUntil=Date.now()+380}},true)});
+  document.addEventListener('click',function(e){
+    if(Date.now()<eatUntil&&!(e.target.closest&&e.target.closest('#menu'))){e.stopImmediatePropagation();e.preventDefault();eatUntil=0}
+  },true);
+  window.addEventListener('resize',function(){if(PK&&!PK.closing&&typeof closeMenu==='function')closeMenu()});
+})();
 })();
 </script>
 
@@ -3489,5 +3620,45 @@ try{
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 </script>
+
+<style id="inote-peek-css">
+/* ===== معاينة الملاحظة عند الضغط المطوّل (تكبير + محتوى مصغّر) ===== */
+.scrim.pv{background:color-mix(in srgb,var(--bg) 34%,transparent);-webkit-backdrop-filter:blur(18px) saturate(1.25);backdrop-filter:blur(18px) saturate(1.25)}
+.menu.pvm{transition-delay:.13s,.13s}
+#npv{position:absolute;z-index:190;overflow:hidden;pointer-events:none;box-sizing:border-box;
+  background:color-mix(in srgb,var(--c,var(--card)) 26%,var(--card));
+  box-shadow:0 0 0 rgba(0,0,0,0),inset 0 0 0 .5px transparent;
+  transition:left .62s var(--sp-soft),top .62s var(--sp-soft),width .62s var(--sp-soft),height .62s var(--sp-soft),border-radius .62s var(--sp-soft),box-shadow .5s ease}
+#npv.rw{background:var(--card)}
+@supports (corner-shape:squircle){#npv{corner-shape:squircle}}
+#npv.on{box-shadow:0 30px 80px var(--shadow),inset 0 0 0 .5px var(--hair)}
+#npv.back{box-shadow:0 0 0 rgba(0,0,0,0),inset 0 0 0 .5px transparent;
+  transition:left .5s var(--ease),top .5s var(--ease),width .5s var(--ease),height .5s var(--ease),border-radius .5s var(--ease),box-shadow .35s ease}
+#npv.gone{opacity:0;transform:scale(.9);transition:opacity .28s ease,transform .36s var(--ease),box-shadow .3s ease}
+/* وجه البطاقة الأصلية: حجمه ثابت ويتلاشى أثناء التكبير */
+#npv .pv-a{position:absolute;inset-block-start:0;inset-inline-start:0;opacity:1;
+  transition:opacity .24s ease,transform .55s var(--sp-soft)}
+#npv .pv-a>*{position:absolute!important;inset:auto!important;inset-block-start:0!important;inset-inline-start:0!important;margin:0!important;
+  transform:none!important;background:none!important;border-radius:0!important;box-shadow:none!important;animation:none!important;
+  transition:none!important;clip-path:none!important;-webkit-clip-path:none!important;visibility:visible!important;opacity:1!important}
+#npv.on .pv-a{opacity:0;transform:none!important}
+#npv.back .pv-a{transition:opacity .26s ease .08s}
+/* المحتوى المصغّر */
+#npv .pv-b{position:absolute;inset-block-start:0;inset-inline-start:0;overflow:hidden;opacity:0;transition:opacity .36s ease .1s}
+#npv.on .pv-b{opacity:1}
+#npv.back .pv-b{opacity:0;transition:opacity .14s ease}
+#npv .pv-b.fade{-webkit-mask-image:linear-gradient(#000 calc(100% - 56px),transparent);mask-image:linear-gradient(#000 calc(100% - 56px),transparent)}
+#npv .pv-sc{position:absolute;inset-block-start:20px;inset-inline-start:20px;color:var(--fg)}
+#npv .pv-d{text-align:center;color:var(--fg2);font-size:13px;margin:6px 0 18px}
+#npv .pv-t{font:700 calc(28px*var(--t))/1.35 var(--font);margin:0 0 8px;overflow-wrap:anywhere}
+#npv .pv-sc .n-body{min-height:0;padding:0;overflow:hidden;animation:none}
+#npv .pv-sc .n-body *{pointer-events:none;animation:none!important}
+#npv .pv-img{height:150px;border-radius:34px;margin:.55em 0;display:flex;align-items:center;justify-content:center;color:var(--fg2);
+  background:color-mix(in srgb,var(--fg) 7%,transparent)}
+#npv .pv-img .ic{width:38px;height:38px;stroke-width:1.5}
+/* الملاحظة المقفولة: علامة القفل فقط */
+#npv .pv-lk{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--fg2);font:600 15px var(--font)}
+#npv .pv-lk .ic{width:60px;height:60px;stroke-width:1.4;color:var(--fg2)}
+</style>
 </body></html>
 ف

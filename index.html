@@ -3784,23 +3784,37 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 #lgReset.dis{opacity:.4;pointer-events:none}
 </style>
 <script>
-/* Median: رجّع وضع الشاشة الكاملة بعد الرجوع من الخلفية (بدون ما يلمس أول فتح) */
+/* Median: بعد الرجوع من الخلفية أخفِ الشريط تمامًا (بدون ساعة ولا بطارية) */
 (function(){
-  var sc=function(){return window.median&&median.android&&median.android.screen};
-  function full(){try{var m=sc();if(m)m.fullScreen()}catch(e){}}
-  var busy=0,wasHidden=false;
-  /* بعد الرجوع فقط: normal() ثم fullScreen() يجبر الأندرويد يخفي الشريط من جديد */
+  var M=function(){return window.median&&median.android&&median.android.screen};
+  function full(){try{var m=M();if(m)m.fullScreen()}catch(e){}}
+  function toggle(){try{var m=M();if(m){m.normal();setTimeout(full,90)}}catch(e){}}
+  /* الشريط ظاهر؟ ارتفاع الصفحة أقل من الشاشة (ومو بسبب الكيبورد) */
+  function barShown(){
+    var ae=document.activeElement,typing=ae&&/^(INPUT|TEXTAREA)$/.test(ae.tagName)||(ae&&ae.isContentEditable);
+    if(typing)return false;
+    var vv=window.visualViewport,h=vv?vv.height:window.innerHeight;
+    return (screen.height-h)>8;
+  }
+  var busy=0,wasHidden=false,poll=0;
   function resumed(){
     if(busy)return;busy=1;
-    setTimeout(function(){try{var m=sc();if(m)m.normal()}catch(e){}setTimeout(full,80)},350);
-    setTimeout(full,1100);
-    setTimeout(function(){busy=0},1500);
+    full();
+    var n=0,did=0;clearInterval(poll);
+    poll=setInterval(function(){
+      n++;
+      if(barShown()){ if(did%2===0)toggle();else full();did++ } else full();
+      if(n>=24){clearInterval(poll);busy=0}
+    },250);
+    var once=function(){document.removeEventListener('touchstart',once,true);full();setTimeout(function(){if(barShown())toggle()},250)};
+    document.addEventListener('touchstart',once,true);
   }
   window.median_app_resumed=resumed;
   document.addEventListener('visibilitychange',function(){
     if(document.hidden)wasHidden=true;
     else if(wasHidden){wasHidden=false;resumed()}
   });
+  window.addEventListener('focus',function(){full()});
   var rt=0;function later(){clearTimeout(rt);rt=setTimeout(full,250)}
   window.addEventListener('resize',later);
   document.addEventListener('focusout',later);

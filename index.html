@@ -3786,13 +3786,19 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 <script>
 /* Median: رجّع وضع الشاشة الكاملة كل ما يرجع التطبيق من الخلفية */
 (function(){
-  function full(){try{if(window.median&&median.android&&median.android.screen)median.android.screen.fullScreen()}catch(e){}}
-  function burst(){full();setTimeout(full,200);setTimeout(full,700);setTimeout(full,1500)}
+  var sc=function(){return window.median&&median.android&&median.android.screen};
+  function full(){try{var m=sc();if(m)m.fullScreen()}catch(e){}}
+  /* normal() ثم fullScreen(): يجبر الأندرويد يخفي الشريط حتى لو ميديان تظن إنه مخفي أصلًا */
+  function reset(){try{var m=sc();if(m){m.normal();setTimeout(full,70)}}catch(e){}}
+  function burst(){reset();setTimeout(full,350);setTimeout(reset,900);setTimeout(full,1600)}
   window.median_app_resumed=burst;
   document.addEventListener('visibilitychange',function(){if(!document.hidden)burst()});
   window.addEventListener('focus',burst);
   window.addEventListener('pageshow',burst);
-  burst();
+  var rt=0;function later(){clearTimeout(rt);rt=setTimeout(full,250)}
+  window.addEventListener('resize',later);
+  document.addEventListener('focusout',later);
+  full();setTimeout(full,500);setTimeout(full,1500);
 })();
 </script>
 </body></html>

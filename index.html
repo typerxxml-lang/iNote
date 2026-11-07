@@ -3793,9 +3793,21 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   function barShown(){
     var ae=document.activeElement,typing=ae&&/^(INPUT|TEXTAREA)$/.test(ae.tagName)||(ae&&ae.isContentEditable);
     if(typing)return false;
-    var vv=window.visualViewport,h=vv?vv.height:window.innerHeight;
-    return (screen.height-h)>8;
+    return base!=null&&(diff()-base)>8;
   }
+  var base=null;
+  function diff(){var vv=window.visualViewport,h=vv?vv.height:window.innerHeight;return screen.height-h}
+  /* قياس الوضع الطبيعي (الشريط مخفي) بعد الفتح، ثم مراقبة دائمة بدون الاعتماد على أحداث الرجوع */
+  setTimeout(function(){base=diff()},1800);
+  var tick=0;
+  setInterval(function(){
+    if(document.hidden||base==null)return;
+    if(barShown()){
+      if(window.__lgInfo&&tick%8===0)window.__lgInfo('bar! diff='+diff()+' base='+base);
+      if(tick%2===0)toggle();else full();
+      tick++;
+    }else tick=0;
+  },600);
   var busy=0,wasHidden=false,poll=0;
   function resumed(){
     if(busy)return;busy=1;
@@ -3834,6 +3846,7 @@ body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
       +'\nUA median: '+(/median|gonative/i.test(navigator.userAgent));
     d.style.display='block';clearTimeout(t);t=setTimeout(function(){d.style.display='none'},9000);
   }
+  window.__lgInfo=info;
   var _r=window.median_app_resumed;
   window.median_app_resumed=function(){cnt.res++;info('resumed');try{_r&&_r()}catch(e){}};
   document.addEventListener('visibilitychange',function(){cnt.vis++;if(!document.hidden)info('visible')});

@@ -1222,6 +1222,9 @@ var canRefract=/Chrome\/\d+/.test(navigator.userAgent)&&!/Firefox|FxiOS|CriOS/.t
 function mk(n,a){var e=document.createElementNS(SVGNS,n);for(var k in a)e.setAttribute(k,a[k]);return e}
 function gbv(){return cfg.gb==null?18:+cfg.gb}
 function gtv(){return cfg.gt==null?70:+cfg.gt}
+/* إعدادات الانكسار الموحّدة (نفس البار) لكل العناصر الزجاجية */
+var BAR={blur:.8,disp:.42,bz:.47,sat:1.5,br:1.04};
+function bo(x){var o={},k;for(k in BAR)o[k]=BAR[k];for(k in x)o[k]=x[k];return o}
 function glass(el,o){
   o=o||{};
   var id='lg'+(++gid),sat=o.sat||1.8,br=o.br||1.05,bzF=o.bz||.4,dispF=o.disp||.36;
@@ -1471,7 +1474,7 @@ function openMenu(anchor,items){
   menu.style.left=left+'px';menu.style.top=top+'px';
   menu.style.setProperty('--ox',(r.left+r.width/2-left)+'px');
   menu.style.transformOrigin=(r.left+r.width/2-left)+'px '+(top<r.top?'100%':'0%');
-  if(!menuG)menuG=glass(menu,{r:26,disp:.26,bz:.34,blur:1.7}); else {menuG.w=0;menuG.build()}
+  if(!menuG)menuG=glass(menu,bo({r:26})); else {menuG.w=0;menuG.build()}
   void menu.offsetWidth;menu.classList.add('open');
 }
 function closeMenu(){closeWr();qa('.dots-btn.menu-active').forEach(function(b){b.classList.remove('menu-active')});menu.classList.remove('open');scrim.classList.remove('open');var nb=$('nMore');if(nb&&nb.classList.contains('menu-active')){nb.classList.remove('menu-active');nb.innerHTML='<svg class="menu-glyph" viewBox="0 0 24 24" aria-hidden="true"><line class="top" x1="4" y1="7" x2="20" y2="7"/><line class="mid" x1="4" y1="12" x2="20" y2="12"/><line class="bottom" x1="4" y1="17" x2="20" y2="17"/></svg>'}setTimeout(function(){if(!menu.classList.contains('open')){menu.style.display='none';scrim.style.display='none'}},320)}
@@ -1538,7 +1541,7 @@ function openWrMenu(){
   wmenu.style.transformOrigin=(side==='l'?'100% ':'0% ')+(top+50<mr.top?'0%':'100%');
   menu.classList.add('has-sub');
   menu.style.setProperty('--mx',side==='l'?'12px':'-12px');
-  if(!wmenuG)wmenuG=glass(wmenu,{r:26,disp:.26,bz:.34,blur:1.7});else{wmenuG.w=0;wmenuG.build()}
+  if(!wmenuG)wmenuG=glass(wmenu,bo({r:26}));else{wmenuG.w=0;wmenuG.build()}
   void wmenu.offsetWidth;wmenu.classList.add('open');
 }
 function closeWr(){
@@ -2205,7 +2208,7 @@ renderAll();
 qa('.glass').forEach(function(el){
   if(el.id==='menu')return;
   var keepSearchGlass=(el.id==='search'||el.id==='moreBtn'||el.id==='cancelBtn');
-  var g=glass(el,el.classList.contains('lens')?{disp:.5,bz:.52,blur:1.1,sat:1.6,br:1.03}:(keepSearchGlass?(el.id==='search'?{blur:.6}:{blur:.6,fixed:true,fw:48,fh:48}):{blur:1.7,disp:.24,bz:.32,sat:1.1,br:1}));
+  var g=glass(el,(keepSearchGlass&&el.id!=='search')?bo({fixed:true,fw:48,fh:48}):bo());
   if(el.classList.contains('lens'))lensG=g;
 });
 applyCfg();applyExtra();setTab('notes');syncSettings(false);
@@ -2684,7 +2687,7 @@ document.addEventListener('click',function(e){if(!SEL)return;var c=e.target.clos
 var FR=[],FI=0;
 function findOpen(){
   if(!(window.CSS&&CSS.highlights&&window.Highlight)){toast('البحث داخل الملاحظة غير مدعوم على هذا المتصفح');return}
-  var b=$('fbar');if(!b){b=document.createElement('div');b.id='fbar';b.className='glass';b.innerHTML='<input type="search" placeholder="بحث في الملاحظة" enterkeyhint="search" autocomplete="off"><span class="fc"></span><button data-f="p" aria-label="السابق">↑</button><button data-f="n" aria-label="التالي">↓</button><button data-f="x" aria-label="إغلاق">'+ic('x')+'</button>';$('pNote').appendChild(b);glass(b,{blur:1.7,disp:.24,bz:.32,sat:1.1,br:1});
+  var b=$('fbar');if(!b){b=document.createElement('div');b.id='fbar';b.className='glass';b.innerHTML='<input type="search" placeholder="بحث في الملاحظة" enterkeyhint="search" autocomplete="off"><span class="fc"></span><button data-f="p" aria-label="السابق">↑</button><button data-f="n" aria-label="التالي">↓</button><button data-f="x" aria-label="إغلاق">'+ic('x')+'</button>';$('pNote').appendChild(b);glass(b,bo());
     var inp=b.querySelector('input');inp.addEventListener('input',function(){findRun(inp.value)});inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();findStep(e.shiftKey?-1:1)}});
     b.addEventListener('click',function(e){var k=e.target.closest('button');if(!k)return;var v=k.dataset.f;if(v==='x')findClose();else findStep(v==='n'?1:-1)});
     b.addEventListener('pointerdown',function(e){if(e.target.closest('button'))e.preventDefault()})}
@@ -3809,5 +3812,6 @@ html.plain .glass::after,html.plain .glass.btn::before,html.plain .pk::before{di
 html.plain .btn:active,html.plain .glass:active{transform:none}
 html.plain button.glass:not(#moreBtn):active,html.plain button.glass:not(#moreBtn).circle:active,html.plain button.glass:not(#moreBtn).btn:active{transform:none;opacity:.7}
 html.plain .tabs.drag .lens{transition:none}
+
 </style>
 </body></html>

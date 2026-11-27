@@ -1072,7 +1072,7 @@ function sqAll(){SQCAP.forEach(function(c){qa(c[0]).forEach(function(el){
 var sqT=0;function sqSoon(){if(!sqT)sqT=requestAnimationFrame(function(){sqT=0;sqAll()})}
 /* ---------- legal ---------- */
 var DOCS={
-privacy:['سياسة الخصوصية','<p>آخر تحديث: 9 نوفمبر 2026 · الإصدار 5.100.00</p><h3>مقدمة</h3><p>iNote تطبيق ملاحظات يعمل داخل متصفحك. يمكنك استخدامه بدون حساب فتبقى ملاحظاتك على جهازك فقط، أو بحساب قوقل (اختياري) لمزامنة نص ملاحظاتك بين أجهزتك. نحترم خصوصيتك ولا نبيع بياناتك.</p><h3>ما الذي يُخزَّن؟</h3><p>ملاحظاتك ومجلداتك والصور والملفات التي ترفقها وإعداداتك تُحفظ على جهازك داخل مساحة التخزين الخاصة بالمتصفح (LocalStorage وIndexedDB). بدون حساب لا يُرسل أي شيء إلى أي خادم. وإذا سجّلت الدخول بحساب قوقل فإن نص ملاحظاتك ومجلداتك يُنسخ أيضًا إلى حسابك في خدمة Google Firebase (Firestore) لمزامنته بين أجهزتك، أما الصور والملفات المرفقة فتبقى على جهازك ولا تُرفع. وإعدادات المظهر (مثل وضع Liquid Glass ودرجتَي الضبابية والشفافية) تبقى على جهازك فقط ولا تُزامَن.</p><h3>تسجيل الدخول بحساب قوقل</h3><p>عند تسجيل الدخول نستلم من قوقل عبر خدمة Firebase Authentication اسمك وبريدك وصورتك ومعرّف حسابك فقط، ولا نطّلع على كلمة سرك أبدًا لأن قوقل هي من تتولى التحقق. وإذا غيّرت اسمك أو صورتك من داخل التطبيق فتُحفظ نسخة منهما في حسابك أيضًا لتظهرا لك على أجهزتك. لا نستخدم هذه البيانات لغير تسجيل الدخول والمزامنة، ولا نبيعها ولا نشاركها مع أي طرف. النسخة المتزامنة مرتبطة بحسابك ولا يصل إليها حساب آخر وفق قواعد الأمان المضبوطة، ولا نقرأها، لكنها غير مشفّرة من الطرف إلى الطرف، أي إن مدير قاعدة البيانات يملك تقنيًا صلاحية الوصول إليها. عند حذف ملاحظة نهائيًا من التطبيق يُحذف نصها من نسخة الحساب أيضًا. يمكنك استخدام التطبيق بدون حساب في أي وقت، وإدارة أو إلغاء ربط التطبيق بحسابك من إعدادات حساب قوقل.</p><h3>ما الذي لا نفعله؟</h3><p>لا نستخدم أدوات تحليل أو تتبّع ولا إعلانات، ولا نبيع بياناتك ولا نشاركها مع أي طرف.</p><h3>الاستضافة</h3><p>يُقدَّم التطبيق كملفات ثابتة عبر Cloudflare، وقد تسجّل الاستضافة بيانات تقنية عامة عن الطلبات (مثل عنوان IP) وفق سياستها الخاصة، وتخضع بيانات تسجيل الدخول لسياسة قوقل وFirebase، ولا علاقة لذلك بمحتوى ملاحظاتك.</p><h3>الحذف والنسخ الاحتياطي</h3><p>مسح بيانات الموقع أو إلغاء تثبيت التطبيق قد يحذف ملاحظاتك نهائيًا. يُنصح بالتصدير الدوري من الإعدادات، علمًا أن النسخة الاحتياطية تشمل النصوص دون المرفقات.</p><h3>الأطفال</h3><p>التطبيق لا يجمع محتوى من أي مستخدم، بمن فيهم الأطفال.</p><h3>التعديلات</h3><p>قد نحدّث هذه السياسة، وسيظهر تاريخ آخر تحديث في أعلاها.</p>'],
+privacy:['سياسة الخصوصية','<p>آخر تحديث: 9 نوفمبر 2026 · الإصدار 5.100.00</p><h3>مقدمة</h3><p>iNote تطبيق ملاحظات يعمل داخل متصفحك. يمكنك استخدامه بدون حساب فتبقى ملاحظاتك على جهازك فقط، أو بحساب قوقل (اختياري) لمزامنة نص ملاحظاتك بين أجهزتك. نحترم خصوصيتك ولا نبيع بياناتك.</p><h3>ما الذي يُخزَّن؟</h3><p>ملاحظاتك ومجلداتك والصور والملفات التي ترفقها وإعداداتك تُحفظ على جهازك داخل مساحة التخزين الخاصة بالمتصفح (LocalStorage وIndexedDB). بدون حساب لا يُرسل أي شيء إلى أي خادم. وإذا سجّلت الدخول بحساب قوقل فإن نص ملاحظاتك ومجلداتك يُنسخ أيضًا إلى حسابك في خدمة Google Firebase (Firestore) لمزامنته بين أجهزتك، أما الصور والملفات المرفقة فتبقى على جهازك ولا تُرفع. وإعداداتك (المظهر واللون والخط واللغة ووضع Liquid Glass والضبابية والشفافية) تُنسخ أيضًا إلى حسابك لتظهر لك على كل أجهزتك.</p><h3>تسجيل الدخول بحساب قوقل</h3><p>عند تسجيل الدخول نستلم من قوقل عبر خدمة Firebase Authentication اسمك وبريدك وصورتك ومعرّف حسابك فقط، ولا نطّلع على كلمة سرك أبدًا لأن قوقل هي من تتولى التحقق. وإذا غيّرت اسمك أو صورتك من داخل التطبيق فتُحفظ نسخة منهما في حسابك أيضًا لتظهرا لك على أجهزتك. لا نستخدم هذه البيانات لغير تسجيل الدخول والمزامنة، ولا نبيعها ولا نشاركها مع أي طرف. النسخة المتزامنة مرتبطة بحسابك ولا يصل إليها حساب آخر وفق قواعد الأمان المضبوطة، ولا نقرأها، لكنها غير مشفّرة من الطرف إلى الطرف، أي إن مدير قاعدة البيانات يملك تقنيًا صلاحية الوصول إليها. عند حذف ملاحظة نهائيًا من التطبيق يُحذف نصها من نسخة الحساب أيضًا. يمكنك استخدام التطبيق بدون حساب في أي وقت، وإدارة أو إلغاء ربط التطبيق بحسابك من إعدادات حساب قوقل.</p><h3>ما الذي لا نفعله؟</h3><p>لا نستخدم أدوات تحليل أو تتبّع ولا إعلانات، ولا نبيع بياناتك ولا نشاركها مع أي طرف.</p><h3>الاستضافة</h3><p>يُقدَّم التطبيق كملفات ثابتة عبر Cloudflare، وقد تسجّل الاستضافة بيانات تقنية عامة عن الطلبات (مثل عنوان IP) وفق سياستها الخاصة، وتخضع بيانات تسجيل الدخول لسياسة قوقل وFirebase، ولا علاقة لذلك بمحتوى ملاحظاتك.</p><h3>الحذف والنسخ الاحتياطي</h3><p>مسح بيانات الموقع أو إلغاء تثبيت التطبيق قد يحذف ملاحظاتك نهائيًا. يُنصح بالتصدير الدوري من الإعدادات، علمًا أن النسخة الاحتياطية تشمل النصوص دون المرفقات.</p><h3>الأطفال</h3><p>التطبيق لا يجمع محتوى من أي مستخدم، بمن فيهم الأطفال.</p><h3>التعديلات</h3><p>قد نحدّث هذه السياسة، وسيظهر تاريخ آخر تحديث في أعلاها.</p>'],
 terms:['بنود الاستخدام','<p>آخر تحديث: 9 نوفمبر 2026 · الإصدار 5.100.00</p><h3>القبول</h3><p>باستخدامك iNote فإنك توافق على هذه البنود. إن لم توافق فلا تستخدم التطبيق.</p><h3>الحساب</h3><p>تسجيل الدخول بحساب قوقل اختياري. أنت المسؤول عن أمان حسابك، ولا يؤثر استخدام الحساب على ملكية ملاحظاتك.</p><h3>محتواك ملكك</h3><p>كل ما تكتبه أو ترفقه يبقى ملكًا لك، وهو محفوظ على جهازك (ونسخة من نصه في حسابك إن سجّلت الدخول) ولا نطّلع عليه. أنت المسؤول عن محتواك.</p><h3>الاستخدام المقبول</h3><p>يُمنع استخدام التطبيق في أي نشاط مخالف للقانون، أو محاولة تعطيله أو العبث بخدمته.</p><h3>النسخ الاحتياطي</h3><p>لأن البيانات تُحفظ محليًا (ويُزامَن نصها فقط عند تسجيل الدخول، دون المرفقات)، فأنت المسؤول عن حفظ نسخة احتياطية. قد تُفقد البيانات عند مسح بيانات المتصفح أو تغيير الجهاز أو امتلاء مساحة التخزين.</p><h3>المرفقات</h3><p>حجم المرفقات وأنواعها غير مقيّدة من التطبيق، لكنها تعتمد على المساحة التي يسمح بها جهازك ومتصفحك.</p><h3>المظهر والتأثيرات</h3><p>تأثير Liquid Glass اختياري، ويمكنك إيقافه من الإعدادات فيتحول المظهر إلى شفافية عادية مع إمكانية التحكم بالضبابية والشفافية. هذه الخيارات للتخصيص فقط ولا تؤثر على ملاحظاتك. تصميم iNote اقتباس للغة Liquid Glass وليس منتجًا من Apple ولا مرتبطًا بها.</p><h3>إخلاء الضمان</h3><p>يُقدَّم التطبيق كما هو دون أي ضمانات، ولا نتحمل مسؤولية أي فقدان للبيانات أو أضرار ناتجة عن استخدامه.</p><h3>التعديلات</h3><p>قد نعدّل هذه البنود، واستمرارك في الاستخدام يعني قبول النسخة المحدّثة.</p>']};
 function openDoc(k){var d=DOCS[k];if(!d)return;$('dTitle').textContent=d[0];$('dBody').innerHTML=d[1];push($('pDoc'));var sc=$('pDoc').querySelector('.scroll');if(sc)sc.scrollTop=0}
 function doAct(a){
@@ -3167,7 +3167,8 @@ const $=id=>document.getElementById(id);
 const gl=$('gl'),btn=$('glBtn'),skip=$('glSkip'),err=$('glErr');
 const app=$('app')||document.body;
 const SKIP='gl-skip-v1',FID='meta-folders',PID='meta-profile',PK='gl-prof-v1',AUTO='gl-autosync-v1',DELP='gl-del-pending',APK='iNote.apk',APK_MB='6.9';
-const KEYS={n:'lg-notes-v1',t:'lg-trash-v1',f:'lg-folders-v1'};
+const KEYS={n:'lg-notes-v1',t:'lg-trash-v1',f:'lg-folders-v1',c:'lg-cfg-v1',l:'lg-lang-v1',s:'gl-set-ts'};
+const SID='meta-settings';
 const LS=window.localStorage,rawSet=Storage.prototype.setItem;
 const rawGet=k=>{try{return LS.getItem(k)}catch(e){return null}};
 const rawPut=(k,v)=>{try{rawSet.call(LS,k,v)}catch(e){}};
@@ -3198,7 +3199,8 @@ function snap(){
   trash.forEach(o=>{if(o&&o.id)m.set(o.id,{o,tr:true})});
   m.forEach(e=>{e.j=JSON.stringify(e.o);e.h=hash((e.tr?'T':'N')+e.j)});
   let fo=null;if(Array.isArray(f)){fo={o:f,j:JSON.stringify(f)};fo.h=hash('F'+fo.j)}
-  return {notes,trash,m,fo};
+  let so=null;{const c=readJ(KEYS.c),l=readJ(KEYS.l);if((c&&typeof c==='object')||l!=null){so={c:(c&&typeof c==='object')?c:null,l:l==null?null:l};so.j=JSON.stringify(so);so.h=hash('S'+so.j);so.ts=parseInt(rawGet(KEYS.s))||0}}
+  return {notes,trash,m,fo,so};
 }
 const cts=C=>{try{const o=JSON.parse(C.data);return Math.max(o.ts||0,o.del||0)}catch(e){return 0}};
 const lts=L=>Math.max(L.o.ts||0,L.o.del||0);
@@ -3212,7 +3214,7 @@ async function run(apply,depth){
   snapC.forEach(d=>{const x=d.data();const sv=x.sv&&x.sv.toMillis?x.sv.toMillis():0;cloud.set(d.id,Object.assign({},x,{sv}));if(sv>maxSv)maxSv=sv});
   const S=snap();
   const pulls=[],pushes=[],adopt=[];
-  const ids=new Set([...S.m.keys(),...cloud.keys(),...Object.keys(base.ids)]);ids.delete(FID);ids.delete(PID);
+  const ids=new Set([...S.m.keys(),...cloud.keys(),...Object.keys(base.ids)]);ids.delete(FID);ids.delete(PID);ids.delete(SID);
   for(const id of ids){
     const L=S.m.get(id),C=cloud.get(id),b=base.ids[id];
     const lc=L?(!b||b.h!==L.h):!!(b&&!b.gone);
@@ -3244,6 +3246,19 @@ async function run(apply,depth){
       else{const c=JSON.parse(FC.data),seen=new Set(FL.o.map(x=>x&&x.id));fPull=FL.o.concat(c.filter(x=>x&&!seen.has(x.id)));fPush=fPull}
     }
   }
+  /* settings (theme, glass, fonts, language...) - last change wins */
+  let sPush=null,sPull=null;
+  {
+    const SL=S.so,SC=cloud.get(SID),sb=base.ids[SID];
+    const lc=SL?(!sb||sb.h!==SL.h):false,cc=SC?(!sb||sb.h!==SC.h):false;
+    if(lc&&!cc)sPush=SL;
+    else if(!lc&&cc){if(SL&&SC.h===SL.h)adopt.push({id:SID,h:SL.h});else sPull={o:JSON.parse(SC.data),h:SC.h,ts:SC.ts||0}}
+    else if(lc&&cc){
+      if(SC.h===SL.h)adopt.push({id:SID,h:SL.h});
+      else if((SC.ts||0)>(SL.ts||0))sPull={o:JSON.parse(SC.data),h:SC.h,ts:SC.ts||0};
+      else sPush=SL;
+    }
+  }
   /* pushes first (always safe) */
   const ops=[];let skippedBig=0;
   for(const p of pushes){
@@ -3262,9 +3277,14 @@ async function run(apply,depth){
     ops.push(b=>b.set(doc(col,FID),{data:fj,trashed:false,deleted:false,h:fh,sv:serverTimestamp()}));
     base.ids[FID]={h:fh};
   }
+  if(sPush){
+    const st=sPush.ts||Date.now();
+    ops.push(b=>b.set(doc(col,SID),{data:sPush.j,trashed:false,deleted:false,h:sPush.h,ts:st,sv:serverTimestamp()}));
+    base.ids[SID]={h:sPush.h};
+  }
   adopt.forEach(a=>{base.ids[a.id]=a.gone?{gone:true}:{h:a.h}});
   for(let i=0;i<ops.length;i+=400){const wb=writeBatch(fs);ops.slice(i,i+400).forEach(o=>o(wb));await wb.commit()}
-  const needApply=pulls.length>0||!!fPull;
+  const needApply=pulls.length>0||!!fPull||!!sPull;
   if(!needApply){base.lastSv=maxSv;saveBase(base);lastOk=Date.now();status=skippedBig?'تم، وتخطّينا '+skippedBig+' ملاحظة كبيرة جدًا':'';return {needApply:false}}
   saveBase(base);
   if(!apply)return {needApply:true};
@@ -3279,6 +3299,11 @@ async function run(apply,depth){
   }
   rawPut(KEYS.n,JSON.stringify(notes));rawPut(KEYS.t,JSON.stringify(trash));
   if(fPull){rawPut(KEYS.f,JSON.stringify(fPull));base.ids[FID]={h:hash('F'+JSON.stringify(fPull))}}
+  if(sPull){
+    if(sPull.o.c)rawPut(KEYS.c,JSON.stringify(sPull.o.c));
+    if(sPull.o.l!=null)rawPut(KEYS.l,JSON.stringify(sPull.o.l));
+    rawPut(KEYS.s,String(sPull.ts||Date.now()));base.ids[SID]={h:sPull.h};
+  }
   base.lastSv=maxSv;saveBase(base);lastOk=Date.now();
   location.reload();
   return {needApply:false,reloading:true};
@@ -3299,9 +3324,12 @@ async function sync(){
     status=c==='permission-denied'?'المزامنة غير مفعّلة بعد (قواعد Firestore).':c==='failed-precondition'||c==='not-found'?'قاعدة Firestore غير منشأة بعد.':'تعذّرت المزامنة، تأكد من الإنترنت.';
   }finally{busy=false;try{window.glStat&&window.glStat()}catch(e){}if(again){again=false;setTimeout(sync,500)}}
 }
-Storage.prototype.setItem=function(k){
+Storage.prototype.setItem=function(k,v){
+  let old=null;const isSet=this===LS&&(k===KEYS.c||k===KEYS.l);
+  if(isSet){try{old=LS.getItem(k)}catch(e){}}
   rawSet.apply(this,arguments);
-  if(user&&this===LS&&(k===KEYS.n||k===KEYS.t||k===KEYS.f)){clearTimeout(timer);timer=setTimeout(()=>{if(autoOn())sync()},2500)}
+  if(isSet&&old!==String(v)){try{rawSet.call(LS,KEYS.s,String(Date.now()))}catch(e){}}
+  if(user&&this===LS&&(k===KEYS.n||k===KEYS.t||k===KEYS.f||k===KEYS.c||k===KEYS.l)){clearTimeout(timer);timer=setTimeout(()=>{if(autoOn())sync()},2500)}
 };
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&autoOn())sync()});
 window.addEventListener('online',()=>{if(autoOn())sync()});

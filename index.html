@@ -1072,8 +1072,8 @@ function sqAll(){SQCAP.forEach(function(c){qa(c[0]).forEach(function(el){
 var sqT=0;function sqSoon(){if(!sqT)sqT=requestAnimationFrame(function(){sqT=0;sqAll()})}
 /* ---------- legal ---------- */
 var DOCS={
-privacy:['سياسة الخصوصية','<p>آخر تحديث: 9 نوفمبر 2026 · الإصدار 5.100.00</p><h3>مقدمة</h3><p>iNote تطبيق ملاحظات يعمل داخل متصفحك. يمكنك استخدامه بدون حساب فتبقى ملاحظاتك على جهازك فقط، أو بحساب قوقل (اختياري) لمزامنة نص ملاحظاتك بين أجهزتك. نحترم خصوصيتك ولا نبيع بياناتك.</p><h3>ما الذي يُخزَّن؟</h3><p>ملاحظاتك ومجلداتك والصور والملفات التي ترفقها وإعداداتك تُحفظ على جهازك داخل مساحة التخزين الخاصة بالمتصفح (LocalStorage وIndexedDB). بدون حساب لا يُرسل أي شيء إلى أي خادم. وإذا سجّلت الدخول بحساب قوقل فإن نص ملاحظاتك ومجلداتك يُحفظ في حسابك (عبر خدمة Google Firebase) ويظهر لك على كل أجهزتك، أما الصور والملفات المرفقة فتبقى على جهازك ولا تُرفع. وإعداداتك (المظهر واللون والخط واللغة ووضع Liquid Glass والضبابية والشفافية) تُحفظ أيضًا في حسابك لتظهر لك على كل أجهزتك.</p><h3>تسجيل الدخول بحساب قوقل</h3><p>عند تسجيل الدخول نستلم من قوقل عبر خدمة Firebase Authentication اسمك وبريدك وصورتك ومعرّف حسابك فقط، ولا نطّلع على كلمة سرك أبدًا لأن قوقل هي من تتولى التحقق. وإذا غيّرت اسمك أو صورتك من داخل التطبيق فتُحفظ نسخة منهما في حسابك أيضًا لتظهرا لك على أجهزتك. لا نستخدم هذه البيانات لغير تسجيل الدخول والمزامنة، ولا نبيعها ولا نشاركها مع أي طرف. النسخة المتزامنة مرتبطة بحسابك ولا يصل إليها حساب آخر وفق قواعد الأمان المضبوطة، ولا نقرأها، لكنها غير مشفّرة من الطرف إلى الطرف، أي إن مدير قاعدة البيانات يملك تقنيًا صلاحية الوصول إليها. عند حذف ملاحظة نهائيًا من التطبيق يُحذف نصها من نسخة الحساب أيضًا. يمكنك استخدام التطبيق بدون حساب في أي وقت، وإدارة أو إلغاء ربط التطبيق بحسابك من إعدادات حساب قوقل.</p><h3>ما الذي لا نفعله؟</h3><p>لا نستخدم أدوات تحليل أو تتبّع ولا إعلانات، ولا نبيع بياناتك ولا نشاركها مع أي طرف.</p><h3>الاستضافة</h3><p>يُقدَّم التطبيق كملفات ثابتة عبر Cloudflare، وقد تسجّل الاستضافة بيانات تقنية عامة عن الطلبات (مثل عنوان IP) وفق سياستها الخاصة، وتخضع بيانات تسجيل الدخول لسياسة قوقل وFirebase، ولا علاقة لذلك بمحتوى ملاحظاتك.</p><h3>الحذف والنسخ الاحتياطي</h3><p>مسح بيانات الموقع أو إلغاء تثبيت التطبيق قد يحذف ملاحظاتك نهائيًا. يُنصح بالتصدير الدوري من الإعدادات، علمًا أن النسخة الاحتياطية تشمل النصوص دون المرفقات.</p><h3>الأطفال</h3><p>التطبيق لا يجمع محتوى من أي مستخدم، بمن فيهم الأطفال.</p><h3>التعديلات</h3><p>قد نحدّث هذه السياسة، وسيظهر تاريخ آخر تحديث في أعلاها.</p>'],
-terms:['بنود الاستخدام','<p>آخر تحديث: 9 نوفمبر 2026 · الإصدار 5.100.00</p><h3>القبول</h3><p>باستخدامك iNote فإنك توافق على هذه البنود. إن لم توافق فلا تستخدم التطبيق.</p><h3>الحساب</h3><p>تسجيل الدخول بحساب قوقل اختياري. أنت المسؤول عن أمان حسابك، ولا يؤثر استخدام الحساب على ملكية ملاحظاتك.</p><h3>محتواك ملكك</h3><p>كل ما تكتبه أو ترفقه يبقى ملكًا لك، وهو محفوظ على جهازك (ونسخة من نصه في حسابك إن سجّلت الدخول) ولا نطّلع عليه. أنت المسؤول عن محتواك.</p><h3>الاستخدام المقبول</h3><p>يُمنع استخدام التطبيق في أي نشاط مخالف للقانون، أو محاولة تعطيله أو العبث بخدمته.</p><h3>النسخ الاحتياطي</h3><p>لأن البيانات تُحفظ محليًا (ويُزامَن نصها فقط عند تسجيل الدخول، دون المرفقات)، فأنت المسؤول عن حفظ نسخة احتياطية. قد تُفقد البيانات عند مسح بيانات المتصفح أو تغيير الجهاز أو امتلاء مساحة التخزين.</p><h3>المرفقات</h3><p>حجم المرفقات وأنواعها غير مقيّدة من التطبيق، لكنها تعتمد على المساحة التي يسمح بها جهازك ومتصفحك.</p><h3>المظهر والتأثيرات</h3><p>تأثير Liquid Glass اختياري، ويمكنك إيقافه من الإعدادات فيتحول المظهر إلى شفافية عادية مع إمكانية التحكم بالضبابية والشفافية. هذه الخيارات للتخصيص فقط ولا تؤثر على ملاحظاتك. تصميم iNote اقتباس للغة Liquid Glass وليس منتجًا من Apple ولا مرتبطًا بها.</p><h3>إخلاء الضمان</h3><p>يُقدَّم التطبيق كما هو دون أي ضمانات، ولا نتحمل مسؤولية أي فقدان للبيانات أو أضرار ناتجة عن استخدامه.</p><h3>التعديلات</h3><p>قد نعدّل هذه البنود، واستمرارك في الاستخدام يعني قبول النسخة المحدّثة.</p>']};
+privacy:['سياسة الخصوصية','<p>آخر تحديث: 9 نوفمبر 2026 · الإصدار 6.000.00</p><h3>مقدمة</h3><p>iNote تطبيق ملاحظات يعمل داخل متصفحك. يمكنك استخدامه بدون حساب فتبقى ملاحظاتك على جهازك فقط، أو بحساب قوقل (اختياري) لمزامنة نص ملاحظاتك بين أجهزتك. نحترم خصوصيتك ولا نبيع بياناتك.</p><h3>ما الذي يُخزَّن؟</h3><p>ملاحظاتك ومجلداتك والصور والملفات التي ترفقها وإعداداتك تُحفظ على جهازك داخل مساحة التخزين الخاصة بالمتصفح (LocalStorage وIndexedDB). بدون حساب لا يُرسل أي شيء إلى أي خادم. وإذا سجّلت الدخول بحساب قوقل فإن نص ملاحظاتك ومجلداتك يُحفظ في حسابك (عبر خدمة Google Firebase) ويظهر لك على كل أجهزتك، أما الصور والملفات المرفقة فتبقى على جهازك ولا تُرفع. وإعداداتك (المظهر واللون والخط واللغة ووضع Liquid Glass والضبابية والشفافية) تُحفظ أيضًا في حسابك لتظهر لك على كل أجهزتك.</p><h3>تسجيل الدخول بحساب قوقل</h3><p>عند تسجيل الدخول نستلم من قوقل عبر خدمة Firebase Authentication اسمك وبريدك وصورتك ومعرّف حسابك فقط، ولا نطّلع على كلمة سرك أبدًا لأن قوقل هي من تتولى التحقق. وإذا غيّرت اسمك أو صورتك من داخل التطبيق فتُحفظ نسخة منهما في حسابك أيضًا لتظهرا لك على أجهزتك. لا نستخدم هذه البيانات لغير تسجيل الدخول والمزامنة، ولا نبيعها ولا نشاركها مع أي طرف. النسخة المتزامنة مرتبطة بحسابك ولا يصل إليها حساب آخر وفق قواعد الأمان المضبوطة، ولا نقرأها، لكنها غير مشفّرة من الطرف إلى الطرف، أي إن مدير قاعدة البيانات يملك تقنيًا صلاحية الوصول إليها. عند حذف ملاحظة نهائيًا من التطبيق يُحذف نصها من نسخة الحساب أيضًا. يمكنك استخدام التطبيق بدون حساب في أي وقت، وإدارة أو إلغاء ربط التطبيق بحسابك من إعدادات حساب قوقل.</p><h3>ما الذي لا نفعله؟</h3><p>لا نستخدم أدوات تحليل أو تتبّع ولا إعلانات، ولا نبيع بياناتك ولا نشاركها مع أي طرف.</p><h3>الاستضافة</h3><p>يُقدَّم التطبيق كملفات ثابتة عبر Cloudflare، وقد تسجّل الاستضافة بيانات تقنية عامة عن الطلبات (مثل عنوان IP) وفق سياستها الخاصة، وتخضع بيانات تسجيل الدخول لسياسة قوقل وFirebase، ولا علاقة لذلك بمحتوى ملاحظاتك.</p><h3>الحذف والنسخ الاحتياطي</h3><p>مسح بيانات الموقع أو إلغاء تثبيت التطبيق قد يحذف ملاحظاتك نهائيًا. يُنصح بالتصدير الدوري من الإعدادات، علمًا أن النسخة الاحتياطية تشمل النصوص دون المرفقات.</p><h3>الأطفال</h3><p>التطبيق لا يجمع محتوى من أي مستخدم، بمن فيهم الأطفال.</p><h3>التعديلات</h3><p>قد نحدّث هذه السياسة، وسيظهر تاريخ آخر تحديث في أعلاها.</p>'],
+terms:['بنود الاستخدام','<p>آخر تحديث: 9 نوفمبر 2026 · الإصدار 6.000.00</p><h3>القبول</h3><p>باستخدامك iNote فإنك توافق على هذه البنود. إن لم توافق فلا تستخدم التطبيق.</p><h3>الحساب</h3><p>تسجيل الدخول بحساب قوقل اختياري. أنت المسؤول عن أمان حسابك، ولا يؤثر استخدام الحساب على ملكية ملاحظاتك.</p><h3>محتواك ملكك</h3><p>كل ما تكتبه أو ترفقه يبقى ملكًا لك، وهو محفوظ على جهازك (ونسخة من نصه في حسابك إن سجّلت الدخول) ولا نطّلع عليه. أنت المسؤول عن محتواك.</p><h3>الاستخدام المقبول</h3><p>يُمنع استخدام التطبيق في أي نشاط مخالف للقانون، أو محاولة تعطيله أو العبث بخدمته.</p><h3>النسخ الاحتياطي</h3><p>لأن البيانات تُحفظ محليًا (ويُزامَن نصها فقط عند تسجيل الدخول، دون المرفقات)، فأنت المسؤول عن حفظ نسخة احتياطية. قد تُفقد البيانات عند مسح بيانات المتصفح أو تغيير الجهاز أو امتلاء مساحة التخزين.</p><h3>المرفقات</h3><p>حجم المرفقات وأنواعها غير مقيّدة من التطبيق، لكنها تعتمد على المساحة التي يسمح بها جهازك ومتصفحك.</p><h3>المظهر والتأثيرات</h3><p>تأثير Liquid Glass اختياري، ويمكنك إيقافه من الإعدادات فيتحول المظهر إلى شفافية عادية مع إمكانية التحكم بالضبابية والشفافية. هذه الخيارات للتخصيص فقط ولا تؤثر على ملاحظاتك. تصميم iNote اقتباس للغة Liquid Glass وليس منتجًا من Apple ولا مرتبطًا بها.</p><h3>إخلاء الضمان</h3><p>يُقدَّم التطبيق كما هو دون أي ضمانات، ولا نتحمل مسؤولية أي فقدان للبيانات أو أضرار ناتجة عن استخدامه.</p><h3>التعديلات</h3><p>قد نعدّل هذه البنود، واستمرارك في الاستخدام يعني قبول النسخة المحدّثة.</p>']};
 function openDoc(k){var d=DOCS[k];if(!d)return;$('dTitle').textContent=d[0];$('dBody').innerHTML=d[1];push($('pDoc'));var sc=$('pDoc').querySelector('.scroll');if(sc)sc.scrollTop=0}
 function doAct(a){
   if(a==='export')exportData();
@@ -1172,7 +1172,7 @@ function renderSettings(){
     srow('أقدم ملاحظة',live().length?fmt({day:'numeric',month:'short',year:'numeric'},old):'—')+
   '</div><div class="sec">البيانات</div><div class="card">'+
     (dip?arow('install','download','تثبيت التطبيق على الشاشة الرئيسية'):'')+arow('export','download','تصدير نسخة احتياطية (JSON)')+arow('import','plus','استيراد نسخة احتياطية')+arow('emptytrash','trash','إفراغ المحذوفة مؤخرًا','dng')+
-  '</div><div class="sec">حول التطبيق</div><div class="card">'+arow('account','lock','الحساب والمزامنة')+arow('doc-privacy','shield','سياسة الخصوصية')+arow('doc-terms','note','بنود الاستخدام')+arow('welcome','shield','عن هذا التطبيق')+'</div><div class="foot">iNote · نسخة 5.100.00 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد '+(cfg.trashDays||30)+' يومًا</div>';
+  '</div><div class="sec">حول التطبيق</div><div class="card">'+arow('account','lock','الحساب والمزامنة')+arow('doc-privacy','shield','سياسة الخصوصية')+arow('doc-terms','note','بنود الاستخدام')+arow('welcome','shield','عن هذا التطبيق')+'</div><div class="foot">iNote · نسخة 6.000.00 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد '+(cfg.trashDays||30)+' يومًا</div>';
   syncSettings(false);
 }
 function exportData(){
@@ -1387,7 +1387,7 @@ qa('.swipe').forEach(function(el){
 
 /* ---------- tabs with spring glass lens (dock only) ---------- */
 var tabsEl=$('tabs'),lensEl=$('lens'),lensG=null,dragging=false;
-var lx=0,lvx=0,ltx=0,ly=0,lvy=0,press=0,vpress=0,targetPress=0,rafLens=0;
+var lx=0,lvx=0,ltx=0,ly=0,lvy=0,press=0,vpress=0,targetPress=0,rafLens=0,landing=false;
 function tabBtns(){return qa('.tab',tabsEl)}
 function boundsFor(btn){
   var row=btn.parentNode,th=tabsEl.clientHeight;
@@ -1413,16 +1413,18 @@ function runLens(){if(!rafLens)rafLens=requestAnimationFrame(stepLens)}
 function stepLens(){
   rafLens=0;
   if(!cfg.refract){   /* وضع الشفافية: بدون حركة زنبركية */
-    lx+=(ltx-lx)*.3;ly+=(ty-ly)*.3;lvx=lvy=vpress=0;press=0;paintLens();
+    lx+=(ltx-lx)*.3;ly+=(ty-ly)*.3;lvx=lvy=vpress=0;press=0;paintLens();if(landing){landing=false;tabsEl.classList.remove('press','drag');lensEl.classList.remove('lift');targetPress=0}
     if(Math.abs(ltx-lx)>.3||Math.abs(ty-ly)>.3)runLens();else{lx=ltx;ly=ty;paintLens()}
     return;
   }
-  lvx+=(ltx-lx)*.22;lvx*=.65;lx+=lvx;
-  lvy+=(ty-ly)*.24;lvy*=.62;ly+=lvy;
+  lvx+=(ltx-lx)*.25;lvx*=.5;lx+=lvx;   /* ارتداد خفيف */
+  lvy+=(ty-ly)*.26;lvy*=.5;ly+=lvy;
   vpress+=(targetPress-press)*.28;vpress*=.6;press+=vpress;
   paintLens();
+  if(landing&&Math.abs(ltx-lx)<10)releaseLens();   /* تبقى مرفوعة لين توصل هدفها */
   if(Math.abs(ltx-lx)>.12||Math.abs(lvx)>.12||Math.abs(ty-ly)>.12||Math.abs(lvy)>.12||Math.abs(targetPress-press)>.003||Math.abs(vpress)>.003)runLens();
 }
+function releaseLens(){landing=false;tabsEl.classList.remove('press','drag');lensEl.classList.remove('lift');targetPress=0;runLens()}
 function lensTo(btn,instant){setTarget(btn,!!instant)}
 function nearest(cx){var best=null,bd=1e9;tabBtns().forEach(function(b){var r=b.getBoundingClientRect(),d=Math.abs(cx-(r.left+r.width/2));if(d<bd){bd=d;best=b}});return best}
 function selectVisual(b){tabBtns().forEach(function(x){x.classList.toggle('on',x===b)})}
@@ -1442,13 +1444,13 @@ function moveLens(cx){
   var n=nearest(cx);if(n)selectVisual(n);runLens();
 }
 tabsEl.addEventListener('pointerdown',function(e){
-  dragging=true;try{tabsEl.setPointerCapture(e.pointerId)}catch(_){}
+  dragging=true;landing=false;try{tabsEl.setPointerCapture(e.pointerId)}catch(_){}
   tabsEl.classList.add('press');lensEl.classList.add('lift');targetPress=1;moveLens(e.clientX);
 });
 tabsEl.addEventListener('pointermove',function(e){if(dragging)moveLens(e.clientX)});
 function endTab(e,cancel){
   if(!dragging)return;dragging=false;
-  tabsEl.classList.remove('press','drag');lensEl.classList.remove('lift');targetPress=0;
+  landing=true;   /* ما ننزلها الحين: تنزل لما توصل */
   var b=cancel?tabsEl.querySelector('.tab.on'):nearest(e.clientX);
   if(b)setTab(b.dataset.tab);runLens();
 }
@@ -2230,6 +2232,20 @@ qa('.glass').forEach(function(el){
   var g=glass(el,(keepSearchGlass&&el.id!=='search')?bo({fixed:true,fw:48,fh:48}):bo());
   if(el.classList.contains('lens'))lensG=g;
 });
+/* زر البار (العدسة) وقت اللمس: ضبابية صفر + انكسار عند الحافة فقط */
+if(lensG){
+  var edgeG=glass(lensEl,bo({bz:.2,blur:0}));
+  edgeG.apply=function(){};
+  var _lapply=lensG.apply;
+  lensG.apply=function(){
+    if(lensEl.classList.contains('lift')&&cfg.refract&&canRefract&&edgeG.ok){
+      var v='url(#'+edgeG.f.id+') saturate(1.5) brightness(1.04)';
+      lensEl.style.backdropFilter=v;lensEl.style.webkitBackdropFilter=v;
+    }else _lapply();
+  };
+  new MutationObserver(function(){lensG.apply()}).observe(lensEl,{attributes:true,attributeFilter:['class']});
+  lensG.apply();
+}
 applyCfg();applyExtra();setTab('notes');syncSettings(false);
 window.addEventListener('resize',function(){var b=tabsEl.querySelector('.tab.on');if(b)lensTo(b);if(S.open)grow()});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){var b=tabsEl.querySelector('.tab.on');if(b)lensTo(b);layoutSegs(false)});
@@ -2570,7 +2586,7 @@ var ENX={
 'أهلاً بك':'Welcome','سجّل دخولك بحساب قوقل عشان تبدأ تكتب ملاحظاتك.':'Sign in with Google to start writing notes.','المتابعة بحساب قوقل':'Continue with Google','المتابعة بدون حساب':'Continue without an account',
 'ملاحظة جديدة':'New note','رجوع':'Back','العنوان':'Title','ابدأ الكتابة…':'Start writing…','القائمة':'Menu','شريط تنسيق النص':'Text formatting toolbar','تنسيق النص':'Text formatting','قائمة مهام':'Task list','تم':'Done','اختيار صور':'Choose images','اختيار ملفات':'Choose files','استيراد نسخة احتياطية':'Import backup','حذف':'Delete','شخصي':'Personal','العمل':'Work','أفكار':'Ideas','المشتريات':'Shopping','الدراسة':'Study','الصحة':'Health','السفر':'Travel','المالية':'Finance','كل الملاحظات':'All notes','المثبتة':'Pinned','ملاحظات المهام':'Task notes','المحذوفة مؤخرًا':'Recently deleted','أمس':'Yesterday','اليوم':'Today','آخر 7 أيام':'Last 7 days','آخر 30 يومًا':'Last 30 days','أقدم':'Oldest','لا توجد ملاحظات':'No notes yet','لا يوجد نص إضافي':'No additional text','المتصفح لا يتيح IndexedDB':'This browser does not support IndexedDB','تم نسخ النص':'Text copied','تعذّر النسخ':'Could not copy','ملف':'File','صورة':'Image','فتح':'Open','حذف المرفق':'Delete attachment','أصفر':'Yellow','برتقالي':'Orange','أحمر':'Red','بنفسجي':'Purple','أزرق':'Blue','أخضر':'Green','ملاحظة سريعة':'Quick note','سياسة الخصوصية':'Privacy policy','بنود الاستخدام':'Terms of use','اسم المجلد الجديد':'New folder name','تم إنشاء المجلد':'Folder created','تم إفراغ المحذوفة':'Recently deleted emptied','ملاحظة مقفلة':'Locked note','ملاحظة':'Note','مثبتة':'Pinned','مهام':'Tasks','نتائج البحث':'Search results','مجلد جديد':'New folder','أسود / أبيض':'Black / White','أزرق فاتح':'Light blue','أصفر (الافتراضي)':'Yellow (default)','ودجات':'Widgets','قائمة':'List','صغير':'Small','وسط':'Medium','كبير':'Large','نظام':'System','سيريف':'Serif','مضغوط':'Compact','عادي':'Normal','مريح':'Relaxed','يمين':'Right','خفيف':'Light','سريع':'Fast','آمن':'Secure','تثبيت التطبيق على الشاشة الرئيسية':'Install app on home screen','تصدير نسخة احتياطية (JSON)':'Export backup (JSON)','إفراغ المحذوفة مؤخرًا':'Empty recently deleted','الحساب والمزامنة':'Account & sync','عن هذا التطبيق':'About this app','دليل الاستخدام':'User guide','اللغة':'Language','المطور':'Developer','إغلاق الملاحظة':'Close note','ملاحظات سريعة':'Quick notes','أُغلقت الملاحظة السريعة':'Quick note closed','حدّد ملاحظة أولًا':'Select a note first','السابق':'Previous','التالي':'Next','إغلاق':'Close','لا نتائج':'No results','تسجيل الدخول بقوقل':'Sign in with Google','تسجيل الخروج':'Sign out','مزامنة الآن':'Sync now','جاري المزامنة…':'Syncing…','جاهز للمزامنة':'Ready to sync','العربية':'Arabic','المزيد':'More','إلغاء':'Cancel','بحث':'Search','النظام':'System','تلقائي':'Auto','فاتح':'Light','داكن':'Dark','أسود أو أبيض حسب الوضع':'Black or white depending on appearance','عرض ودجات':'Widget view','عرض قائمة':'List view','الأحدث تعديلًا':'Recently edited','الأقدم أولًا':'Oldest first','حسب العنوان':'By title','الأطول أولًا':'Longest first','تحديد ملاحظات':'Select notes','ملاحظة من قالب…':'Note from template…','إعادة تسمية':'Rename','اسم المجلد':'Folder name','حذف المجلد':'Delete folder','تراجع':'Undo','إعادة':'Redo','إدراج التاريخ':'Insert date','إرفاق صورة':'Attach image','إرفاق ملف':'Attach file','عريض':'Bold','مائل':'Italic','تسطير':'Underline','شطب':'Strikethrough','نقاط':'Bullets','ترقيم':'Numbering','مهمة':'Task','دائرة':'Circle','عنوان':'Heading','اقتباس':'Quote','تمييز أصفر':'Yellow highlight','صندوق نص':'Text box','خلفية زرقاء':'Blue background','خلفية وردية':'Pink background','خط صغير':'Small text','خط كبير':'Large text','محاذاة يمين':'Align right','توسيط':'Center','مسح التنسيق':'Clear formatting','مربع مهمة':'Task checkbox','قائمة نقطية':'Bulleted list','قائمة مرقمة':'Numbered list','تم تغيير اللون':'Color changed','بدون لون':'No color','تم إنشاء نسخة':'Copy created','مشاركة':'Share','نسخ النص':'Copy text','إلغاء التثبيت':'Unpin','تثبيت الملاحظة':'Pin note','تم التثبيت':'Pinned','أُلغي التثبيت':'Unpinned','نقل إلى مجلد…':'Move to folder…','تصدير كملف نصي':'Export as text file','تكرار الملاحظة':'Duplicate note','بحث في الملاحظة':'Find in note','إدراج التاريخ والوقت':'Insert date & time','إزالة القفل':'Unlock note','قفل الملاحظة':'Lock note','استعادة':'Restore','تمت الاستعادة':'Restored','حذف نهائي':'Delete permanently','تم الحذف نهائيًا':'Permanently deleted','أعد إدخال الرمز':'Enter the code again','للتأكيد':'to confirm','الرمزان غير متطابقين':'The codes do not match','أنشئ رمز القفل':'Create a lock code','الرمز غير صحيح':'Incorrect code','أدخل رمز الملاحظة':'Enter note passcode','تم قفل الملاحظة':'Note locked','أدخل الرمز لإزالة القفل':'Enter code to unlock','تمت إزالة القفل':'Note unlocked','أمس':'Yesterday','سهرة سعيدة':'Good evening','صباح الخير':'Good morning','نهارك سعيد':'Have a great day','مساء الخير':'Good evening','قائمة تسوق':'Shopping list','الخضار والفواكه':'Fruits & vegetables','الحليب والبيض':'Milk & eggs','الخبز':'Bread','أغراض أخرى':'Other items','خطة اليوم':'Today’s plan','أهم المهام':'Top priorities','المهمة الأولى':'Task one','المهمة الثانية':'Task two','المهمة الثالثة':'Task three','يوميات':'Journal','كيف كان يومي؟':'How was my day?','ما الذي أنا ممتن له؟':'What am I grateful for?','ما الذي تعلمته؟':'What did I learn?','ملاحظات اجتماع':'Meeting notes','الحضور':'Attendees','النقاط الرئيسية':'Key points','المتابعة':'Follow-up','مهمة للمتابعة':'Follow-up task','العربية':'Arabic','تسجيل الدخول بقوقل':'Sign in with Google','الحساب':'Account','مزامنة الآن':'Sync now','الأرشيفات':'Archives','أرشفة الملاحظة':'Archive note','أرشفة':'Archive','إلغاء الأرشفة':'Unarchive','نُقلت إلى الأرشيفات':'Moved to Archives','أُعيدت إلى الملاحظات':'Moved back to Notes','لا توجد ملاحظات مؤرشفة':'No archived notes','أرشف أي ملاحظة من قائمتها':'Archive any note from its menu',' · اضغط مطولًا على ملاحظة لإلغاء أرشفتها':' · Press and hold a note to unarchive it'
 ,
-"إلغاء":"Cancel","رجوع":"Back","العنوان":"Title","ابدأ الكتابة…":"Start writing…","شريط تنسيق النص":"Text formatting toolbar","تنسيق النص":"Text formatting","حجم الخط":"Font size","تثبيت":"Pin","تم":"Done","اختيار صور":"Choose images","اختيار ملفات":"Choose files","استيراد نسخة احتياطية":"Import backup","حذف":"Delete","كل الملاحظات":"All notes","المثبتة":"Pinned","ملاحظات المهام":"Task notes","المحذوفة مؤخرًا":"Recently deleted","أمس":"Yesterday"," في ":" at ","اليوم":"Today","آخر 7 أيام":"Last 7 days","آخر 30 يومًا":"Last 30 days","أقدم":"Oldest","لا توجد ملاحظات":"No notes yet","ملاحظة واحدة":"1 note","ملاحظتان":"2 notes"," ملاحظات":" notes"," ملاحظة":" note","مرفق واحد":"1 attachment"," مرفقات":" attachments","لا يوجد نص إضافي":"No additional text","المتصفح لا يتيح IndexedDB":"This browser does not support IndexedDB","تعذّر تجهيز قاعدة الملفات":"Could not initialize file storage","مساحة تخزين الموقع ممتلئة":"Site storage is full","تعذّر فتح قاعدة الملفات":"Could not open file database","قاعدة الملفات مشغولة في تبويب آخر؛ أغلق تبويبات الموقع وافتحه مجددًا":"File database is busy in another tab. Close other tabs of this site and reopen it.","تعذّر الوصول إلى تخزين المتصفح":"Could not access browser storage","رفضت قاعدة البيانات حفظ الملف":"The database rejected the file save","فشلت معاملة تخزين الملف":"File storage transaction failed","أُلغيت عملية تخزين الملف":"File storage was canceled","تعذّر بدء عملية التخزين":"Could not start storage operation","تعذّر فتح قاعدة تخزين الصور":"Could not open image storage database","تعذّر استرجاع الصورة من التخزين":"Could not retrieve image from storage","قاعدة تخزين الصور غير موجودة":"Image storage database not found","فشل قراءة ملف الصورة":"Could not read image file","فشلت قراءة الصورة":"Image read failed","أُلغيت قراءة الصورة":"Image read was canceled","تم نسخ النص":"Text copied","تعذّر النسخ":"Could not copy","تعذّر عرض الصورة؛ أعد إرفاقها إذا كان ملفها غير موجود في التخزين":"Could not display image. Reattach it if its file is missing from storage.","ملف الصورة غير موجود في التخزين المحلي؛ لم يُحذف المرفق":"Image file is missing from local storage. Attachment was not deleted.","ملف":"File","صورة":"Image","فشل حفظ الصورة في قاعدة البيانات":"Could not save image to database","قاعدة تخزين الصور لا تحتوي على مخزن الملفات":"Image storage database has no file store","رفضت قاعدة البيانات حفظ الصورة":"Database rejected the image save","فشلت معاملة حفظ الصورة":"Image save transaction failed","أُلغيت معاملة حفظ الصورة":"Image save transaction was canceled","افتح الملاحظة أولًا ثم اختر إرفاق صورة":"Open a note first, then choose Attach image","لم يتم اختيار صورة مدعومة؛ اختر صورة من المعرض":"No supported image selected. Choose an image from your gallery.","فشل حفظ الصورة":"Image save failed","ما انحفظت الصورة: ":"Image was not saved: ","تعذّر حفظها":"Could not save it","تعذّر حفظ بعض الصور: ":"Could not save some images: ","؛ السبب: ":"; reason: ","خطأ غير معروف":"Unknown error","فشل حفظ الصورة: ":"Image save failed: ","تعذّر استخدام تخزين الملفات في هذا السياق؛ جرّب تحديث الصفحة.":"File storage is unavailable in this context. Try refreshing the page.","جارٍ تجهيز ":"Preparing "," مرفق…":" attachment…","تم حفظ المرفق وإضافته لنهاية الملاحظة":"Attachment saved and added to the end of the note","أُضيف ":"Added "," وتعذّر حفظ ":" but could not save "," ملف":" file","فشل حفظ الملف: ":"Could not save file: ","سبب غير معروف؛ أعد تحميل الصفحة وجرب مرة أخرى":"Unknown error. Reload the page and try again","تمت إضافة ":"Added "," مرفق":" attachment","فتح":"Open","حذف المرفق":"Delete attachment","تعذّر فتح الملف":"Could not open file","أصفر":"Yellow","برتقالي":"Orange","أحمر":"Red","بنفسجي":"Purple","أزرق":"Blue","أخضر":"Green","ملاحظة سريعة":"Quick note","<span>مقفلة</span></div>":"<span>Locked</span></div>","سياسة الخصوصية":"Privacy policy","بنود الاستخدام":"Terms of use","اسم المجلد الجديد":"New folder name","تم إنشاء المجلد":"Folder created","حذف ":"Delete "," ملاحظة نهائيًا؟":" note permanently?","تم إفراغ المحذوفة":"Recently deleted emptied","مثبتة":"Pinned","مهام":"Tasks","نتائج البحث":"Search results","لا توجد نتائج لـ «":"No results for “","ابدأ بأول ملاحظة<br>اضغط زر الكتابة بالأسفل":"Create your first note<br>Tap the compose button below","المجلدات":"Folders","على جهازي":"On my device","ذكية":"Smart","مجلد جديد":"New folder"," مجلدات · ":" folders · ","أسود / أبيض":"Black / White","أزرق فاتح":"Light blue","أسود أو أبيض حسب الوضع":"Black or white depending on appearance","أصفر (الافتراضي)":"Yellow (default)","الإعدادات":"Settings","الثيم":"Theme","لون التطبيق":"App color","المظهر":"Appearance","النمط":"Style","تلقائي":"Auto","فاتح":"Light","داكن":"Dark","صغير":"Small","وسط":"Medium","كبير":"Large","العرض":"Display","شكل الملاحظات":"Note layout","ودجات":"Widgets","قائمة":"List","معاينة النص":"Text preview","إظهار سطر من الملاحظة تحت العنوان":"Show a line from the note below its title","اسم المجلد":"Folder name","وعدّاد المهام داخل القائمة":"Show folder name and task count in the list","تجميع حسب التاريخ":"Group by date","اليوم، أمس، آخر 7 أيام…":"Today, yesterday, last 7 days…","الكتابة":"Writing","المدقق الإملائي":"Spell check","تسطير الكلمات الخاطئة أثناء الكتابة":"Underline misspelled words while typing","إحصائيات الملاحظة":"Note statistics","عدد الكلمات والحروف أعلى المحرر":"Show word and character counts above the editor","أخرى":"Other","خط الملاحظات":"Note font","النظام":"System","سيريف":"Serif","تباعد الأسطر":"Line spacing","مضغوط":"Compact","عادي":"Normal","مريح":"Relaxed","اتجاه الكتابة":"Writing direction","يمين":"Right","عام":"General","الاهتزاز عند اللمس":"Haptic feedback","اهتزاز خفيف على أجهزة أندرويد":"Gentle vibration on Android devices","الحذف النهائي بعد (يوم)":"Permanently delete after (days)","الزجاج":"Glass","انكسار الضوء الحقيقي":"Realistic light refraction","يعمل على متصفحات كروم وأندرويد":"Works in Chrome and Android browsers","الحركة والتأثيرات":"Motion and effects","إحصائياتك":"Your statistics","الملاحظات":"Notes","إجمالي الكلمات":"Total words","إجمالي الأحرف":"Total characters","متوسط الكلمات للملاحظة":"Average words per note","المهام المنجزة":"Completed tasks"," من ":" of ","أيام متتالية من الكتابة":"consecutive writing days","أقدم ملاحظة":"Oldest note","البيانات":"Data","تثبيت التطبيق على الشاشة الرئيسية":"Install app on home screen","حول التطبيق":"About the app","الحساب والمزامنة":"Account & sync","عن هذا التطبيق":"About this app",">iNote · نسخة 5.100.00 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد ":">iNote · Version 5.100.00 · Works offline<br>Deleted notes are permanently removed after "," يومًا</div>":" days</div>","تم تجهيز النسخة الاحتياطية":"Backup is ready","تعذّر التصدير":"Export failed","لا توجد ملاحظات محذوفة":"No deleted notes","لا توجد ملاحظات في هذا المجلد":"No notes in this folder"," · اضغط على ملاحظة للاستعادة":" · Tap a note to restore","عرض ودجات":"Widget view","عرض قائمة":"List view","الأحدث تعديلًا":"Recently modified","الأقدم أولًا":"Oldest first","حسب العنوان":"By title","الأطول أولًا":"Longest first","تحديد ملاحظات":"Select notes","ملاحظة من قالب…":"New note from template…","إعادة تسمية":"Rename","حذف المجلد":"Delete folder","حذف المجلد؟ ستنتقل ملاحظاته إلى «شخصي».":"Delete folder? Its notes will be moved to “Personal”."," كلمة · ":" words · "," حرف · ":" characters · "," د قراءة":" min read"," · مهام ":" · tasks ","تراجع":"Undo","إعادة":"Redo","إدراج التاريخ":"Insert date","إرفاق صورة":"Attach image","تعذّر فتح اختيار الصور؛ اضغط إرفاق صورة مرة أخرى":"Could not open image picker. Tap Attach image again.","إرفاق ملف":"Attach file","تعذّر فتح اختيار الملفات؛ حدّث الصفحة وجرب مرة أخرى":"Could not open file picker. Refresh the page and try again.","عريض":"Bold","مائل":"Italic","تسطير":"Underline","شطب":"Strikethrough","نقاط":"Bullets","ترقيم":"Numbering","مهمة":"Task","دائرة":"Circle","عنوان":"Heading","اقتباس":"Quote","تمييز أصفر":"Yellow highlight","صندوق نص":"Text box","خلفية زرقاء":"Blue background","خلفية وردية":"Pink background","خط صغير":"Small font","خط كبير":"Large font","محاذاة يمين":"Align right","توسيط":"Center","مسح التنسيق":"Clear formatting","مربع مهمة":"Task checkbox","قائمة نقطية":"Bulleted list","قائمة مرقمة":"Numbered list","نُقلت إلى المحذوفة مؤخرًا":"Moved to Recently Deleted","نُقلت إلى ":"Moved to ","تم تغيير اللون":"Color changed","بدون لون":"No color"," (نسخة)":" (copy)","تم إنشاء نسخة":"Copy created","مشاركة":"Share","نسخ النص":"Copy text","إغلاق وحذف":"Close and delete","إلغاء التثبيت":"Unpin","تثبيت الملاحظة":"Pin note","تم التثبيت":"Pinned","أُلغي التثبيت":"Unpinned","لون الودجت…":"Widget color…","نقل إلى مجلد…":"Move to folder…","تصدير كملف نصي":"Export as text file","تكرار الملاحظة":"Duplicate note","بحث في الملاحظة":"Find in note","إدراج التاريخ والوقت":"Insert date and time","إزالة القفل":"Unlock note","قفل الملاحظة":"Lock note","استعادة":"Restore","تمت الاستعادة":"Restored","حذف نهائي":"Delete permanently","تم الحذف نهائيًا":"Permanently deleted","انتظر قليلًا ثم حاول مجددًا":"Wait a moment and try again","أعد إدخال الرمز":"Enter the passcode again","للتأكيد":"to confirm","الرمزان غير متطابقين":"Passcodes do not match","أنشئ رمز القفل":"Create a passcode","الرمز غير صحيح":"Incorrect passcode","محاولات كثيرة، انتظر 30 ثانية":"Too many attempts. Wait 30 seconds.","أدخل رمز الملاحظة":"Enter note passcode","ملاحظة مقفلة":"Locked note","4 أرقام لحماية هذه الملاحظة":"4 digits to protect this note","تم قفل الملاحظة":"Note locked","أدخل الرمز لإزالة القفل":"Enter passcode to unlock","تمت إزالة القفل":"Note unlocked","تعذّر فتح الملاحظة. جرّب مرة أخرى.":"Could not open note. Try again.","افتح ملاحظة أولاً، ثم أرفق الصور والملفات":"Open a note first, then attach images or files","تعذّرت إضافة المرفق: ":"Could not add attachment: ","تم استيراد ":"Imported ","ملف غير صالح":"Invalid file","تم تجهيز الملف النصي":"Text file is ready","سهرة سعيدة":"Have a lovely evening","صباح الخير":"Good morning","نهارك سعيد":"Have a nice day","مساء الخير":"Good evening","قائمة تسوق":"Shopping list","قائمة التسوق":"Shopping list","الخضار والفواكه":"Produce","الحليب والبيض":"Milk and eggs","الخبز":"Bread","أغراض أخرى":"Other items","خطة اليوم":"Today's plan","خطة اليوم · ":"Today's plan · ","أهم المهام":"Top priorities","المهمة الأولى":"First task","المهمة الثانية":"Second task","المهمة الثالثة":"Third task","يوميات":"Journal","كيف كان يومي؟":"How was my day?","ما الذي أنا ممتن له؟":"What am I grateful for?","ما الذي تعلمته؟":"What did I learn?","ملاحظات اجتماع":"Meeting notes","اجتماع · ":"Meeting · ","الحضور":"Attendees","النقاط الرئيسية":"Key points","المتابعة":"Follow-up","مهمة للمتابعة":"Follow-up task","أحسنت! أنجزت كل المهام":"Great job! All tasks completed","الحساب غير متاح بدون إنترنت":"Account is unavailable offline","العربية":"Arabic","دليل الاستخدام":"User guide","اللغة":"Language","المطور":"Developer","نظام":"System","خفيف":"Lightweight","سريع":"Fast","آمن":"Secure","تصدير نسخة احتياطية (JSON)":"Export backup (JSON)","إفراغ المحذوفة مؤخرًا":"Empty Recently Deleted","إغلاق الملاحظة":"Close note","ملاحظات سريعة":"Quick notes","أُغلقت الملاحظة السريعة":"Quick note closed","حدّد ملاحظة أولًا":"Select a note first","السابق":"Previous","التالي":"Next","إغلاق":"Close","لا نتائج":"No results","تسجيل الدخول بقوقل":"Sign in with Google","تسجيل الخروج":"Sign out","مزامنة الآن":"Sync now","جاري المزامنة…":"Syncing…","جاهز للمزامنة":"Ready to sync","الحساب":"Account","على جهازي":"On my device","ذكية":"Smart","معاينة النص":"Text preview","إظهار سطر من الملاحظة تحت العنوان":"Show a line from the note below its title","وعدّاد المهام داخل القائمة":"Show task counts in the list","تجميع حسب التاريخ":"Group by date","اليوم، أمس، آخر 7 أيام…":"Today, yesterday, last 7 days…","المدقق الإملائي":"Spell check","تسطير الكلمات الخاطئة أثناء الكتابة":"Underline misspelled words while typing","إحصائيات الملاحظة":"Note statistics","عدد الكلمات والحروف أعلى المحرر":"Show word and character counts above the editor","خط الملاحظات":"Note font","تباعد الأسطر":"Line spacing","اتجاه الكتابة":"Writing direction","الاهتزاز عند اللمس":"Haptic feedback","اهتزاز خفيف على أجهزة أندرويد":"Gentle vibration on Android devices","الحذف النهائي بعد (يوم)":"Permanently delete after (days)","انكسار الضوء الحقيقي":"Realistic light refraction","يعمل على متصفحات كروم وأندرويد":"Works in Chrome and Android browsers","الحركة والتأثيرات":"Motion and effects","إحصائياتك":"Your stats","البيانات":"Data","حول التطبيق":"About","About this app":"About this app",">العربية</span></button></div></div>":">Arabic</span></button></div></div>","عبدالله محمد السويلم":"Abdullah Mohammed Al-Suwailem","الملاحظة مقفلة":"Note is locked","حُذفت ":"Deleted ","محددة: ":"Selected: ","اضغط على الملاحظات لتحديدها":"Tap notes to select them","البحث داخل الملاحظة غير مدعوم على هذا المتصفح":"Find in note is not supported in this browser","تم إلغاء تسجيل الدخول.":"Sign-in canceled.","هذا النطاق غير مضاف في Firebase (Authorized domains).":"This domain is not added to Firebase (Authorized domains).","تأكد من اتصالك بالإنترنت.":"Check your internet connection.","المتصفح منع نافذة قوقل. افتح الموقع من Chrome وسمح بالنوافذ المنبثقة.":"Your browser blocked the Google popup. Open this site in Chrome and allow pop-ups.","افتح الموقع من متصفح Chrome مباشرة، مو من داخل تطبيق ثاني.":"Open this site directly in Chrome, not inside another app.","تم، وتخطّينا ":"Done. Skipped "," ملاحظة كبيرة جدًا":" very large note(s)","المزامنة غير مفعّلة بعد (قواعد Firestore).":"Sync is not enabled yet (Firestore rules).","قاعدة Firestore غير منشأة بعد.":"Firestore database has not been created yet.","تعذّرت المزامنة، تأكد من الإنترنت.":"Sync failed. Check your internet connection.","تمت المزامنة ✓":"Synced ✓","سجّل الدخول بحساب قوقل عشان تتزامن ملاحظاتك بين أجهزتك.":"Sign in with Google to sync your notes across devices.","جاري حفظ نسختك قبل الخروج…":"Saving your backup before signing out…","تعذّر حفظ نسختك في الحساب، تأكد من الإنترنت ولا تسجّل الخروج الآن.":"Could not save your backup to your account. Check your connection and do not sign out yet.","صار خطأ، حاول مرة ثانية.":"Something went wrong. Try again.","تعذّر إكمال تسجيل الدخول، حاول مرة ثانية.":"Could not complete sign-in. Try again.","تعذّر تحميل خدمة تسجيل الدخول، حدّث الصفحة.":"Could not load the sign-in service. Refresh the page."};Object.keys(ENX).forEach(function(k){T[k]=[ENX[k]]});
+"إلغاء":"Cancel","رجوع":"Back","العنوان":"Title","ابدأ الكتابة…":"Start writing…","شريط تنسيق النص":"Text formatting toolbar","تنسيق النص":"Text formatting","حجم الخط":"Font size","تثبيت":"Pin","تم":"Done","اختيار صور":"Choose images","اختيار ملفات":"Choose files","استيراد نسخة احتياطية":"Import backup","حذف":"Delete","كل الملاحظات":"All notes","المثبتة":"Pinned","ملاحظات المهام":"Task notes","المحذوفة مؤخرًا":"Recently deleted","أمس":"Yesterday"," في ":" at ","اليوم":"Today","آخر 7 أيام":"Last 7 days","آخر 30 يومًا":"Last 30 days","أقدم":"Oldest","لا توجد ملاحظات":"No notes yet","ملاحظة واحدة":"1 note","ملاحظتان":"2 notes"," ملاحظات":" notes"," ملاحظة":" note","مرفق واحد":"1 attachment"," مرفقات":" attachments","لا يوجد نص إضافي":"No additional text","المتصفح لا يتيح IndexedDB":"This browser does not support IndexedDB","تعذّر تجهيز قاعدة الملفات":"Could not initialize file storage","مساحة تخزين الموقع ممتلئة":"Site storage is full","تعذّر فتح قاعدة الملفات":"Could not open file database","قاعدة الملفات مشغولة في تبويب آخر؛ أغلق تبويبات الموقع وافتحه مجددًا":"File database is busy in another tab. Close other tabs of this site and reopen it.","تعذّر الوصول إلى تخزين المتصفح":"Could not access browser storage","رفضت قاعدة البيانات حفظ الملف":"The database rejected the file save","فشلت معاملة تخزين الملف":"File storage transaction failed","أُلغيت عملية تخزين الملف":"File storage was canceled","تعذّر بدء عملية التخزين":"Could not start storage operation","تعذّر فتح قاعدة تخزين الصور":"Could not open image storage database","تعذّر استرجاع الصورة من التخزين":"Could not retrieve image from storage","قاعدة تخزين الصور غير موجودة":"Image storage database not found","فشل قراءة ملف الصورة":"Could not read image file","فشلت قراءة الصورة":"Image read failed","أُلغيت قراءة الصورة":"Image read was canceled","تم نسخ النص":"Text copied","تعذّر النسخ":"Could not copy","تعذّر عرض الصورة؛ أعد إرفاقها إذا كان ملفها غير موجود في التخزين":"Could not display image. Reattach it if its file is missing from storage.","ملف الصورة غير موجود في التخزين المحلي؛ لم يُحذف المرفق":"Image file is missing from local storage. Attachment was not deleted.","ملف":"File","صورة":"Image","فشل حفظ الصورة في قاعدة البيانات":"Could not save image to database","قاعدة تخزين الصور لا تحتوي على مخزن الملفات":"Image storage database has no file store","رفضت قاعدة البيانات حفظ الصورة":"Database rejected the image save","فشلت معاملة حفظ الصورة":"Image save transaction failed","أُلغيت معاملة حفظ الصورة":"Image save transaction was canceled","افتح الملاحظة أولًا ثم اختر إرفاق صورة":"Open a note first, then choose Attach image","لم يتم اختيار صورة مدعومة؛ اختر صورة من المعرض":"No supported image selected. Choose an image from your gallery.","فشل حفظ الصورة":"Image save failed","ما انحفظت الصورة: ":"Image was not saved: ","تعذّر حفظها":"Could not save it","تعذّر حفظ بعض الصور: ":"Could not save some images: ","؛ السبب: ":"; reason: ","خطأ غير معروف":"Unknown error","فشل حفظ الصورة: ":"Image save failed: ","تعذّر استخدام تخزين الملفات في هذا السياق؛ جرّب تحديث الصفحة.":"File storage is unavailable in this context. Try refreshing the page.","جارٍ تجهيز ":"Preparing "," مرفق…":" attachment…","تم حفظ المرفق وإضافته لنهاية الملاحظة":"Attachment saved and added to the end of the note","أُضيف ":"Added "," وتعذّر حفظ ":" but could not save "," ملف":" file","فشل حفظ الملف: ":"Could not save file: ","سبب غير معروف؛ أعد تحميل الصفحة وجرب مرة أخرى":"Unknown error. Reload the page and try again","تمت إضافة ":"Added "," مرفق":" attachment","فتح":"Open","حذف المرفق":"Delete attachment","تعذّر فتح الملف":"Could not open file","أصفر":"Yellow","برتقالي":"Orange","أحمر":"Red","بنفسجي":"Purple","أزرق":"Blue","أخضر":"Green","ملاحظة سريعة":"Quick note","<span>مقفلة</span></div>":"<span>Locked</span></div>","سياسة الخصوصية":"Privacy policy","بنود الاستخدام":"Terms of use","اسم المجلد الجديد":"New folder name","تم إنشاء المجلد":"Folder created","حذف ":"Delete "," ملاحظة نهائيًا؟":" note permanently?","تم إفراغ المحذوفة":"Recently deleted emptied","مثبتة":"Pinned","مهام":"Tasks","نتائج البحث":"Search results","لا توجد نتائج لـ «":"No results for “","ابدأ بأول ملاحظة<br>اضغط زر الكتابة بالأسفل":"Create your first note<br>Tap the compose button below","المجلدات":"Folders","على جهازي":"On my device","ذكية":"Smart","مجلد جديد":"New folder"," مجلدات · ":" folders · ","أسود / أبيض":"Black / White","أزرق فاتح":"Light blue","أسود أو أبيض حسب الوضع":"Black or white depending on appearance","أصفر (الافتراضي)":"Yellow (default)","الإعدادات":"Settings","الثيم":"Theme","لون التطبيق":"App color","المظهر":"Appearance","النمط":"Style","تلقائي":"Auto","فاتح":"Light","داكن":"Dark","صغير":"Small","وسط":"Medium","كبير":"Large","العرض":"Display","شكل الملاحظات":"Note layout","ودجات":"Widgets","قائمة":"List","معاينة النص":"Text preview","إظهار سطر من الملاحظة تحت العنوان":"Show a line from the note below its title","اسم المجلد":"Folder name","وعدّاد المهام داخل القائمة":"Show folder name and task count in the list","تجميع حسب التاريخ":"Group by date","اليوم، أمس، آخر 7 أيام…":"Today, yesterday, last 7 days…","الكتابة":"Writing","المدقق الإملائي":"Spell check","تسطير الكلمات الخاطئة أثناء الكتابة":"Underline misspelled words while typing","إحصائيات الملاحظة":"Note statistics","عدد الكلمات والحروف أعلى المحرر":"Show word and character counts above the editor","أخرى":"Other","خط الملاحظات":"Note font","النظام":"System","سيريف":"Serif","تباعد الأسطر":"Line spacing","مضغوط":"Compact","عادي":"Normal","مريح":"Relaxed","اتجاه الكتابة":"Writing direction","يمين":"Right","عام":"General","الاهتزاز عند اللمس":"Haptic feedback","اهتزاز خفيف على أجهزة أندرويد":"Gentle vibration on Android devices","الحذف النهائي بعد (يوم)":"Permanently delete after (days)","الزجاج":"Glass","انكسار الضوء الحقيقي":"Realistic light refraction","يعمل على متصفحات كروم وأندرويد":"Works in Chrome and Android browsers","الحركة والتأثيرات":"Motion and effects","إحصائياتك":"Your statistics","الملاحظات":"Notes","إجمالي الكلمات":"Total words","إجمالي الأحرف":"Total characters","متوسط الكلمات للملاحظة":"Average words per note","المهام المنجزة":"Completed tasks"," من ":" of ","أيام متتالية من الكتابة":"consecutive writing days","أقدم ملاحظة":"Oldest note","البيانات":"Data","تثبيت التطبيق على الشاشة الرئيسية":"Install app on home screen","حول التطبيق":"About the app","الحساب والمزامنة":"Account & sync","عن هذا التطبيق":"About this app",">iNote · نسخة 6.000.00 · يعمل بدون إنترنت<br>تُحذف الملاحظات المحذوفة نهائيًا بعد ":">iNote · Version 6.000.00 · Works offline<br>Deleted notes are permanently removed after "," يومًا</div>":" days</div>","تم تجهيز النسخة الاحتياطية":"Backup is ready","تعذّر التصدير":"Export failed","لا توجد ملاحظات محذوفة":"No deleted notes","لا توجد ملاحظات في هذا المجلد":"No notes in this folder"," · اضغط على ملاحظة للاستعادة":" · Tap a note to restore","عرض ودجات":"Widget view","عرض قائمة":"List view","الأحدث تعديلًا":"Recently modified","الأقدم أولًا":"Oldest first","حسب العنوان":"By title","الأطول أولًا":"Longest first","تحديد ملاحظات":"Select notes","ملاحظة من قالب…":"New note from template…","إعادة تسمية":"Rename","حذف المجلد":"Delete folder","حذف المجلد؟ ستنتقل ملاحظاته إلى «شخصي».":"Delete folder? Its notes will be moved to “Personal”."," كلمة · ":" words · "," حرف · ":" characters · "," د قراءة":" min read"," · مهام ":" · tasks ","تراجع":"Undo","إعادة":"Redo","إدراج التاريخ":"Insert date","إرفاق صورة":"Attach image","تعذّر فتح اختيار الصور؛ اضغط إرفاق صورة مرة أخرى":"Could not open image picker. Tap Attach image again.","إرفاق ملف":"Attach file","تعذّر فتح اختيار الملفات؛ حدّث الصفحة وجرب مرة أخرى":"Could not open file picker. Refresh the page and try again.","عريض":"Bold","مائل":"Italic","تسطير":"Underline","شطب":"Strikethrough","نقاط":"Bullets","ترقيم":"Numbering","مهمة":"Task","دائرة":"Circle","عنوان":"Heading","اقتباس":"Quote","تمييز أصفر":"Yellow highlight","صندوق نص":"Text box","خلفية زرقاء":"Blue background","خلفية وردية":"Pink background","خط صغير":"Small font","خط كبير":"Large font","محاذاة يمين":"Align right","توسيط":"Center","مسح التنسيق":"Clear formatting","مربع مهمة":"Task checkbox","قائمة نقطية":"Bulleted list","قائمة مرقمة":"Numbered list","نُقلت إلى المحذوفة مؤخرًا":"Moved to Recently Deleted","نُقلت إلى ":"Moved to ","تم تغيير اللون":"Color changed","بدون لون":"No color"," (نسخة)":" (copy)","تم إنشاء نسخة":"Copy created","مشاركة":"Share","نسخ النص":"Copy text","إغلاق وحذف":"Close and delete","إلغاء التثبيت":"Unpin","تثبيت الملاحظة":"Pin note","تم التثبيت":"Pinned","أُلغي التثبيت":"Unpinned","لون الودجت…":"Widget color…","نقل إلى مجلد…":"Move to folder…","تصدير كملف نصي":"Export as text file","تكرار الملاحظة":"Duplicate note","بحث في الملاحظة":"Find in note","إدراج التاريخ والوقت":"Insert date and time","إزالة القفل":"Unlock note","قفل الملاحظة":"Lock note","استعادة":"Restore","تمت الاستعادة":"Restored","حذف نهائي":"Delete permanently","تم الحذف نهائيًا":"Permanently deleted","انتظر قليلًا ثم حاول مجددًا":"Wait a moment and try again","أعد إدخال الرمز":"Enter the passcode again","للتأكيد":"to confirm","الرمزان غير متطابقين":"Passcodes do not match","أنشئ رمز القفل":"Create a passcode","الرمز غير صحيح":"Incorrect passcode","محاولات كثيرة، انتظر 30 ثانية":"Too many attempts. Wait 30 seconds.","أدخل رمز الملاحظة":"Enter note passcode","ملاحظة مقفلة":"Locked note","4 أرقام لحماية هذه الملاحظة":"4 digits to protect this note","تم قفل الملاحظة":"Note locked","أدخل الرمز لإزالة القفل":"Enter passcode to unlock","تمت إزالة القفل":"Note unlocked","تعذّر فتح الملاحظة. جرّب مرة أخرى.":"Could not open note. Try again.","افتح ملاحظة أولاً، ثم أرفق الصور والملفات":"Open a note first, then attach images or files","تعذّرت إضافة المرفق: ":"Could not add attachment: ","تم استيراد ":"Imported ","ملف غير صالح":"Invalid file","تم تجهيز الملف النصي":"Text file is ready","سهرة سعيدة":"Have a lovely evening","صباح الخير":"Good morning","نهارك سعيد":"Have a nice day","مساء الخير":"Good evening","قائمة تسوق":"Shopping list","قائمة التسوق":"Shopping list","الخضار والفواكه":"Produce","الحليب والبيض":"Milk and eggs","الخبز":"Bread","أغراض أخرى":"Other items","خطة اليوم":"Today's plan","خطة اليوم · ":"Today's plan · ","أهم المهام":"Top priorities","المهمة الأولى":"First task","المهمة الثانية":"Second task","المهمة الثالثة":"Third task","يوميات":"Journal","كيف كان يومي؟":"How was my day?","ما الذي أنا ممتن له؟":"What am I grateful for?","ما الذي تعلمته؟":"What did I learn?","ملاحظات اجتماع":"Meeting notes","اجتماع · ":"Meeting · ","الحضور":"Attendees","النقاط الرئيسية":"Key points","المتابعة":"Follow-up","مهمة للمتابعة":"Follow-up task","أحسنت! أنجزت كل المهام":"Great job! All tasks completed","الحساب غير متاح بدون إنترنت":"Account is unavailable offline","العربية":"Arabic","دليل الاستخدام":"User guide","اللغة":"Language","المطور":"Developer","نظام":"System","خفيف":"Lightweight","سريع":"Fast","آمن":"Secure","تصدير نسخة احتياطية (JSON)":"Export backup (JSON)","إفراغ المحذوفة مؤخرًا":"Empty Recently Deleted","إغلاق الملاحظة":"Close note","ملاحظات سريعة":"Quick notes","أُغلقت الملاحظة السريعة":"Quick note closed","حدّد ملاحظة أولًا":"Select a note first","السابق":"Previous","التالي":"Next","إغلاق":"Close","لا نتائج":"No results","تسجيل الدخول بقوقل":"Sign in with Google","تسجيل الخروج":"Sign out","مزامنة الآن":"Sync now","جاري المزامنة…":"Syncing…","جاهز للمزامنة":"Ready to sync","الحساب":"Account","على جهازي":"On my device","ذكية":"Smart","معاينة النص":"Text preview","إظهار سطر من الملاحظة تحت العنوان":"Show a line from the note below its title","وعدّاد المهام داخل القائمة":"Show task counts in the list","تجميع حسب التاريخ":"Group by date","اليوم، أمس، آخر 7 أيام…":"Today, yesterday, last 7 days…","المدقق الإملائي":"Spell check","تسطير الكلمات الخاطئة أثناء الكتابة":"Underline misspelled words while typing","إحصائيات الملاحظة":"Note statistics","عدد الكلمات والحروف أعلى المحرر":"Show word and character counts above the editor","خط الملاحظات":"Note font","تباعد الأسطر":"Line spacing","اتجاه الكتابة":"Writing direction","الاهتزاز عند اللمس":"Haptic feedback","اهتزاز خفيف على أجهزة أندرويد":"Gentle vibration on Android devices","الحذف النهائي بعد (يوم)":"Permanently delete after (days)","انكسار الضوء الحقيقي":"Realistic light refraction","يعمل على متصفحات كروم وأندرويد":"Works in Chrome and Android browsers","الحركة والتأثيرات":"Motion and effects","إحصائياتك":"Your stats","البيانات":"Data","حول التطبيق":"About","About this app":"About this app",">العربية</span></button></div></div>":">Arabic</span></button></div></div>","عبدالله محمد السويلم":"Abdullah Mohammed Al-Suwailem","الملاحظة مقفلة":"Note is locked","حُذفت ":"Deleted ","محددة: ":"Selected: ","اضغط على الملاحظات لتحديدها":"Tap notes to select them","البحث داخل الملاحظة غير مدعوم على هذا المتصفح":"Find in note is not supported in this browser","تم إلغاء تسجيل الدخول.":"Sign-in canceled.","هذا النطاق غير مضاف في Firebase (Authorized domains).":"This domain is not added to Firebase (Authorized domains).","تأكد من اتصالك بالإنترنت.":"Check your internet connection.","المتصفح منع نافذة قوقل. افتح الموقع من Chrome وسمح بالنوافذ المنبثقة.":"Your browser blocked the Google popup. Open this site in Chrome and allow pop-ups.","افتح الموقع من متصفح Chrome مباشرة، مو من داخل تطبيق ثاني.":"Open this site directly in Chrome, not inside another app.","تم، وتخطّينا ":"Done. Skipped "," ملاحظة كبيرة جدًا":" very large note(s)","المزامنة غير مفعّلة بعد (قواعد Firestore).":"Sync is not enabled yet (Firestore rules).","قاعدة Firestore غير منشأة بعد.":"Firestore database has not been created yet.","تعذّرت المزامنة، تأكد من الإنترنت.":"Sync failed. Check your internet connection.","تمت المزامنة ✓":"Synced ✓","سجّل الدخول بحساب قوقل عشان تتزامن ملاحظاتك بين أجهزتك.":"Sign in with Google to sync your notes across devices.","جاري حفظ نسختك قبل الخروج…":"Saving your backup before signing out…","تعذّر حفظ نسختك في الحساب، تأكد من الإنترنت ولا تسجّل الخروج الآن.":"Could not save your backup to your account. Check your connection and do not sign out yet.","صار خطأ، حاول مرة ثانية.":"Something went wrong. Try again.","تعذّر إكمال تسجيل الدخول، حاول مرة ثانية.":"Could not complete sign-in. Try again.","تعذّر تحميل خدمة تسجيل الدخول، حدّث الصفحة.":"Could not load the sign-in service. Refresh the page."};Object.keys(ENX).forEach(function(k){T[k]=[ENX[k]]});
 var cur=store.get('lg-lang-v1','ar'),ot=0;
 function TRN(s,c){var t=T[s];return t?t[ORD.indexOf(c||cur)]:null}
 function skip(n){var e=n.nodeType===1?n:n.parentElement;return !e||!!e.closest('.n-body,.n-title,textarea,input,script,style,[contenteditable="true"]')}
@@ -2900,7 +2916,7 @@ window.glExport=function(){exportData()};
   },true);
   window.addEventListener('resize',function(){if(PK&&!PK.closing&&typeof closeMenu==='function')closeMenu()});
 })();
-window.__inoteMotionBridge={reducedMotion:reducedMotion,srcColor:srcColor,cssVar:cssVar,closeMenu:closeMenu,closeWr:closeWr};
+window.__inoteGlassBridge={glass:glass,bo:bo};window.__inoteMotionBridge={reducedMotion:reducedMotion,srcColor:srcColor,cssVar:cssVar,closeMenu:closeMenu,closeWr:closeWr};
 })();
 </script>
 
@@ -4263,6 +4279,331 @@ html.plain .tabs.drag .lens{transition:none}
     if(w.classList.contains('open'))bridge.closeWr();else if(m.classList.contains('open'))bridge.closeMenu();
   });
   window.inoteLiquid={enabled:enabled,prepare:prepare,menuIn:menuIn,menuOut:menuOut,fallback:fallback,pageIn:pageIn,pageOut:pageOut,stop:stop,anchorRect:anchorRect};
+})();
+</script>
+<style id="inote-loupe-css">
+#nBody,#nBody *{-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+::highlight(inote-sel){background-color:color-mix(in srgb,var(--accent,#0a84ff) 32%,transparent)}
+#ilens{position:fixed;left:0;top:0;width:136px;height:64px;z-index:520;pointer-events:none;display:none;will-change:transform}
+#ilens .ls{position:absolute!important;inset:0;border-radius:32px;overflow:hidden;background:var(--glass-strong);transform-origin:50% 100%;transform:scale(.35) translateY(18px);opacity:0;transition:transform .62s var(--sp),opacity .18s ease!important}
+#ilens .ls.on{transform:none;opacity:1}
+#ilens .lc{position:absolute;inset:0;overflow:hidden;color:var(--fg);border-radius:inherit}
+#ilens .lc>div{pointer-events:none}
+#ilens .lcar{position:absolute;left:50%;top:50%;width:2px;height:26px;margin:-13px 0 0 -1px;border-radius:2px;background:rgb(var(--acc-rgb,10,132,255));z-index:2;animation:ilb 1s steps(1) infinite}
+@keyframes ilb{50%{opacity:.25}}
+#isb{position:absolute;left:0;top:0;z-index:150;height:48px;border-radius:24px;overflow:hidden;display:none;direction:rtl;background:var(--glass-strong);touch-action:none}
+#isb.fb{opacity:0;transform:scale(.6) translateY(10px);transform-origin:50% 100%;transition:transform .6s var(--sp),opacity .2s ease}
+#isb.fb.on{opacity:1;transform:none}
+#isb:active{transform:none}
+#isb .v{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-evenly;padding:0 6px;white-space:nowrap;opacity:0;pointer-events:none;transform:scale(.9);filter:blur(4px);transition:opacity .26s ease,transform .55s var(--sp),filter .3s ease}
+#isb .v.a{opacity:1;pointer-events:auto;transform:none;filter:none}
+#isb .fmt-tool{all:unset;box-sizing:border-box;height:38px;min-width:38px;padding:0 12px;display:flex;align-items:center;justify-content:center;gap:4px;border-radius:14px;font:600 16px var(--font,system-ui);color:var(--fg);cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;transition:transform .3s var(--sp),background-color .25s ease}
+#isb .fmt-tool:active{transform:scale(.9);background:var(--press)}
+#isb .fmt-sep{height:18px;width:1px;flex:0 0 1px;background:color-mix(in srgb,var(--fg) 24%,transparent);border-radius:1px}
+#isb svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+#isb[data-rtl="1"] .fl{transform:scaleX(-1)}
+#isb[data-rtl="0"] .bk{transform:scaleX(-1)}
+#isb .cd{padding:0;width:34px}
+#isb .cd i{width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 .6px rgba(0,0,0,.2),0 1px 3px rgba(0,0,0,.15)}
+.ish{position:fixed;left:0;top:0;width:44px;z-index:500;touch-action:none;display:none;transform:scale(.3);opacity:0;transition:transform .55s var(--sp),opacity .2s ease;-webkit-user-select:none;user-select:none;cursor:grab}
+.ish i{position:absolute;left:21px;width:2px;background:var(--accent,#0a84ff);border-radius:2px}
+.ish b{position:absolute;left:14px;width:16px;height:16px;border-radius:50%;background:var(--accent,#0a84ff);box-shadow:0 0 0 2.5px #fff,0 2px 6px rgba(0,0,0,.25);transition:transform .45s var(--sp,cubic-bezier(.34,1.35,.5,1))}
+.ish.pop{transform:none;opacity:1}
+.ish.dg b{transform:scale(1.35)}
+</style>
+<script id="inote-loupe">
+(function(){
+'use strict';
+var ED=document.getElementById('nBody'),app=document.getElementById('app')||document.body;if(!ED)return;
+var HL=!!(window.CSS&&CSS.highlights&&window.Highlight),W=136,H=64,Z=1.4;
+function mk(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function haptic(){try{if(!(window.cfg&&cfg.haptics===false)&&navigator.vibrate)navigator.vibrate(7)}catch(_){}}
+function rtl(){return getComputedStyle(ED).direction==='rtl'}
+function inED(n){return !!n&&ED.contains(n)}
+/* ---------- caret geometry ---------- */
+function crect(n,o){
+  var r=document.createRange();try{r.setStart(n,o)}catch(_){return null}r.collapse(true);
+  var q=r.getClientRects();if(q.length&&q[0].height)return {x:q[0].left,t:q[0].top,b:q[0].bottom};
+  var rt=rtl();
+  if(n.nodeType===3){
+    var L=n.nodeValue.length;
+    if(o>0){r.setStart(n,o-1);r.setEnd(n,o);q=r.getClientRects();if(q.length)return {x:rt?q[0].left:q[0].right,t:q[0].top,b:q[0].bottom}}
+    if(o<L){r.setStart(n,o);r.setEnd(n,o+1);q=r.getClientRects();if(q.length)return {x:rt?q[0].right:q[0].left,t:q[0].top,b:q[0].bottom}}
+  }
+  var el=n.nodeType===1?(n.childNodes[o]&&n.childNodes[o].nodeType===1?n.childNodes[o]:n):n.parentNode;
+  var b=el.getBoundingClientRect(),lh=parseFloat(getComputedStyle(el).lineHeight)||24;
+  return {x:rt?b.right:b.left,t:b.top,b:b.top+lh};
+}
+function blockOf(n){
+  while(n&&n!==ED){if(n.nodeType===1&&/^(P|DIV|LI|H[1-6]|BLOCKQUOTE)$/.test(n.tagName))return n;n=n.parentNode}
+  return ED;
+}
+function pointRange(x,y){
+  var r=null;
+  if(document.caretRangeFromPoint)r=document.caretRangeFromPoint(x,y);
+  else if(document.caretPositionFromPoint){var p=document.caretPositionFromPoint(x,y);if(p){r=document.createRange();r.setStart(p.offsetNode,p.offset);r.collapse(true)}}
+  return r&&inED(r.startContainer)?r:null;
+}
+/* ---------- liquid-glass loupe (spring) ---------- */
+var GB=window.__inoteGlassBridge,lens=mk('div',null),ls=mk('div','ls glass'),lc=mk('div','lc'),lcar=mk('div','lcar');
+lens.id='ilens';ls.appendChild(lc);ls.appendChild(lcar);lens.appendChild(ls);app.appendChild(lens);
+if(GB)try{
+  GB.glass(ls,GB.bo({r:32,fixed:true,fw:W,fh:H}));
+  /* نفس خريطة الانكسار تنطبق على النص نفسه داخل العدسة (أقوى عند الأطراف) */
+  var tg=GB.glass(document.createElement('div'),GB.bo({r:32,fixed:true,fw:W,fh:H,disp:.27,bz:.34,blur:0}));
+  var fid=tg.f.getAttribute('id');lc.style.filter='url(#'+fid+')';lc.style.webkitFilter='url(#'+fid+')';
+}catch(_){}
+var L={x:0,y:0,vx:0,vy:0,tx:0,ty:0,on:false,raf:0,last:0,blk:null,wrap:null,hideT:0,offT:0};
+function build(blk){
+  lc.innerHTML='';var er=ED.getBoundingClientRect(),br=blk.getBoundingClientRect();
+  var w=mk('div');w.className=ED.className;w.setAttribute('dir',rtl()?'rtl':'ltr');
+  w.style.cssText='position:absolute;left:0;top:0;width:'+er.width+'px;height:'+br.height+'px;padding:0;margin:0;min-height:0;overflow:visible;animation:none;transform-origin:0 0;pointer-events:none;-webkit-user-select:none;user-select:none';
+  var c=blk.cloneNode(true);c.removeAttribute('id');c.removeAttribute('contenteditable');
+  c.style.cssText+=';position:absolute;margin:0;left:'+(br.left-er.left)+'px;top:0;width:'+br.width+'px';
+  w.appendChild(c);lc.appendChild(w);L.wrap=w;L.blk=blk;
+}
+function lensShow(n,o){
+  var c=crect(n,o);if(!c)return;clearTimeout(L.hideT);clearTimeout(L.offT);
+  var blk=blockOf(n);if(blk!==L.blk||!L.wrap||!L.wrap.parentNode)build(blk);
+  var er=ED.getBoundingClientRect(),br=blk.getBoundingClientRect(),cy=(c.t+c.b)/2;
+  L.wrap.style.transform='translate('+W/2+'px,'+H/2+'px) scale('+Z+') translate('+(-(c.x-er.left))+'px,'+(-(cy-br.top))+'px)';
+  L.tx=clamp(c.x-W/2,8,innerWidth-W-8);L.ty=Math.max(6,c.t-H-18);
+  if(!L.on){
+    L.on=true;L.x=L.tx;L.y=L.ty;L.vx=L.vy=0;lens.style.display='block';
+    lens.style.transform='translate3d('+L.x+'px,'+L.y+'px,0)';void lens.offsetWidth;ls.classList.add('on');
+  }
+  if(!L.raf){L.last=performance.now();L.raf=requestAnimationFrame(tick)}
+}
+function tick(now){
+  var dt=Math.min(.034,(now-L.last)/1000);L.last=now;var n=Math.max(1,Math.ceil(dt*240)),h=dt/n,k=420,c=27;
+  for(var i=0;i<n;i++){
+    L.vx+=(-k*(L.x-L.tx)-c*L.vx)*h;L.vy+=(-k*(L.y-L.ty)-c*L.vy)*h;L.x+=L.vx*h;L.y+=L.vy*h;
+  }
+  var s=clamp(Math.abs(L.vx)/5200+Math.abs(L.vy)/9000,0,.11);
+  lens.style.transform='translate3d('+L.x+'px,'+L.y+'px,0) scale('+(1+s)+','+(1-s*.8)+')';
+  L.raf=(L.on||lens.style.display!=='none')?requestAnimationFrame(tick):0;
+}
+function lensHide(d){
+  clearTimeout(L.hideT);
+  L.hideT=setTimeout(function(){
+    L.on=false;ls.classList.remove('on');clearTimeout(L.offT);
+    L.offT=setTimeout(function(){if(!L.on){lens.style.display='none';L.blk=null;lc.innerHTML=''}},460);
+  },d||0);
+}
+/* ---------- selection takeover (custom highlight, no native handles/toolbar) ---------- */
+var sel=null,inSel=false,busy=false,hand=[mk('div','ish','<i></i><b></b>'),mk('div','ish','<i></i><b></b>')];
+hand.forEach(function(h){app.appendChild(h)});
+var bar=mk('div','glass');bar.id='isb';app.appendChild(bar);var bOpt=GB?GB.bo({r:24,fixed:true,fw:300,fh:48}):null,barG=null,BW=300;
+if(GB)try{barG=GB.glass(bar,bOpt)}catch(_){}
+var V={};
+function svg(p,cl){return '<svg class="'+(cl||'')+'" viewBox="0 0 24 24"><path d="'+p+'"/></svg>'}
+var CH='M9 6l6 6-6 6';
+bar.innerHTML=
+ '<div class="v a" data-v="m"><button class="fmt-tool" data-a="copy">نسخ</button><span class="fmt-sep"></span><button class="fmt-tool" data-a="paste">لصق</button><span class="fmt-sep"></span><button class="fmt-tool" data-a="cut">قص</button><span class="fmt-sep"></span><button class="fmt-tool" data-a="more">اخرى'+svg(CH,'fl')+'</button></div>'+
+ '<div class="v" data-v="o"><button class="fmt-tool" data-a="back" aria-label="رجوع">'+svg(CH,'bk')+'</button><span class="fmt-sep"></span><button class="fmt-tool" data-a="google">بحث في قوقل</button><span class="fmt-sep"></span><button class="fmt-tool" data-a="quote">اقتباس</button><span class="fmt-sep"></span><button class="fmt-tool" data-a="color">تلوين</button></div>'+
+ '<div class="v" data-v="c"><button class="fmt-tool" data-a="back2" aria-label="رجوع">'+svg(CH,'bk')+'</button><span class="fmt-sep"></span>'+
+ ['#FFE66D','#A8E6A1','#8FD3FF','#FFB3C7','#D7B8FF','#FFC999'].map(function(c){return '<button class="fmt-tool cd" data-a="hl" data-c="'+c+'"><i style="background:'+c+'"></i></button>'}).join('')+
+ '<span class="fmt-sep"></span><button class="fmt-tool" data-a="unhl" style="font-size:14px">إزالة</button></div>';
+['m','o','c'].forEach(function(k){V[k]=bar.querySelector('[data-v="'+k+'"]')});
+var view='m';
+function setView(k){view=k;for(var i in V)V[i].classList.toggle('a',i===k)}
+function measure(){
+  bar.style.display='block';bar.style.width='760px';var m=0;
+  for(var i in V){var s=0;Array.prototype.forEach.call(V[i].children,function(c){s+=c.offsetWidth});m=Math.max(m,s)}
+  BW=Math.ceil(m+28);bar.style.width=BW+'px';
+  if(barG){bOpt.fw=BW;barG.w=0;barG.build()}
+}
+function liq(){return !!(window.inoteLiquid&&inoteLiquid.enabled())}
+function barIn(){
+  measure();setView('m');place();
+  var q=sel.getClientRects(),u=sel.getBoundingClientRect(),f=q[0]||u;
+  var rect=new DOMRect(u.left+u.width/2-14,f.top,28,Math.max(20,f.height));
+  bar.style.opacity='';bar.style.visibility='';
+  if(liq()){bar.classList.remove('fb');inoteLiquid.prepare(bar);inoteLiquid.menuIn(bar,rect,null,true)}
+  else{bar.classList.add('fb');void bar.offsetWidth;bar.classList.add('on')}
+}
+function barOut(){
+  if(liq()&&!bar.classList.contains('fb'))inoteLiquid.menuOut(bar,true);else bar.classList.remove('on');
+  setTimeout(function(){if(!inSel)bar.style.display='none'},520);
+}
+function paint(){if(HL&&sel){try{CSS.highlights.set('inote-sel',new Highlight(sel))}catch(_){}}}
+function unpaint(){if(HL)try{CSS.highlights.delete('inote-sel')}catch(_){}}
+function enterSel(r){
+  if(inSel){sel=r.cloneRange();paint();return}
+  sel=r.cloneRange();inSel=true;busy=true;
+  if(HL){
+    ED.setAttribute('contenteditable','false');ED.style.setProperty('-webkit-user-select','none','important');ED.style.setProperty('user-select','none','important');
+    try{getSelection().removeAllRanges()}catch(_){}
+    if(document.activeElement&&document.activeElement.blur)try{document.activeElement.blur()}catch(_){}
+    paint();
+  }
+  setTimeout(function(){busy=false},60);
+  hand.forEach(function(h){h.style.display='block'});barIn();
+  setTimeout(function(){if(inSel)hand.forEach(function(h){h.classList.add('pop')})},160);
+  if(!pr)pr=requestAnimationFrame(follow);
+}
+var pr=0;
+function exitSel(){
+  if(!inSel)return;inSel=false;sel=null;unpaint();
+  ED.setAttribute('contenteditable','true');ED.style.removeProperty('-webkit-user-select');ED.style.removeProperty('user-select');
+  barOut();hand.forEach(function(h){h.classList.remove('pop');setTimeout(function(){if(!inSel)h.style.display='none'},300)});
+  lensHide(0);
+}
+function realSel(){
+  busy=true;ED.setAttribute('contenteditable','true');ED.style.removeProperty('-webkit-user-select');ED.style.removeProperty('user-select');
+  try{ED.focus({preventScroll:true})}catch(_){}
+  var s=getSelection();s.removeAllRanges();s.addRange(sel);setTimeout(function(){busy=false},80);
+}
+function place(){
+  if(!sel||!inSel)return;
+  var q=sel.getClientRects(),u=sel.getBoundingClientRect();
+  if(!q.length)return;
+  var er=ED.getBoundingClientRect();
+  if(er.width===0||er.bottom<0||er.top>innerHeight){exitSel();return}
+  var first=q[0],last=q[q.length-1],w=BW,left=clamp(u.left+u.width/2-w/2,8,innerWidth-w-8);
+  var top=first.top-48-14;if(top<8)top=Math.min(last.bottom+40,innerHeight-60);
+  bar.style.left=left+'px';bar.style.top=top+'px';
+  var a=crect(sel.startContainer,sel.startOffset),b=crect(sel.endContainer,sel.endOffset);
+  if(a)pos(hand[0],a,true);if(b)pos(hand[1],b,false);
+}
+function pos(h,c,st){
+  var hh=c.b-c.t;h.style.left=(c.x-22)+'px';h.style.top=(st?c.t-16:c.t)+'px';h.style.height=(hh+16)+'px';
+  var i=h.firstChild,d=h.lastChild;
+  i.style.top=(st?16:0)+'px';i.style.height=hh+'px';d.style.top=(st?0:hh)+'px';
+}
+function follow(){
+  pr=0;if(!inSel)return;
+  var q=sel.getClientRects();
+  var vis=q.length&&q[0].bottom>0&&q[q.length-1].top<innerHeight;
+  hand.forEach(function(h){h.style.visibility=vis?'visible':'hidden'});bar.style.visibility=vis?'visible':'hidden';
+  place();pr=requestAnimationFrame(follow);
+}
+/* handles dragging */
+hand.forEach(function(h,idx){
+  var dy=0,dx=0,drag=false,fx=null;
+  h.addEventListener('pointerdown',function(e){
+    e.preventDefault();e.stopPropagation();drag=true;h.setPointerCapture(e.pointerId);h.classList.add('dg');
+    var c=crect(idx?sel.endContainer:sel.startContainer,idx?sel.endOffset:sel.startOffset);
+    fx=idx?{n:sel.startContainer,o:sel.startOffset}:{n:sel.endContainer,o:sel.endOffset};dy=(c.t+c.b)/2-e.clientY;dx=c.x-e.clientX;bar.style.transition='opacity .2s';bar.style.opacity='0';bar.style.pointerEvents='none';haptic();
+  });
+  h.addEventListener('pointermove',function(e){
+    if(!drag)return;var p=pointRange(e.clientX+dx,e.clientY+dy);if(!p)return;
+    var f=document.createRange();f.setStart(fx.n,fx.o);f.collapse(true);var r=document.createRange();
+    if(f.comparePoint(p.startContainer,p.startOffset)<0){r.setStart(p.startContainer,p.startOffset);r.setEnd(fx.n,fx.o)}
+    else{r.setStart(fx.n,fx.o);r.setEnd(p.startContainer,p.startOffset)}
+    if(r.collapsed)return;sel=r;paint();lensShow(p.startContainer,p.startOffset);
+  });
+  function up(){if(!drag)return;drag=false;h.classList.remove('dg');lensHide(180);bar.style.opacity='';bar.style.pointerEvents='';place()}
+  h.addEventListener('pointerup',up);h.addEventListener('pointercancel',up);
+});
+/* ---------- actions ---------- */
+function clip(t){
+  try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t).catch(function(){old(t)})}catch(_){}
+  old(t);return Promise.resolve();
+  function old(s){var a=document.createElement('textarea');a.value=s;a.style.cssText='position:fixed;opacity:0;top:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}
+}
+function msg(m){if(window.toast)try{toast(m)}catch(_){}}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+function done(){var s=getSelection();try{s.collapseToEnd()}catch(_){}exitSel()}
+var act={
+  copy:function(){clip(sel.toString()).then(function(){msg('تم النسخ')});exitSel()},
+  cut:function(){var t=sel.toString();clip(t);realSel();document.execCommand('delete');done()},
+  paste:function(){
+    var go=function(t){if(!t)return;realSel();document.execCommand('insertText',false,t);done()};
+    if(navigator.clipboard&&navigator.clipboard.readText)navigator.clipboard.readText().then(go).catch(function(){msg('اسمح بالوصول إلى الحافظة')});
+    else msg('اللصق غير مدعوم هنا');
+  },
+  more:function(){setView('o')},back:function(){setView('m')},back2:function(){setView('o')},
+  color:function(){setView('c')},
+  google:function(){var t=sel.toString().trim();if(t)window.open('https://www.google.com/search?q='+encodeURIComponent(t),'_blank','noopener');exitSel()},
+  quote:function(){realSel();document.execCommand('formatBlock',false,'blockquote');done()},
+  hl:function(el){var c=el.getAttribute('data-c'),t=sel.toString();realSel();
+    document.execCommand('insertHTML',false,'<mark style="background:'+c+'">'+esc(t)+'</mark>');done()},
+  unhl:function(){
+    ED.querySelectorAll('mark').forEach(function(m){if(sel.intersectsNode(m)){var p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m)}});
+    ED.dispatchEvent(new Event('input',{bubbles:true}));exitSel()}
+};
+bar.addEventListener('pointerdown',function(e){e.preventDefault()});
+bar.addEventListener('click',function(e){var b=e.target.closest('button[data-a]');if(!b||!sel)return;haptic();var f=act[b.getAttribute('data-a')];if(f)f(b)});
+bar.dataset.rtl=rtl()?'1':'0';
+/* ---------- gestures ---------- */
+var T=null,lpT=0,lastKey=0;
+function wordRange(r){
+  var n=r.startContainer,o=r.startOffset;
+  if(n.nodeType!==3)return null;
+  var s=n.nodeValue,re=/[\p{L}\p{N}_ـ]/u;
+  if(o>=s.length||!re.test(s[o])){if(o>0&&re.test(s[o-1]))o--;else return null}
+  var a=o,b=o;while(a>0&&re.test(s[a-1]))a--;while(b<s.length&&re.test(s[b]))b++;
+  var w=document.createRange();w.setStart(n,a);w.setEnd(n,b);return w;
+}
+document.addEventListener('keydown',function(){lastKey=Date.now()},true);
+document.addEventListener('input',function(){lastKey=Date.now()},true);
+document.addEventListener('contextmenu',function(e){
+  if(e.target&&e.target.closest&&(e.target.closest('#nBody')||e.target.closest('#isb')||e.target.closest('.ish')||e.target.closest('#ilens')))e.preventDefault();
+},true);
+ED.addEventListener('touchstart',function(e){
+  if(e.touches.length!==1){clearTimeout(lpT);T=null;return}
+  var t=e.touches[0];T={x:t.clientX,y:t.clientY,mode:'',anchor:null,t:Date.now(),moved:false,tg:e.target};
+  var s=getSelection(),c=null;
+  if(!inSel&&s.rangeCount&&s.isCollapsed&&inED(s.anchorNode)&&document.activeElement===ED)c=crect(s.anchorNode,s.anchorOffset);
+  if(c&&Math.abs(t.clientX-c.x)<26&&t.clientY>c.t-22&&t.clientY<c.b+22){T.mode='caret';e.preventDefault();return}
+  clearTimeout(lpT);
+  lpT=setTimeout(function(){
+    if(!T||T.mode)return;var p=pointRange(T.x,T.y),w=p&&wordRange(p);
+    if(!w)return;T.mode='sel';T.anchor=w;haptic();enterSel(w);lensShow(w.startContainer,w.startOffset);
+  },400);
+},{passive:false});
+ED.addEventListener('touchmove',function(e){
+  if(!T)return;var t=e.touches[0];
+  if(!T.mode&&Math.hypot(t.clientX-T.x,t.clientY-T.y)>9){T.moved=true;clearTimeout(lpT);return}
+  if(!T.mode)return;
+  if(e.cancelable)e.preventDefault();
+  var p=pointRange(t.clientX,t.clientY-(T.mode==='sel'?18:0));if(!p)return;
+  if(T.mode==='caret'){
+    var s=getSelection();s.collapse(p.startContainer,p.startOffset);lensShow(p.startContainer,p.startOffset);
+  }else{
+    var a=T.anchor,r=document.createRange();
+    if(a.comparePoint(p.startContainer,p.startOffset)<0){r.setStart(p.startContainer,p.startOffset);r.setEnd(a.endContainer,a.endOffset)}
+    else{r.setStart(a.startContainer,a.startOffset);r.setEnd(p.startContainer,p.startOffset)}
+    if(r.collapsed)r=a.cloneRange();
+    sel=r;paint();place();lensShow(p.startContainer,p.startOffset);
+  }
+},{passive:false});
+function tEnd(e){
+  clearTimeout(lpT);if(!T)return;var tp=T;T=null;
+  if(tp.mode){if(e.cancelable)e.preventDefault();lensHide(160);return}
+  /* نقرة عادية: نحط المؤشر بأنفسنا ونمنع النظام، فما تطلع قطرة المؤشر ولا عدسة الجوال */
+  if(e.type==='touchend'&&!tp.moved&&Date.now()-tp.t<350&&e.cancelable&&!(tp.tg&&tp.tg.closest&&tp.tg.closest('input,a,img,button,label,[contenteditable="false"]'))){
+    var p=pointRange(tp.x,tp.y);
+    if(!p){p=document.createRange();p.selectNodeContents(ED);p.collapse(false)}
+    e.preventDefault();try{ED.focus({preventScroll:true})}catch(_){}
+    getSelection().collapse(p.startContainer,p.startOffset);
+  }
+}
+ED.addEventListener('touchend',tEnd,{passive:false});ED.addEventListener('touchcancel',tEnd,{passive:false});
+/* native caret drags (handle / keyboard space-swipe) → same loupe */
+var lastSC=0,drive=0;
+document.addEventListener('selectionchange',function(){
+  if(busy)return;
+  var s=getSelection(),now=Date.now();
+  if(!s||!s.rangeCount||!inED(s.anchorNode))return;
+  if(!s.isCollapsed){ /* any native selection → take over with our own UI */
+    if(!inSel)enterSel(s.getRangeAt(0));
+    return;
+  }
+  if(inSel||(T&&T.mode)||now-lastKey<140){lastSC=now;return}
+  if(now-lastSC<220){lensShow(s.anchorNode,s.anchorOffset);lensHide(650)}
+  lastSC=now;
+});
+/* tap outside → leave selection mode */
+document.addEventListener('pointerdown',function(e){
+  if(!inSel)return;var t=e.target;
+  if(t.closest&&(t.closest('#isb')||t.closest('.ish')))return;
+  var inEd=t.closest&&t.closest('#nBody');
+  exitSel();
+  if(inEd){var p=pointRange(e.clientX,e.clientY);if(p){try{ED.focus({preventScroll:true})}catch(_){}getSelection().collapse(p.startContainer,p.startOffset)}}
+},true);
 })();
 </script>
 <script>
